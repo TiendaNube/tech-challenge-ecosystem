@@ -2,7 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { Transaction } from './entities/transaction.entity';
-import { CreateTransactionDto } from './dtos/create-transaction.dto';
+import {
+  CreateTransactionDto,
+  PaymentMethod,
+} from './dtos/create-transaction.dto';
 import { Payable } from './entities/payable.entity';
 
 @Injectable()
@@ -36,15 +39,7 @@ export class TransactionService {
 
       const createdTransaction = await queryRunner.manager.save(newTransaction);
 
-      //TODO do the math
-      const newPayable = this.payableRepository.create({
-        status: 'paid',
-        createDate: new Date(),
-        subtotal: createdTransaction.totalValue,
-        discount: 0,
-        total: createdTransaction.totalValue,
-        transaction: { id: createdTransaction.id },
-      });
+      const newPayable = this.generatePayable(createdTransaction);
 
       await queryRunner.manager.save(newPayable);
 
@@ -55,5 +50,33 @@ export class TransactionService {
       queryRunner.rollbackTransaction();
       throw err;
     }
+  }
+
+  private generatePayable(transaction: Transaction): Payable {
+    const method = transaction.paymentMethod;
+    const discountPercentage = method === PaymentMethod.DebitCard ? 2 : 4;
+    const discount = transaction.totalValue * (discountPercentage / 100);
+
+    const newPayable = {
+      status: method === PaymentMethod.DebitCard ? 'paid' : 'waiting_funds',
+      createDate:
+        method === PaymentMethod.DebitCard
+          ? this.getDate()
+          : this.getDate(false),
+      subtotal: transaction.totalValue,
+      discount,
+      total: transaction.totalValue - discount,
+      transaction: { id: transaction.id },
+    };
+
+    return this.payableRepository.create(newPayable as Payable);
+  }
+
+  private getDate(today: boolean = true) {
+    const now = new Date();
+    const plus30 = new Date();
+
+    plus30.setDate(now.getDate() + 30);
+    return today ? now : plus30;
   }
 }

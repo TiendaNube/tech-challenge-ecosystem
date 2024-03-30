@@ -5,6 +5,7 @@ import { Transaction } from '../transaction/entities/transaction.entity';
 import { Init1711831141703 } from '../migrations/1711831141703-init';
 import { JoinColumns1711834614562 } from '../migrations/1711834614562-joinColumns';
 import { JoinColumnsFix1711836623698 } from '../migrations/1711836623698-joinColumnsFix';
+import { RemoveRedundantColumn1711836778102 } from '../migrations/1711836778102-removeRedundantColumn';
 
 class ConfigService {
   constructor(private env: { [k: string]: string | undefined }) {}
@@ -22,6 +23,7 @@ class ConfigService {
         Init1711831141703,
         JoinColumns1711834614562,
         JoinColumnsFix1711836623698,
+        RemoveRedundantColumn1711836778102,
       ],
       migrationsTableName: 'migrations',
       migrationsRun: this.env.RUN_MIGRATIONS === 'true',
