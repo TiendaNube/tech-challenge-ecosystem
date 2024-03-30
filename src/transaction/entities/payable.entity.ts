@@ -1,15 +1,21 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  OneToOne,
+  JoinColumn,
+  OneToMany,
+} from 'typeorm';
+import { Transaction } from './transaction.entity';
 
 @Entity()
 export class Payable {
   @PrimaryGeneratedColumn('uuid')
   id: number;
 
-  @Column()
-  merchant: string;
-
   @Column({ type: 'enum', enum: ['paid', 'waiting_funds'] })
-  status: string;
+  status: 'paid' | 'waiting_funds';
 
   @Column({ type: 'date' })
   createDate: Date;
@@ -22,4 +28,7 @@ export class Payable {
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   total: number;
+
+  @ManyToOne(() => Transaction, (transaction) => transaction.payables)
+  transaction: Transaction;
 }

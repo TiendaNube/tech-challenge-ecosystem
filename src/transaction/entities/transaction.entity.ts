@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Payable } from './payable.entity';
 
 @Entity()
 export class Transaction {
@@ -38,4 +39,7 @@ export class Transaction {
   @ApiProperty()
   @Column()
   merchantId: string;
+
+  @OneToMany(() => Payable, payable => payable.transaction)
+  payables: Payable[];
 }

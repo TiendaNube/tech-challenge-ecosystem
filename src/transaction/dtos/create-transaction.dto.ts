@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDecimal, IsEnum, IsNotEmpty, IsString, Length } from 'class-validator';
+import {
+  IsDecimal,
+  IsEnum,
+  IsNotEmpty,
+  IsString,
+  Length,
+} from 'class-validator';
 
 export enum PaymentMethod {
   DebitCard = 'debit_card',
@@ -8,7 +14,10 @@ export enum PaymentMethod {
 
 export class CreateTransactionDto {
   @ApiProperty({ type: Number, description: 'Total value of the transaction' })
-  @IsDecimal({ decimal_digits: '2' }, { message: 'Total value of the transaction must be numeric' })
+  @IsDecimal(
+    { decimal_digits: '2' },
+    { message: 'Total value of the transaction must be numeric' },
+  )
   totalValue: number;
 
   @ApiProperty({ type: String, description: 'Description of the transaction' })
@@ -16,15 +25,22 @@ export class CreateTransactionDto {
   @IsString({ message: 'Description of the transaction must be a string' })
   description: string;
 
-  @ApiProperty({ enum: ['debit_card', 'credit_card'], description: 'Payment method: debit_card or credit_card' })
+  @ApiProperty({
+    enum: ['debit_card', 'credit_card'],
+    description: 'Payment method: debit_card or credit_card',
+  })
   @IsNotEmpty({ message: 'Payment method is required' })
-  @IsEnum(PaymentMethod, { message: 'Payment method must be "debit_card" or "credit_card"' })
-  paymentMethod: string;
+  @IsEnum(PaymentMethod, {
+    message: 'Payment method must be "debit_card" or "credit_card"',
+  })
+  paymentMethod: 'debit_card' | 'credit_card';
 
   @ApiProperty({ type: String, description: 'Last 4 digits of the card' })
   @IsNotEmpty({ message: 'Last 4 digits of the card are required' })
   @IsString({ message: 'Last 4 digits of the card must be a string' })
-  @Length(4, 4, { message: 'Last 4 digits of the card must be exactly 4 characters' })
+  @Length(4, 4, {
+    message: 'Last 4 digits of the card must be exactly 4 characters',
+  })
   cardLastDigits: string;
 
   @ApiProperty({ type: String, description: 'Name of the card holder' })
