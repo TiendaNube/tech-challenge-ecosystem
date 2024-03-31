@@ -34,6 +34,27 @@ class ConfigService {
       logging: 'all',
     };
   }
+
+  getRabbiMQConfig() {
+    return {
+      rabbitMQTSL: this.env.RABBITMQ_TSL === 'true',
+      rabbitMQUser: this.env.RABBITMQ_USER,
+      rabbitMQPassword: this.env.RABBITMQ_PASSWORD,
+      rabbitMQHost: this.env.RABBITMQ_HOST,
+      rabbitMQPort: this.env.RABBITMQ_PORT,
+      rabbitMQVhost: this.env.RABBITMQ_VHOST,
+    };
+  }
+
+  getQueueConfig() {
+    return {
+      exchange: this.env.EXCHANGE_NAME,
+      exchangeType: this.env.EXCHANGE_TYPE,
+      queue: this.env.QUEUE_NAME,
+      dlx: this.env.DLX_NAME,
+      prefetch: +(this.env.PREFETCH ?? 10),
+    };
+  }
 }
 
 const configService = new ConfigService(process.env);

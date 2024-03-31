@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { Transaction } from './entities/transaction.entity';
@@ -8,16 +8,23 @@ import {
 } from './dtos/create-transaction.dto';
 import { Payable } from './entities/payable.entity';
 import { PayableSummaryDTO } from './dtos/payable-summary.dto';
+// import { RabbitMQ } from '../amqp/amqp';
+import { Channel } from 'amqplib';
+import { AmqpService } from '../amqp/amqp.service';
 
 @Injectable()
 export class TransactionService {
-  constructor(
-    @InjectRepository(Transaction)
-    private readonly transactionRepository: Repository<Transaction>,
-    @InjectRepository(Payable)
-    private readonly payableRepository: Repository<Payable>,
-    private dataSource: DataSource,
-  ) {}
+  @InjectRepository(Transaction)
+  private readonly transactionRepository: Repository<Transaction>;
+
+  @InjectRepository(Payable)
+  private readonly payableRepository: Repository<Payable>;
+
+  @Inject()
+  private dataSource: DataSource;
+
+  @Inject()
+  private readonly amqpService: AmqpService;
 
   async createTransaction(
     createTransactionDto: CreateTransactionDto,
@@ -53,27 +60,6 @@ export class TransactionService {
     }
   }
 
-  private generatePayable(transaction: Transaction): Payable {
-    const method = transaction.paymentMethod;
-    const discountPercentage = method === PaymentMethod.DebitCard ? 2 : 4;
-    const discount = transaction.totalValue * (discountPercentage / 100);
-
-    const newPayable: Partial<Payable> = {
-      status: method === PaymentMethod.DebitCard ? 'paid' : 'waiting_funds',
-      createDate:
-        method === PaymentMethod.DebitCard
-          ? this.getDate()
-          : this.getDate(false),
-      subtotal: transaction.totalValue,
-      discount,
-      total: transaction.totalValue - discount,
-      transaction: { id: transaction.id } as Transaction,
-      merchantId: transaction.merchantId,
-    };
-
-    return this.payableRepository.create(newPayable);
-  }
-
   async getPayableSummary(
     startDate: Date,
     endDate: Date,
@@ -96,6 +82,38 @@ export class TransactionService {
     const result = await this.payableRepository.query(query, params);
 
     return result[0];
+  }
+
+  async publishTransaction(
+    transaction: CreateTransactionDto,
+    exchange: string,
+  ): Promise<void> {
+    await this.amqpService.publishEvent(
+      exchange,
+      `transaction.${transaction.paymentMethod}.${transaction.merchantId}`,
+      transaction,
+    );
+  }
+
+  private generatePayable(transaction: Transaction): Payable {
+    const method = transaction.paymentMethod;
+    const discountPercentage = method === PaymentMethod.DebitCard ? 2 : 4;
+    const discount = transaction.totalValue * (discountPercentage / 100);
+
+    const newPayable: Partial<Payable> = {
+      status: method === PaymentMethod.DebitCard ? 'paid' : 'waiting_funds',
+      createDate:
+        method === PaymentMethod.DebitCard
+          ? this.getDate()
+          : this.getDate(false),
+      subtotal: transaction.totalValue,
+      discount,
+      total: transaction.totalValue - discount,
+      transaction: { id: transaction.id } as Transaction,
+      merchantId: transaction.merchantId,
+    };
+
+    return this.payableRepository.create(newPayable);
   }
 
   private getDate(today: boolean = true) {

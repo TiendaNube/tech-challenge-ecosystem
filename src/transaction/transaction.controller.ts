@@ -19,8 +19,8 @@ import {
   ApiQuery,
   ApiResponse,
 } from '@nestjs/swagger';
-import { Transaction } from './entities/transaction.entity';
 import { PayableSummaryDTO } from './dtos/payable-summary.dto';
+import { configService } from '../config/config.service';
 
 @Controller('transaction')
 export class TransactionController {
@@ -29,17 +29,23 @@ export class TransactionController {
 
   @Post()
   @ApiResponse({
-    status: 201,
-    description: 'Transaction created successfully',
-    type: Transaction,
+    status: 202,
+    description: 'Transaction sent',
+    type: String,
   })
   @ApiResponse({ status: 500, description: 'Failed to create transaction' })
   async createTransaction(@Body() createTransactionDto: CreateTransactionDto) {
+    const queueConfig = configService.getQueueConfig();
+
     try {
-      return this.transactionService.createTransaction(createTransactionDto);
+      await this.transactionService.publishTransaction(
+        createTransactionDto,
+        queueConfig.exchange,
+      );
+      return 'transaction sent successfully';
     } catch (error) {
       throw new HttpException(
-        'Failed to create transaction',
+        'Failed to send transaction',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
