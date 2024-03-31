@@ -6,6 +6,7 @@ import { Init1711831141703 } from '../migrations/1711831141703-init';
 import { JoinColumns1711834614562 } from '../migrations/1711834614562-joinColumns';
 import { JoinColumnsFix1711836623698 } from '../migrations/1711836623698-joinColumnsFix';
 import { RemoveRedundantColumn1711836778102 } from '../migrations/1711836778102-removeRedundantColumn';
+import { AddMerchantToPayable1711894604104 } from '../migrations/1711894604104-addMerchantToPayable';
 
 class ConfigService {
   constructor(private env: { [k: string]: string | undefined }) {}
@@ -24,11 +25,13 @@ class ConfigService {
         JoinColumns1711834614562,
         JoinColumnsFix1711836623698,
         RemoveRedundantColumn1711836778102,
+        AddMerchantToPayable1711894604104,
       ],
       migrationsTableName: 'migrations',
       migrationsRun: this.env.RUN_MIGRATIONS === 'true',
       synchronize: false,
-      logger: 'simple-console',
+      logger: 'debug',
+      logging: 'all',
     };
   }
 }

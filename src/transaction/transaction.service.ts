@@ -7,6 +7,7 @@ import {
   PaymentMethod,
 } from './dtos/create-transaction.dto';
 import { Payable } from './entities/payable.entity';
+import { PayableSummaryDTO } from './dtos/payable-summary.dto';
 
 @Injectable()
 export class TransactionService {
@@ -57,7 +58,7 @@ export class TransactionService {
     const discountPercentage = method === PaymentMethod.DebitCard ? 2 : 4;
     const discount = transaction.totalValue * (discountPercentage / 100);
 
-    const newPayable = {
+    const newPayable: Partial<Payable> = {
       status: method === PaymentMethod.DebitCard ? 'paid' : 'waiting_funds',
       createDate:
         method === PaymentMethod.DebitCard
@@ -66,10 +67,35 @@ export class TransactionService {
       subtotal: transaction.totalValue,
       discount,
       total: transaction.totalValue - discount,
-      transaction: { id: transaction.id },
+      transaction: { id: transaction.id } as Transaction,
+      merchantId: transaction.merchantId,
     };
 
-    return this.payableRepository.create(newPayable as Payable);
+    return this.payableRepository.create(newPayable);
+  }
+
+  async getPayableSummary(
+    startDate: Date,
+    endDate: Date,
+    merchantId: string,
+  ): Promise<PayableSummaryDTO> {
+    const query = `
+      SELECT 
+        SUM(CASE WHEN status = 'paid' THEN total ELSE 0 END) AS totalPaid,
+        SUM(discount) AS totalFees,
+        SUM(CASE WHEN status = 'waiting_funds' THEN total ELSE 0 END) AS futureFunds
+      FROM
+        public.payable py
+      WHERE
+        py."createDate" >= $1 AND py."createDate" <= $2
+        AND py."merchantId" = $3;
+    `;
+
+    const params = [startDate.toISOString(), endDate.toISOString(), merchantId];
+
+    const result = await this.payableRepository.query(query, params);
+
+    return result[0];
   }
 
   private getDate(today: boolean = true) {
