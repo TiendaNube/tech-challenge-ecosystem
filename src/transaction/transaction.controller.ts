@@ -3,6 +3,7 @@ import {
   Body,
   Controller,
   Get,
+  HttpCode,
   HttpException,
   HttpStatus,
   Inject,
@@ -28,12 +29,13 @@ export class TransactionController {
   private readonly transactionService: TransactionService;
 
   @Post()
-  @ApiResponse({
+  @ApiOkResponse({
     status: 202,
     description: 'Transaction sent',
     type: String,
   })
   @ApiResponse({ status: 500, description: 'Failed to create transaction' })
+  @HttpCode(202)
   async createTransaction(@Body() createTransactionDto: CreateTransactionDto) {
     const queueConfig = configService.getQueueConfig();
 
@@ -42,7 +44,7 @@ export class TransactionController {
         createTransactionDto,
         queueConfig.exchange,
       );
-      return 'transaction sent successfully';
+      return { status: 'transaction sent successfully' };
     } catch (error) {
       throw new HttpException(
         'Failed to send transaction',
