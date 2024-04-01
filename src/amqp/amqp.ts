@@ -2,7 +2,7 @@ import 'dotenv/config';
 
 import { FactoryProvider, Scope } from '@nestjs/common';
 import * as amqp from 'amqplib';
-import { configService } from 'src/config/config.service';
+import { configService } from '../config/config.service';
 
 export const RabbitMQ = Symbol('__RabbitMQ__');
 
