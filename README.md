@@ -92,3 +92,15 @@ docker compose up
 ## Como entregar
 
 - Fork esse desafio no seu repositório pessoal. Crie uma branch para desenvolver sua implementação e, assim que finalizar, submeta um pull request na branch main desse repo, marcando @ewma18, @AndreAffonso e @rafaelito91 como reviewers
+
+---
+---
+
+## Solução
+
+- Criei uma aplicação usando typescript com o framework Nestjs
+- A aplicação está divida em uma api e um consumidor assincrono
+- Você pode subir rodando os comoandos `npm start` e `npm start:consumer` ou com o `docker-compose up`, a api vai estar disponivel na porta 3000
+  - estou usando postgres e rabbitmq para a soluçao, no docker-compose esta mapeado volumes apontando para `~/postgres` e `~/rabbitmq` para a persistencia, acredito que os diretorios precisam estar criados no host para evitar problemas no up
+- no path `/docs` está um swagger com os endpoints criados para facilitar o teste
+
