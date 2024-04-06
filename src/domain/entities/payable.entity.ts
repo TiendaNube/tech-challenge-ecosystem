@@ -1,7 +1,8 @@
-enum PayableStatus {
-    'paid',
-    'waiting_funds',
+export enum PayableStatus {
+    PAID = 'paid',
+    WAIT_FUNDS = 'waiting_funds',
 }
+
 export class Payable {
     id: string;
     merchantId: string;

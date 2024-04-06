@@ -30,7 +30,6 @@ export class CreateTables1712420283001 implements MigrationInterface {
                     {
                         name: 'paymentMethod',
                         type: 'enum',
-                        enum: ['debit_card', 'credit_card'],
                         enumName: 'transaction_payment_method',
                     },
                     {
@@ -51,6 +50,11 @@ export class CreateTables1712420283001 implements MigrationInterface {
                         name: 'cardCvv',
                         type: 'char',
                         length: '3',
+                    },
+                    {
+                        name: 'createdAt',
+                        type: 'timestamp',
+                        default: 'CURRENT_TIMESTAMP(6)',
                     },
                 ],
             }),

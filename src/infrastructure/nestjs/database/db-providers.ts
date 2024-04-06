@@ -1,6 +1,7 @@
 import { DataSource } from 'typeorm';
 import { TransactionEntity } from './entities/transaction.entity';
 import { ConfigService } from '@nestjs/config';
+import { PayableEntity } from './entities/payable.entity';
 
 export const dbProviders = [
     {
@@ -22,7 +23,7 @@ export const dbProviders = [
                     'DB_NAME',
                     'tech-ecosystem',
                 ),
-                entities: [TransactionEntity],
+                entities: [TransactionEntity, PayableEntity],
                 synchronize: false,
             });
 
