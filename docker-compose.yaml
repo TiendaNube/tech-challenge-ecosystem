@@ -1,0 +1,14 @@
+name: tech-challenge-ecosystem
+
+services:
+    db:
+        image: postgres
+        restart: always
+        ports:
+            - 5432:5432
+        environment:
+            - POSTGRES_USER=admin
+            - POSTGRES_PASSWORD=root
+            - POSTGRES_DB=tech-ecosystem
+        volumes:
+            - ~/postgres:/var/lib/postgresql/data
