@@ -3,6 +3,8 @@ import { CreateTransactionDto } from '@application/controllers/dtos/create-trans
 import { Body, Controller, Inject, Post } from '@nestjs/common';
 import { ITransactionController } from 'src/application/controllers/interfaces/transaction-controller';
 import { TRANSACTION_CONTROLLER } from '../helpers/constants';
+import { CreateValidatedTransactionDto } from './dtos/create-validated-transaction.dto';
+import { plainToInstance } from 'class-transformer';
 
 @Controller('transactions')
 export class TransactionController {
@@ -13,10 +15,10 @@ export class TransactionController {
 
     @Post()
     createTransaction(
-        @Body() createTransactionDto: CreateTransactionDto,
+        @Body() createValidatedTransactionDto: CreateValidatedTransactionDto,
     ): Promise<Transaction> {
         return this.transactionController.createTransaction(
-            createTransactionDto,
+            createValidatedTransactionDto,
         );
     }
 }

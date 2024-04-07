@@ -4,7 +4,7 @@ export class CreateTransactionDto {
     totalValue: number;
     description: string;
     paymentMethod: TransactionPaymentMethod;
-    cardNumber: number; // last 4 numbers
+    cardNumber: string; // last 4 numbers
     cardHolder: string;
     cardExpirationDate: Date;
     cardCvv: string;

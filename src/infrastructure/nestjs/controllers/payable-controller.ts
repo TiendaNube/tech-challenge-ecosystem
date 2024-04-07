@@ -3,6 +3,7 @@ import { IPayableController } from '@application/controllers/interfaces/payable-
 import { PayableSummary } from '@domain/entities/payable-summary.entity';
 import { Controller, Get, Inject, Query } from '@nestjs/common';
 import { PAYABLE_CONTROLLER } from '../helpers/constants';
+import { PayableValidatedSummaryFiltersDto } from './dtos/payable-validated-summary-filters.dto';
 
 @Controller('payables')
 export class PayableController {
@@ -13,7 +14,8 @@ export class PayableController {
 
     @Get('/summary')
     getSummaryPayables(
-        @Query() filters: PayableSummaryFiltersDto,
+        @Query()
+        filters: PayableValidatedSummaryFiltersDto,
     ): Promise<PayableSummary> {
         return this.payableController.getSummaryPayables(filters);
     }

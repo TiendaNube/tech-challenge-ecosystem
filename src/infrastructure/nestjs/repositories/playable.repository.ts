@@ -11,27 +11,43 @@ export class PayableRepositoryImpl implements IPayableRepository {
 
     async summaryByMerchantIdAndStartDateAndEndDate(
         merchantId: string,
-        startDate: Date,
-        endDate: Date,
+        startDate?: Date,
+        endDate?: Date,
     ): Promise<PayableSummary> {
-        const result = await this.payableRepository
-            .createQueryBuilder()
-            .select([
-                'SUM(CASE WHEN payable.status = :paidStatus THEN payable.total ELSE 0 END) AS "totalPaid"',
-                'SUM(DISTINCT payable.discount) AS "totalFees"',
-                'SUM(CASE WHEN payable.status = :waitingStatus THEN payable.total ELSE 0 END) AS "upcomingPayments"',
-            ])
-            .from(PayableEntity, 'payable')
-            .where(
-                'payable.createdDate BETWEEN :startDate AND :endDate AND payable.merchantId = :merchantId',
+        const queryBuilder = this.payableRepository.createQueryBuilder();
+        if (startDate && endDate) {
+            // Use BETWEEN when both startDate and endDate are provided
+            queryBuilder.andWhere(
+                'payable.createdDate BETWEEN :startDate AND :endDate',
                 {
                     startDate,
                     endDate,
-                    merchantId,
-                    paidStatus: 'paid',
-                    waitingStatus: 'waiting_funds',
                 },
-            )
+            );
+        } else {
+            // Use individual conditions when only one of startDate or endDate is provided
+            if (startDate) {
+                queryBuilder.andWhere('payable.createdDate >= :startDate', {
+                    startDate,
+                });
+            }
+            if (endDate) {
+                queryBuilder.andWhere('payable.createdDate <= :endDate', {
+                    endDate,
+                });
+            }
+        }
+
+        const result = await queryBuilder
+            .andWhere('payable.merchantId = :merchantId', { merchantId })
+            .select([
+                'SUM(DISTINCT CASE WHEN payable.status = :paidStatus THEN payable.total ELSE 0 END) AS "totalPaid"',
+                'SUM(DISTINCT payable.discount) AS "totalFees"',
+                'SUM(DISTINCT CASE WHEN payable.status = :waitingStatus THEN payable.total ELSE 0 END) AS "upcomingPayments"',
+            ])
+            .from(PayableEntity, 'payable')
+            .setParameter('paidStatus', 'paid')
+            .setParameter('waitingStatus', 'waiting_funds')
             .getRawOne();
 
         return plainToInstance(PayableSummary, {
