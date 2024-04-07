@@ -1,5 +1,5 @@
 import { Transaction } from '@domain/entities/transaction.entity';
-import { CreateTransactionDto } from '@domain/usecases/createTransaction/dtos/create-transaction.dto';
+import { CreateTransactionDto } from '@application/controllers/dtos/create-transaction.dto';
 import { Body, Controller, Inject, Post } from '@nestjs/common';
 import { ITransactionController } from 'src/application/controllers/interfaces/transaction-controller';
 import { TRANSACTION_CONTROLLER } from '../helpers/constants';

@@ -1,5 +1,5 @@
 import { Transaction } from '@domain/entities/transaction.entity';
-import { CreateTransactionDto } from '@domain/usecases/createTransaction/dtos/create-transaction.dto';
+import { CreateTransactionDto } from '@application/controllers/dtos/create-transaction.dto';
 import { ITransactionController } from './interfaces/transaction-controller';
 import { CreateTransactionUseCase } from '@domain/usecases/createTransaction/create-transaction.usecase';
 

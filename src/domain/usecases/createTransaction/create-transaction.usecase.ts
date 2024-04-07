@@ -1,11 +1,11 @@
 import { Transaction } from '@domain/entities/transaction.entity';
-import { CreateTransactionDto } from './dtos/create-transaction.dto';
-import { TransactionRepository } from '@domain/interfaces/transaction.repository';
+import { CreateTransactionDto } from '../../../application/controllers/dtos/create-transaction.dto';
+import { ITransactionRepository } from '@domain/interfaces/transaction.repository';
 import { plainToInstance } from 'class-transformer';
 
 export class CreateTransactionUseCase {
     constructor(
-        private readonly transactionRepository: TransactionRepository,
+        private readonly transactionRepository: ITransactionRepository,
     ) {}
 
     async execute(

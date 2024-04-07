@@ -1,5 +1,5 @@
 import { Transaction } from '@domain/entities/transaction.entity';
 
-export interface TransactionRepository {
+export interface ITransactionRepository {
     saveTransaction(transaction: Transaction): Promise<Transaction>;
 }
