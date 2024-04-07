@@ -6,7 +6,8 @@ import {
 
 export class CreditCardStrategy implements IPaymentStrategy {
     calculatePayable(total: number): ICalculatePayableResponse {
-        const fee = 0.04; //4%
+        const fee = parseFloat(process.env.CREDIT_CARD_FEE) ?? 0.04; //4%
+        console.log(fee);
         const discount = total * fee;
         const subTotal = total - discount;
         const daysToAdd = 30;
