@@ -1,0 +1,116 @@
+openapi: 3.0.0
+info:
+    title: Your API Title
+    description: API description
+    version: '1.0'
+paths:
+    /transactions:
+        post:
+            summary: Create a new transaction
+            tags:
+                - Transactions
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CreateValidatedTransactionDto'
+            responses:
+                '201':
+                    description: Created
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Transaction'
+                '400':
+                    description: Bad Request
+    /payables:
+        get:
+            summary: Get payables summary
+            tags:
+                - Payables
+            parameters:
+                - in: query
+                  name: merchantId
+                  required: true
+                  schema:
+                      type: string
+                - in: query
+                  name: startDate
+                  schema:
+                      type: string
+                      format: date
+                - in: query
+                  name: endDate
+                  schema:
+                      type: string
+                      format: date
+            responses:
+                '200':
+                    description: Success
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/PayableSummary'
+                '400':
+                    description: Bad Request
+components:
+    schemas:
+        CreateValidatedTransactionDto:
+            type: object
+            properties:
+                totalValue:
+                    type: number
+                description:
+                    type: string
+                cardNumber:
+                    type: string
+                    minLength: 4
+                    maxLength: 4
+                cardHolder:
+                    type: string
+                cardExpirationDate:
+                    type: string
+                    format: date
+                paymentMethod:
+                    type: string
+                    enum:
+                        - debit_card
+                        - credit_card
+                cardCvv:
+                    type: string
+                    minLength: 3
+                    maxLength: 3
+                merchantId:
+                    type: string
+        Transaction:
+            type: object
+            properties:
+                id:
+                    type: string
+                merchantId:
+                    type: string
+                totalValue:
+                    type: number
+                description:
+                    type: string
+                paymentMethod:
+                    type: string
+                cardHolder:
+                    type: string
+                cardNumber:
+                    type: string
+                cardExpirationDate:
+                    type: string
+                    format: date
+                cardCvv:
+                    type: string
+        PayableSummary:
+            type: object
+            properties:
+                totalPaid:
+                    type: number
+                totalFees:
+                    type: number
+                upcomingPayments:
+                    type: number

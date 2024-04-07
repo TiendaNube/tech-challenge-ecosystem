@@ -18,6 +18,7 @@ import { GetSummaryPayablesUseCase } from '@domain/usecases/getSummaryPayables/g
 import { PayableControllerImpl } from '@application/controllers/payable.controller';
 import { PayableController } from './controllers/payable-controller';
 import { PayableRepositoryImpl } from './repositories/playable.repository';
+import { setupSwagger } from './helpers/swagger';
 
 @Module({
     controllers: [AppController, TransactionController, PayableController],
