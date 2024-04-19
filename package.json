@@ -1,0 +1,19 @@
+{
+  "name": "tech-challenge-ecosystem",
+  "version": "1.0.0",
+  "description": "A simple APP to connect to the Nuvemshop Ecosystem API and Create a Product",
+  "main": "index.ts",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeffsouza/tech-challenge-ecosystem.git"
+  },
+  "author": "Jefferson de Souza Gonçalves",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jeffsouza/tech-challenge-ecosystem/issues"
+  },
+  "homepage": "https://github.com/jeffsouza/tech-challenge-ecosystem#readme"
+}
