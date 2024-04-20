@@ -28,6 +28,7 @@ export class PGDatabase {
       host: hostName,
       port: hostPort,
       dialect: dialect as Dialect,
+      timezone: "-03:00",
       pool: {
         max: 10,
         min: 0,

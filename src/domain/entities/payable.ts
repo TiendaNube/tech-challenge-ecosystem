@@ -21,6 +21,12 @@ export type PayableType = {
   createDate: Date;
 };
 
+export type PayableTotalSummaryType = {
+  totalPaid: number;
+  totalPending: number;
+  totalDiscountPaid: number;
+};
+
 export class Payable {
   private _id: number | undefined;
   private _transactionId: number | undefined = -1;

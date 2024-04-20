@@ -6,10 +6,10 @@ import { PayableModel } from "../repository/payables";
 import { TransactionModel } from "../repository/transactions";
 
 export class CreateNewTransactionAdapter implements CreateNewTransactionPort {
-  /*
-    Creates a new transaction with a payable on database.
-    In case an operation fails a rollback takes place.
-  */
+  /**
+   * Creates a new transaction with a payable on database.
+   * In case an operation fails a rollback takes place.
+   */
   async create(transaction: Transaction, payable: Payable): Promise<void> {
     const dbTransaction =
       await PGDatabase.databaseInstance().sequelize.transaction();
