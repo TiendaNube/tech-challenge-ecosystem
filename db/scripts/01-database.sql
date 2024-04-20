@@ -5,6 +5,7 @@ CREATE DATABASE transactions;
 
 CREATE TABLE "transactions" (
     "id" SERIAL NOT NULL,
+    "merchant_id" BIGINT,
     "description" TEXT NOT NULL,
     "payment_method" VARCHAR(255) NOT NULL CHECK (payment_method IN ('debit_card', 'credit_card')),
     "card_number" VARCHAR(4) NOT NULL,
@@ -16,15 +17,15 @@ CREATE TABLE "transactions" (
 
 CREATE TABLE "payables" (
     "id" SERIAL NOT NULL,
-    "merchant_id" BIGINT,
+    "transaction_id" BIGINT,
+    "merchant_id" BIGINT NOT NULL,
     "status" VARCHAR(100) NOT NULL CHECK (status IN ('paid', 'waiting_funds')),
     "subtotal" FLOAT NOT NULL,
     "discount" FLOAT NOT NULL,
     "total" FLOAT NOT NULL,
     "create_date" TIMESTAMP WITH TIME ZONE NOT NULL,
     CONSTRAINT "pk_payables" PRIMARY KEY ("id"),
-    CONSTRAINT "fk_merchant_id" FOREIGN KEY("merchant_id") REFERENCES transactions("id") ON DELETE SET NULL
+    CONSTRAINT "fk_transaction_id" FOREIGN KEY("transaction_id") REFERENCES transactions("id") ON DELETE SET NULL
 );
 
-
-CREATE INDEX ON payables ("create_date");
+CREATE INDEX ON payables ("merchant_id", "create_date");

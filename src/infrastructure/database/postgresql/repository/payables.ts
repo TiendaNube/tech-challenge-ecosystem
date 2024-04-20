@@ -1,59 +1,61 @@
 import { DataTypes, Model, Sequelize } from "sequelize";
 import { PGDatabase } from "./connection";
+import { TransactionModel } from "./transactions";
 
-export class TransactionModel extends Model {
+export class PayableModel extends Model {
   static load() {
     const sequelize: Sequelize = PGDatabase.databaseInstance().sequelize;
 
-    TransactionModel.init(
+    PayableModel.init(
       {
         id: {
           type: DataTypes.BIGINT,
           autoIncrement: true,
           primaryKey: true,
         },
+        transactionId: {
+          type: DataTypes.BIGINT,
+          field: "transaction_id",
+          references: {
+            model: "Transaction",
+            key: "id",
+          },
+        },
         merchantId: {
           type: DataTypes.STRING,
           field: "merchant_id",
           allowNull: false,
         },
-        description: {
+        status: {
           type: DataTypes.STRING,
           allowNull: false,
         },
-        paymentMethod: {
-          type: DataTypes.STRING,
-          field: "payment_method",
+        subtotal: {
+          type: DataTypes.DOUBLE,
           allowNull: false,
         },
-        cardNumber: {
-          type: DataTypes.STRING,
-          field: "card_number",
+        discount: {
+          type: DataTypes.DOUBLE,
           allowNull: false,
         },
-        cardHolder: {
-          type: DataTypes.STRING,
-          field: "card_holder",
+        total: {
+          type: DataTypes.DOUBLE,
           allowNull: false,
         },
-        cardExpirationDate: {
-          type: DataTypes.STRING,
-          field: "card_expiration_date",
-          allowNull: false,
-        },
-        cardCVV: {
-          type: DataTypes.STRING,
-          field: "card_cvv",
+        createDate: {
+          type: DataTypes.DATE,
+          field: "create_date",
           allowNull: false,
         },
       },
       {
         sequelize,
-        tableName: "transactions",
+        tableName: "payables",
         createdAt: false,
         updatedAt: false,
-        modelName: "Transaction",
+        modelName: "PAYABLE",
       }
     );
+    PayableModel.hasMany(TransactionModel);
   }
 }
