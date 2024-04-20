@@ -5,15 +5,25 @@ import { ValidationError } from "../errors/validation_error";
 import { DateUtils } from "../utils/date";
 
 type NewPayableType = {
-  transactionId: number;
+  transactionId?: number;
   merchantId: number;
   paymentMethod: PaymentMethod;
   subtotal: number;
 };
 
+type PayableType = {
+  transactionId: number;
+  merchantId: number;
+  status: PaymentStatus;
+  subtotal: number;
+  discount: number;
+  total: number;
+  createDate: Date;
+};
+
 export class Payable {
   private _id: number | undefined;
-  private _transactionId: number = -1;
+  private _transactionId: number | undefined = -1;
   private _merchantId: number = -1;
   private _status: PaymentStatus = PaymentStatus.PAID;
   private _subtotal: number = 0;
@@ -29,6 +39,18 @@ export class Payable {
     this.setTotal();
   }
 
+  dataValues(): PayableType {
+    return {
+      transactionId: this.transactionId as number,
+      merchantId: this.merchantId,
+      status: this.status,
+      subtotal: this.subtotal,
+      discount: this.discount,
+      total: this.total,
+      createDate: this.createDate,
+    };
+  }
+
   get id() {
     return this._id;
   }
@@ -42,7 +64,7 @@ export class Payable {
   }
 
   set transactionId(transactionId) {
-    if (transactionId <= 0) {
+    if (transactionId != undefined && transactionId <= 0) {
       throw new ValidationError("transaction id should be greater than 0");
     }
     this._transactionId = transactionId;

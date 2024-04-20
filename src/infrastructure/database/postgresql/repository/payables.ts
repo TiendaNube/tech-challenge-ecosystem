@@ -56,6 +56,5 @@ export class PayableModel extends Model {
         modelName: "PAYABLE",
       }
     );
-    PayableModel.hasMany(TransactionModel);
   }
 }
