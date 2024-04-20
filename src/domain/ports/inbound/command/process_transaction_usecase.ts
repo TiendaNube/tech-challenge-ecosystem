@@ -1,6 +1,9 @@
-import { Payable } from "../../../entities/payable";
-import { Transaction } from "../../../entities/transaction";
+import { NewPayableType } from "../../../entities/payable";
+import { TransactionType } from "../../../entities/transaction";
 
 export interface ProcessTransactionUsecase {
-  process(transaction: Transaction, payable: Payable): Promise<void>;
+  process(
+    transactionData: TransactionType,
+    payableData: NewPayableType
+  ): Promise<void>;
 }

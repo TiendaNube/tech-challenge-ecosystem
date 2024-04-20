@@ -4,14 +4,14 @@ import { PaymentStatus } from "../enums/payment_status";
 import { ValidationError } from "../errors/validation_error";
 import { DateUtils } from "../utils/date";
 
-type NewPayableType = {
+export type NewPayableType = {
   transactionId?: number;
   merchantId: number;
   paymentMethod: PaymentMethod;
   subtotal: number;
 };
 
-type PayableType = {
+export type PayableType = {
   transactionId: number;
   merchantId: number;
   status: PaymentStatus;

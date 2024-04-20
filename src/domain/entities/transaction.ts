@@ -1,7 +1,7 @@
 import { PaymentMethod } from "../enums/payment_method";
 import { ValidationError } from "../errors/validation_error";
 
-type TransactionType = {
+export type TransactionType = {
   id?: number;
   merchantId: number;
   description: string;
@@ -81,6 +81,9 @@ export class Transaction {
   }
 
   set paymentMethod(paymentMethod) {
+    if (!Object.values(PaymentMethod).includes(paymentMethod)) {
+      throw new ValidationError("payment method is invalid");
+    }
     this._paymentMethod = paymentMethod;
   }
 
