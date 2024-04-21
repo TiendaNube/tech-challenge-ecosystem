@@ -18,7 +18,11 @@ cache = Cache(logger=logger)
 
 appOptions = {'lifespan': lifespan}
 if AppConfig.is_production():
-    appOptions.update({'docs_url': None, 'redoc_url': None})
+    appOptions.update({
+        'docs_url': None,
+        'redoc_url': None,
+        'openapi_url': None
+    })
 
 app = FastAPI(**appOptions)
 injector = Injector(app)
@@ -38,8 +42,8 @@ app.router.include_router(readiness.router)
 if __name__ == "__main__":
     run(
         app=app,
-        host=AppConfig.SERVER_HOST,
-        port=AppConfig.SERVER_PORT,
+        host=AppConfig.WEB_SERVER_HOST,
+        port=AppConfig.WEB_SERVER_PORT,
         reload=AppConfig.DEBUG,
-        workers=AppConfig.SERVER_WORKERS,
+        workers=AppConfig.WEB_SERVER_WORKERS,
     )
