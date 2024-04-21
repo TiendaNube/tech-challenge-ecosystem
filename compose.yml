@@ -1,0 +1,65 @@
+name: challenge
+
+services:
+  redis:
+    image: redis:alpine
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 2s
+
+  postgres:
+      image: postgres:16-alpine
+      ports:
+        - 5432:5432
+      expose:
+        - 5432
+      volumes:
+        - db-data:/var/lib/postgresql/data
+      environment:
+        POSTGRES_PASSWORD: dbsecret
+        POSTGRES_USER: dbuser
+        POSTGRES_DB: payables_db
+      restart: always
+      healthcheck:
+        test: ["CMD", "pg_isready", "--username=dbuser", "--dbname=payables_db"]
+        interval: 10s
+        timeout: 5s
+        retries: 5
+        start_period: 2s
+        start_interval: 5s
+
+  python:
+    build: .
+    env_file:
+      - .env
+    volumes:
+      - .:/usr/payables
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    deploy:
+      mode: replicated
+      replicas: 2
+      endpoint_mode: vip
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+
+  haproxy:
+    build: ./haproxy
+    ports:
+      - 8081:8081
+      - 8000:8000
+    depends_on:
+      python:
+        condition: service_started
+
+volumes:
+  db-data:
