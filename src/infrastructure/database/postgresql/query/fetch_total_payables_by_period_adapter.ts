@@ -45,7 +45,7 @@ export class FetchTotalPayablesByPeriodAdapter
             Sequelize.fn(
               "SUM",
               Sequelize.literal(
-                `CASE WHEN status = 'paid' and create_date between '${startDateAsString}' and '${endDateAsString}' THEN subtotal - total ELSE 0 END`
+                `CASE WHEN status = 'paid' and create_date between '${startDateAsString}' and '${endDateAsString}' THEN discount ELSE 0 END`
               )
             ) as any,
             "totalDiscountPaid",

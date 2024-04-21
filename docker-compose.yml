@@ -4,6 +4,7 @@ services:
     image: postgres
     volumes:
       - ./db/scripts/01-database.sql:/docker-entrypoint-initdb.d/01-database.sql
+      - ./db/scripts/02-load.sql:/docker-entrypoint-initdb.d/02-load.sql
     environment:
       - POSTGRES_PASSWORD=postgres
     ports:

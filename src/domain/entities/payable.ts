@@ -115,19 +115,19 @@ export class Payable {
   }
 
   private setTotal() {
-    this._total = this.subtotal - this.subtotal * (this.discount / 100);
+    this._total = this.subtotal - this.discount;
   }
 
   private setStateByPaymentMethod(paymentMethod: PaymentMethod) {
     switch (paymentMethod) {
       case PaymentMethod.DEBIT_CARD:
         this._status = PaymentStatus.PAID;
-        this._discount = PaymentFee.DEBIT_CARD;
+        this._discount = this.subtotal * (PaymentFee.DEBIT_CARD / 100);
         this._createDate = DateUtils.convertDate(new Date(Date.now()));
         break;
       case PaymentMethod.CREDIT_CARD:
         this._status = PaymentStatus.WAITING_FUNDS;
-        this._discount = PaymentFee.CREDIT_CARD;
+        this._discount = this.subtotal * (PaymentFee.CREDIT_CARD / 100);
         this._createDate = DateUtils.addDays(new Date(Date.now()), 30);
         break;
       default:
