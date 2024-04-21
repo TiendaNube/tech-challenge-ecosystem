@@ -69,4 +69,4 @@ class Cache(CacheInterface):
         """ Close all active connections for gracefull shutdown """
         await self.client.aclose()
         await self.pool.aclose()
-        self.logger.info('Redis connoection closed')
+        self.logger.info('Redis connection closed')

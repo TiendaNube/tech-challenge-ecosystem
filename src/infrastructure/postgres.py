@@ -34,7 +34,7 @@ class PostgresConnection(PostgresConnInterface):
         try:
             if self.conn is not None and not self.conn.is_closed():
                 await self.conn.close()
-            self.logger.info('Closed Postgres Connection')
+            self.logger.info('Postgres Connection closed')
         except Exception as err:
             self.logger.error('Error closing postgres connection: %s', err)
 
