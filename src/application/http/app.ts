@@ -9,7 +9,7 @@ const expressApp = express();
 expressApp.use(bodyParser.json());
 
 // routers
-expressApp.use("/transactions", transactionsRouter);
+expressApp.use("/v1/transactions", transactionsRouter);
 
 // middlewares after routers
 expressApp.use(requestErrorHandler);

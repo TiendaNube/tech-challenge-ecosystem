@@ -26,30 +26,20 @@ export const transactionsController = {
     }
   },
 
-  async payablesSummaryByPeriod(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) {
-    const merchandId = Number(req.params.merchant_id);
-    const startDate = req.query.startDate as string;
-    const endDate = req.query.endDate as string;
-
+  async payablesSummaryByPeriod(req: any, res: Response, next: NextFunction) {
     const service: FetchTotalPayablesByPeriodService = getDependency(
       FetchTotalPayablesByPeriodService
     );
 
     try {
-      const requestData = new PayableSummaryByPeriodRequest(
-        merchandId,
-        startDate,
-        endDate
-      );
+      const requestData = req.requestData;
+      const cacheKey = req.cacheKey;
 
       const response: PayableTotalSummaryType = await service.fetch(
         requestData.merchantId,
         requestData.startDate,
-        requestData.endDate
+        requestData.endDate,
+        cacheKey
       );
       res.json(response);
     } catch (error) {

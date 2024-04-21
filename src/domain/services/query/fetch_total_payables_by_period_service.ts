@@ -23,7 +23,8 @@ export class FetchTotalPayablesByPeriodService
   async fetch(
     merchantId: number,
     startDate: Date,
-    endDate: Date
+    endDate: Date,
+    cacheKey: string
   ): Promise<PayableTotalSummaryType> {
     endDate.setUTCHours(23, 59, 59, 999);
 
@@ -35,7 +36,6 @@ export class FetchTotalPayablesByPeriodService
           endDate
         );
 
-      const cacheKey = `${merchantId}:${startDate.getTime()}:${endDate.getTime()}`;
       await this._saveTotalPayablesByPeriodAdapter.save(cacheKey, payables);
 
       return payables;

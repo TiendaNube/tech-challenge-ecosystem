@@ -4,6 +4,7 @@ export interface FetchTotalPayablesByPeriodUsecase {
   fetch(
     merchantId: number,
     startDate: Date,
-    endDate: Date
+    endDate: Date,
+    cacheKey: string
   ): Promise<PayableTotalSummaryType>;
 }

@@ -9,9 +9,11 @@ export class SaveTotalPayablesByPeriodAdapter
   async save(key: string, data: PayableTotalSummaryType): Promise<void> {
     try {
       const client = await createClient().connect();
+
       await client.set(key, JSON.stringify(data), {
         EX: Number(process.env.CACHE_DEFAULT_TTL),
       });
+
       await client.disconnect();
     } catch (error: any) {
       throw new CacheError(`cache error: ${error.message}`);
