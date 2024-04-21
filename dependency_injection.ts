@@ -3,6 +3,7 @@ import { CreateNewTransactionAdapter } from "./src/infrastructure/database/postg
 import { ProcessTransactionService } from "./src/domain/services/command/process_transaction_service";
 import { FetchTotalPayablesByPeriodAdapter } from "./src/infrastructure/database/postgresql/query/fetch_total_payables_by_period_adapter";
 import { FetchTotalPayablesByPeriodService } from "./src/domain/services/query/fetch_total_payables_by_period_service";
+import { SaveTotalPayablesByPeriodAdapter } from "./src/infrastructure/cache/redis/save_total_payables_by_period_adapter";
 
 let container = new ContainerBuilder();
 
@@ -23,12 +24,18 @@ export function loadDependencyInjection() {
     FetchTotalPayablesByPeriodAdapter
   );
 
+  container.register(
+    "SaveTotalPayablesByPeriodAdapter",
+    SaveTotalPayablesByPeriodAdapter
+  );
+
   container
     .register(
       "FetchTotalPayablesByPeriodService",
       FetchTotalPayablesByPeriodService
     )
-    .addArgument(container.get("FetchTotalPayablesByPeriodAdapter"));
+    .addArgument(container.get("FetchTotalPayablesByPeriodAdapter"))
+    .addArgument(container.get("SaveTotalPayablesByPeriodAdapter"));
 }
 
 export function getDependency(dependency: any): any {

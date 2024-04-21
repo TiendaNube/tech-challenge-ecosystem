@@ -17,43 +17,48 @@ export class FetchTotalPayablesByPeriodAdapter
   ): Promise<PayableTotalSummaryType> {
     const startDateAsString = startDate.toISOString().replace("Z", "");
     const endDateAsString = endDate.toISOString().replace("Z", "");
+    let data: PayableModel | null = null;
 
-    const data = await PayableModel.findOne({
-      attributes: [
-        "merchant_id",
-        [
-          Sequelize.fn(
-            "SUM",
-            Sequelize.literal(
-              `CASE WHEN status = 'paid' and create_date between '${startDateAsString}' and '${endDateAsString}' THEN total ELSE 0 END`
-            )
-          ),
-          "totalPaid",
+    try {
+      data = await PayableModel.findOne({
+        attributes: [
+          "merchant_id",
+          [
+            Sequelize.fn(
+              "SUM",
+              Sequelize.literal(
+                `CASE WHEN status = 'paid' and create_date between '${startDateAsString}' and '${endDateAsString}' THEN total ELSE 0 END`
+              )
+            ),
+            "totalPaid",
+          ],
+          [
+            Sequelize.fn(
+              "SUM",
+              Sequelize.literal(
+                `CASE WHEN status = 'waiting_funds' and create_date between '${startDateAsString}' and '${endDateAsString}' THEN total ELSE 0 END`
+              )
+            ) as any,
+            "totalPending",
+          ],
+          [
+            Sequelize.fn(
+              "SUM",
+              Sequelize.literal(
+                `CASE WHEN status = 'paid' and create_date between '${startDateAsString}' and '${endDateAsString}' THEN subtotal - total ELSE 0 END`
+              )
+            ) as any,
+            "totalDiscountPaid",
+          ],
         ],
-        [
-          Sequelize.fn(
-            "SUM",
-            Sequelize.literal(
-              `CASE WHEN status = 'waiting_funds' and create_date between '${startDateAsString}' and '${endDateAsString}' THEN total ELSE 0 END`
-            )
-          ) as any,
-          "totalPending",
-        ],
-        [
-          Sequelize.fn(
-            "SUM",
-            Sequelize.literal(
-              `CASE WHEN status = 'paid' and create_date between '${startDateAsString}' and '${endDateAsString}' THEN subtotal - total ELSE 0 END`
-            )
-          ) as any,
-          "totalDiscountPaid",
-        ],
-      ],
-      where: {
-        merchantId: merchantId,
-      },
-      group: ["merchant_id"],
-    });
+        where: {
+          merchantId: merchantId,
+        },
+        group: ["merchant_id"],
+      });
+    } catch (error: any) {
+      throw new DatabaseError(`database error: ${error.message}`);
+    }
 
     if (data == null || data.dataValues == undefined) {
       throw new DatabaseError(
