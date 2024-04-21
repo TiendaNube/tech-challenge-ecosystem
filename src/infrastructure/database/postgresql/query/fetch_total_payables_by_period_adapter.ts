@@ -9,6 +9,10 @@ export class FetchTotalPayablesByPeriodAdapter
 {
   /**
    * Fetch payables total summary for a merchant in a specific date range
+   * @param merchantId merchant id owner of the payables to be retrieved
+   * @param startDate starting date based on the create_date of the payables
+   * @param endDate ending date based on the create_date of the payables
+   * @returns
    */
   async fetch(
     merchantId: number,

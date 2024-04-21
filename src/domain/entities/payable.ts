@@ -118,6 +118,12 @@ export class Payable {
     this._total = this.subtotal - this.discount;
   }
 
+  /**
+   * Fill the status, discount and createDate properties based on the payment method.
+   * Discount is calculated based on the fee for the corresponding card used for payment.
+   * In case an invalid payment method is provided then an error is thrown.
+   * @param paymentMethod debit_card or credit_card
+   */
   private setStateByPaymentMethod(paymentMethod: PaymentMethod) {
     switch (paymentMethod) {
       case PaymentMethod.DEBIT_CARD:
