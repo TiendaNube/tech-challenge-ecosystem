@@ -11,9 +11,9 @@ class AppConfig:
     ENVIRONMENT = config('ENVIRONMENT', default='production', cast=str)
     LOG_LEVEL = config('LOG_LEVEL', default='INFO', cast=str)
     FACILITY = config('FACILITY', default='payables', cast=str)
-    SERVER_PORT = config('POSTGRES_PORT', default=8001, cast=int)
-    SERVER_HOST = config('SERVER_HOST', default='0.0.0.0', cast=str)
-    SERVER_WORKERS = config('SERVER_WORKERS', default=1, cast=int)
+    WEB_SERVER_PORT = config('WEB_SERVER_PORT', default=8001, cast=int)
+    WEB_SERVER_HOST = config('WEB_SERVER_HOST', default='0.0.0.0', cast=str)
+    WEB_SERVER_WORKERS = config('WEB_SERVER_WORKERS', default=1, cast=int)
     REDIS_URI = config(
         'REDIS_URI', default='redis://redis?decode_responses=True&max_connections=10', cast=str)
     POSTGRES_USER = config('POSTGRES_USER', cast=str)
@@ -24,5 +24,8 @@ class AppConfig:
 
     @staticmethod
     def is_production():
-        """ Check if is a prodution environment"""
+        """
+            Check if is a prodution environment
+            How: env ENVIRONMENT is equal a `production` and env DEBUG is `False`
+        """
         return AppConfig.ENVIRONMENT.lower() == "production" and not AppConfig.DEBUG

@@ -4,4 +4,4 @@ FROM python:3.11-alpine
     ADD requirements.txt .
     RUN pip install -r requirements.txt
     # COPY . ${APPDIR}/
-    CMD uvicorn src.server:app --reload --port ${SERVER_PORT} --host ${SERVER_HOST} --workers ${SERVER_WORKERS}
+    CMD uvicorn src.server:app --reload --port ${WEB_SERVER_PORT} --host ${WEB_SERVER_HOST} --workers ${WEB_SERVER_WORKERS}

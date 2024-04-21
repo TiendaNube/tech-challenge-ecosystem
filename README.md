@@ -6,9 +6,9 @@
 | `ENVIRONMENT`        | Define environment `production` or `development` | `production`   |
 | `LOG_LEVEL`          | Set the log level (STR in uppercase)             | `INFO`         |
 | `FACILITY`           | Logger name                                      | `payable `     |
-| `SERVER_PORT`        | Port number for web server open connections      | `8001`         |
-| `SERVER_WORKERS`     | Number of web server workers                     | `1`            |
-| `SERVER_HOST`        | Ip used to bind on web server                    | `'0.0.0.0'`    |
+| `WEB_SERVER_PORT`    | Port number for web server open connections      | `8001`         |
+| `WEB_SERVER_WORKERS` | Number of web server workers                     | `1`            |
+| `WEB_SERVER_HOST`    | Ip used to bind on web server                    | `'0.0.0.0'`    |
 | `REDIS_URI`          | Redis URI connection string                      | `'redis://redis?decode_responses=True&max_connections=10'` |
 | `POSTGRES_USER`      | Postgres user to auth on database                | `None`         |
 | `POSTGRES_PASSWORD`  | Postgres password to auth on database            | `None`         |
