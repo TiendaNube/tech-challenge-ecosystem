@@ -22,6 +22,7 @@ class AppConfig:
     POSTGRES_HOST = config('POSTGRES_HOST', default='dbuser', cast=str)
     POSTGRES_PORT = config('POSTGRES_PORT', default=5432, cast=int)
 
-    def is_production(self):
+    @staticmethod
+    def is_production():
         """ Check if is a prodution environment"""
-        return self.ENVIRONMENT.lower() == "production" and not self.DEBUG
+        return AppConfig.ENVIRONMENT.lower() == "production" and not AppConfig.DEBUG

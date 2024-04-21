@@ -15,7 +15,7 @@ logger = get_logger(AppConfig.FACILITY)
 cache = Cache(logger=logger)
 
 appOptions = {'lifespan': lifespan}
-if AppConfig().is_production():
+if AppConfig.is_production():
     appOptions.update({'docs_url': None, 'redoc_url': None})
 
 app = FastAPI(**appOptions)
