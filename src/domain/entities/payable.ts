@@ -129,7 +129,7 @@ export class Payable {
       case PaymentMethod.DEBIT_CARD:
         this._status = PaymentStatus.PAID;
         this._discount = this.subtotal * (PaymentFee.DEBIT_CARD / 100);
-        this._createDate = DateUtils.convertDate(new Date(Date.now()));
+        this._createDate = new Date(Date.now());
         break;
       case PaymentMethod.CREDIT_CARD:
         this._status = PaymentStatus.WAITING_FUNDS;

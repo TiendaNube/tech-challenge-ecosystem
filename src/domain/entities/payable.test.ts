@@ -136,7 +136,7 @@ describe("Transaction.createDate", () => {
 
   it("should return current date when payment method is 'debit_card'", () => {
     const dateMock = new Date(2024, 1, 1);
-    jest.spyOn(DateUtils, "convertDate").mockReturnValue(dateMock);
+    jest.spyOn(Date, "now").mockReturnValue(dateMock.getTime());
     jest.spyOn(DateUtils, "addDays").mockReturnValue(new Date());
 
     const values = {
@@ -145,7 +145,7 @@ describe("Transaction.createDate", () => {
     };
     const payable = new Payable(values);
 
-    expect(payable.createDate.getDate()).toBe(dateMock.getDate());
+    expect(payable.createDate.getTime()).toBe(dateMock.getTime());
     expect(DateUtils.addDays).toHaveBeenCalledTimes(0);
   });
 

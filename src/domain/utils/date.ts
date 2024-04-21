@@ -7,8 +7,7 @@ export class DateUtils {
   }
 
   static addDays(date: Date, days: number): Date {
-    const d = DateUtils.convertDate(date);
-    d.setDate(d.getDate() + days);
-    return d;
+    date.setDate(date.getDate() + days);
+    return date;
   }
 }

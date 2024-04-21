@@ -1,5 +1,5 @@
 import request from "supertest";
-import expressApp from "../app";
+import { expressApp, startServer } from "../app";
 import { loadDependencyInjection } from "../../../../dependency_injection";
 import { ProcessTransactionService } from "../../../domain/services/command/process_transaction_service";
 import { ValidationError } from "../../../domain/errors/validation_error";
@@ -18,7 +18,7 @@ describe("newTransaction", () => {
       .spyOn(ProcessTransactionService.prototype, "process")
       .mockRejectedValue(new ValidationError("validation error"));
 
-    const res = await request(expressApp).post("/v1/transactions").send();
+    const res = await request(expressApp()).post("/v1/transactions").send();
 
     expect(res.statusCode).toBe(400);
     expect(res.body.errorType).toBe(ValidationError.name);
@@ -29,7 +29,7 @@ describe("newTransaction", () => {
       .spyOn(ProcessTransactionService.prototype, "process")
       .mockRejectedValue(new DatabaseError("database error"));
 
-    const res = await request(expressApp).post("/v1/transactions").send();
+    const res = await request(expressApp()).post("/v1/transactions").send();
 
     expect(res.statusCode).toBe(500);
     expect(res.body.errorType).toBe(DatabaseError.name);
@@ -41,7 +41,7 @@ describe("newTransaction", () => {
       .spyOn(ProcessTransactionService.prototype, "process")
       .mockRejectedValue(new Error("unexpected error"));
 
-    const res = await request(expressApp).post("/v1/transactions").send();
+    const res = await request(expressApp()).post("/v1/transactions").send();
 
     expect(res.statusCode).toBe(500);
     expect(res.body.errorType).toBe(InternalApplicationError.name);
@@ -55,7 +55,7 @@ describe("newTransaction", () => {
       .spyOn(ProcessTransactionService.prototype, "process")
       .mockResolvedValue();
 
-    const res = await request(expressApp).post("/v1/transactions").send();
+    const res = await request(expressApp()).post("/v1/transactions").send();
 
     expect(res.statusCode).toBe(201);
   });
@@ -63,7 +63,7 @@ describe("newTransaction", () => {
 
 describe("payablesSummaryByPeriod", () => {
   it("should return status code 400 when merchant id is invalid", async () => {
-    const res = await request(expressApp)
+    const res = await request(expressApp())
       .get("/v1/transactions/payables/total?merchantId=a")
       .send();
 
@@ -73,7 +73,7 @@ describe("payablesSummaryByPeriod", () => {
   });
 
   it("should return status code 400 when startDate is invalid", async () => {
-    const res = await request(expressApp)
+    const res = await request(expressApp())
       .get(
         "/v1/transactions/payables/total?merchantId=1&startDate=2024-14-01&endDate=2024-04-30"
       )
@@ -87,7 +87,7 @@ describe("payablesSummaryByPeriod", () => {
   });
 
   it("should return status code 400 when endDate is invalid", async () => {
-    const res = await request(expressApp)
+    const res = await request(expressApp())
       .get(
         "/v1/transactions/payables/total?merchantId=1&startDate=2024-01-01&endDate=2024-04-32"
       )
@@ -101,7 +101,7 @@ describe("payablesSummaryByPeriod", () => {
   });
 
   it("should return status code 400 when endDate is earlier than startDate", async () => {
-    const res = await request(expressApp)
+    const res = await request(expressApp())
       .get(
         "/v1/transactions/payables/total?merchantId=1&startDate=2024-04-20&endDate=2024-04-19"
       )
@@ -117,7 +117,7 @@ describe("payablesSummaryByPeriod", () => {
       .spyOn(FetchTotalPayablesByPeriodService.prototype, "fetch")
       .mockRejectedValue(new DatabaseError("database error"));
 
-    const res = await request(expressApp)
+    const res = await request(expressApp())
       .get(
         "/v1/transactions/payables/total?merchantId=1&startDate=2024-04-01&endDate=2024-04-19"
       )
@@ -133,7 +133,7 @@ describe("payablesSummaryByPeriod", () => {
       .spyOn(FetchTotalPayablesByPeriodService.prototype, "fetch")
       .mockRejectedValue(new Error("unexpected error"));
 
-    const res = await request(expressApp)
+    const res = await request(expressApp())
       .get(
         "/v1/transactions/payables/total?merchantId=1&startDate=2024-04-01&endDate=2024-04-19"
       )
@@ -157,7 +157,7 @@ describe("payablesSummaryByPeriod", () => {
       .spyOn(FetchTotalPayablesByPeriodService.prototype, "fetch")
       .mockResolvedValue(responseData);
 
-    const res = await request(expressApp)
+    const res = await request(expressApp())
       .get(
         "/v1/transactions/payables/total?merchantId=1&startDate=2024-04-01&endDate=2024-04-19"
       )

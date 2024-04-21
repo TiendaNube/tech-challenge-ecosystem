@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/jeffsouza/tech-challenge-ecosystem#readme",
   "dependencies": {
+    "cluster": "^0.7.7",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "node-dependency-injection": "^3.1.2",

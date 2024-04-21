@@ -4,18 +4,12 @@ import transactionsRouter from "./routes/transaction_routes";
 import { requestErrorHandler } from "./middlewares/errors_handler";
 import swaggerJsdoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
+import cluster from "cluster";
+import os from "os";
 
-const expressApp = express();
+const app = express();
 
-// middlewares before routers
-expressApp.use(bodyParser.json());
-
-// routers
-expressApp.use("/v1/transactions", transactionsRouter);
-
-// middlewares after routers
-expressApp.use(requestErrorHandler);
-
+// config swagger
 const options = {
   definition: {
     openapi: "3.1.0",
@@ -40,7 +34,49 @@ const options = {
   apis: ["./src/application/http/routes/*.ts"],
 };
 
-const specs = swaggerJsdoc(options);
-expressApp.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
+function loadExpressMiddlewares() {
+  // endpoint for swagger documentation
+  const specs = swaggerJsdoc(options);
+  app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 
-export default expressApp;
+  // middlewares before routers
+  app.use(bodyParser.json());
+
+  // routers
+  app.use("/v1/transactions", transactionsRouter);
+
+  // middlewares after routers
+  app.use(requestErrorHandler);
+}
+
+/**
+ * Configuration for express to run on multiple CPUs cores to improve performance and scalability.
+ */
+export function startServer() {
+  const numCPUs = os.cpus().length;
+
+  if (cluster.isPrimary) {
+    console.log(`Master process ${process.pid} is running`);
+
+    for (let i = 0; i < numCPUs; i++) {
+      cluster.fork();
+    }
+
+    cluster.on("exit", (worker) => {
+      console.log(`Worker process ${worker.process.pid} died. Restarting...`);
+      cluster.fork();
+    });
+  } else {
+    loadExpressMiddlewares();
+
+    app.listen(process.env.PORT, () => {
+      console.log(`Worker process ${process.pid} is listening on port 3000`);
+    });
+  }
+}
+
+export function expressApp() {
+  loadExpressMiddlewares();
+
+  return app;
+}
