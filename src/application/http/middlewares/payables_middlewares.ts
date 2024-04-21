@@ -3,6 +3,9 @@ import { getDependency } from "../../../../dependency_injection";
 import { RetrieveTotalPayablesByPeriodAdapter } from "../../../infrastructure/cache/redis/retrieve_total_payables_by_period_adapter";
 import { PayableSummaryByPeriodRequest } from "../requests/payable_summary_by_period_request";
 
+/**
+ * Add request data validated to the request to be handled by the controller
+ */
 export function createPayableSummaryByPeriodRequestData(
   req: any,
   res: Response,
@@ -22,6 +25,9 @@ export function createPayableSummaryByPeriodRequestData(
   next();
 }
 
+/**
+ * Get result from cache and return it or go to the controller to retrieve the data from database
+ */
 export async function payablesTotalSummaryByPeriodCached(
   req: any,
   res: Response,
