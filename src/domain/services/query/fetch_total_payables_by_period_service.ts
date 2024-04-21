@@ -18,8 +18,7 @@ export class FetchTotalPayablesByPeriodService
     startDate: Date,
     endDate: Date
   ): Promise<PayableTotalSummaryType> {
-    startDate = DateUtils.convertDate(startDate);
-    endDate = DateUtils.convertDate(endDate);
+    endDate.setUTCHours(23, 59, 59, 999);
 
     try {
       return await this._fetchTotalPayablesByPeriodPort.fetch(

@@ -5,4 +5,9 @@ const transactionsRouter = express.Router();
 
 transactionsRouter.post("/", transactionsController.newTransaction);
 
+transactionsRouter.get(
+  "/:merchant_id",
+  transactionsController.payablesSummaryByPeriod
+);
+
 export default transactionsRouter;
