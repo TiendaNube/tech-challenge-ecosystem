@@ -11,6 +11,8 @@ from src.utils.configuration import AppConfig
 from src.infrastructure.logger import get_logger
 from src.infrastructure.cache import Cache
 from src.utils.fastapi_injector import Injector
+from src.infrastructure.postgres import PostgresConnection
+
 logger = get_logger(AppConfig.FACILITY)
 cache = Cache(logger=logger)
 
@@ -20,9 +22,11 @@ if AppConfig.is_production():
 
 app = FastAPI(**appOptions)
 injector = Injector(app)
+postgres_conn = PostgresConnection(logger=logger)
 dependencies = [
     injector.add(cache),
-    injector.add(logger)
+    injector.add(logger),
+    injector.add(postgres_conn)
 ]
 
 # api_v1 = "/api/v1"

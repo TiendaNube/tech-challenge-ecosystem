@@ -19,7 +19,7 @@ class AppConfig:
     POSTGRES_USER = config('POSTGRES_USER', cast=str)
     POSTGRES_PASSWORD = config('POSTGRES_PASSWORD', cast=str)
     POSTGRES_DB = config('POSTGRES_DB', default='payable_db', cast=str)
-    POSTGRES_HOST = config('POSTGRES_HOST', default='dbuser', cast=str)
+    POSTGRES_HOST = config('POSTGRES_HOST', default='postgres', cast=str)
     POSTGRES_PORT = config('POSTGRES_PORT', default=5432, cast=int)
 
     @staticmethod

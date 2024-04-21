@@ -6,6 +6,7 @@ from json import dumps
 from fastapi import APIRouter, Response
 from starlette.requests import Request
 from ..infrastructure.cache import Cache
+from ..infrastructure.postgres import PostgresConnection
 
 router = APIRouter(tags=["Readiness"], prefix="/readiness")
 
@@ -14,7 +15,8 @@ router = APIRouter(tags=["Readiness"], prefix="/readiness")
 async def readiness(request: Request):
     """ Check external dependencies are healthy """
     redis_ready = await request.app.dependencies.get(Cache).healthcheck()
-    ready = redis_ready
+    postgres_ready = await request.app.dependencies.get(PostgresConnection).healthcheck()
+    ready = redis_ready and postgres_ready
     status_code = 200 if ready else 400
     return Response(
         content=dumps({"Status": "Ready" if ready else "Not Ready"}),
