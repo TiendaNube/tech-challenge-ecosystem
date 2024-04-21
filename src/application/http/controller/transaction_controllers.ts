@@ -7,7 +7,6 @@ import {
 } from "../builders/transaction_builders";
 import { FetchTotalPayablesByPeriodService } from "../../../domain/services/query/fetch_total_payables_by_period_service";
 import { PayableTotalSummaryType } from "../../../domain/entities/payable";
-import { PayableSummaryByPeriodRequest } from "../requests/payable_summary_by_period_request";
 
 export const transactionsController = {
   async newTransaction(req: Request, res: Response, next: NextFunction) {

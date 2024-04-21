@@ -8,7 +8,7 @@ export function createPayableSummaryByPeriodRequestData(
   res: Response,
   next: NextFunction
 ) {
-  const merchandId = Number(req.params.merchant_id);
+  const merchandId = Number(req.query.merchantId);
   const startDate = req.query.startDate as string;
   const endDate = req.query.endDate as string;
 

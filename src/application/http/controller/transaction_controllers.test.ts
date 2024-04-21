@@ -18,7 +18,7 @@ describe("newTransaction", () => {
       .spyOn(ProcessTransactionService.prototype, "process")
       .mockRejectedValue(new ValidationError("validation error"));
 
-    const res = await request(expressApp).post("/transactions").send();
+    const res = await request(expressApp).post("/v1/transactions").send();
 
     expect(res.statusCode).toBe(400);
     expect(res.body.errorType).toBe(ValidationError.name);
@@ -29,7 +29,7 @@ describe("newTransaction", () => {
       .spyOn(ProcessTransactionService.prototype, "process")
       .mockRejectedValue(new DatabaseError("database error"));
 
-    const res = await request(expressApp).post("/transactions").send();
+    const res = await request(expressApp).post("/v1/transactions").send();
 
     expect(res.statusCode).toBe(500);
     expect(res.body.errorType).toBe(DatabaseError.name);
@@ -41,7 +41,7 @@ describe("newTransaction", () => {
       .spyOn(ProcessTransactionService.prototype, "process")
       .mockRejectedValue(new Error("unexpected error"));
 
-    const res = await request(expressApp).post("/transactions").send();
+    const res = await request(expressApp).post("/v1/transactions").send();
 
     expect(res.statusCode).toBe(500);
     expect(res.body.errorType).toBe(InternalApplicationError.name);
@@ -55,7 +55,7 @@ describe("newTransaction", () => {
       .spyOn(ProcessTransactionService.prototype, "process")
       .mockResolvedValue();
 
-    const res = await request(expressApp).post("/transactions").send();
+    const res = await request(expressApp).post("/v1/transactions").send();
 
     expect(res.statusCode).toBe(201);
   });
@@ -63,7 +63,9 @@ describe("newTransaction", () => {
 
 describe("payablesSummaryByPeriod", () => {
   it("should return status code 400 when merchant id is invalid", async () => {
-    const res = await request(expressApp).get("/transactions/a").send();
+    const res = await request(expressApp)
+      .get("/v1/transactions/payables/total?merchantId=a")
+      .send();
 
     expect(res.statusCode).toBe(400);
     expect(res.body.errorType).toBe(ValidationError.name);
@@ -72,7 +74,9 @@ describe("payablesSummaryByPeriod", () => {
 
   it("should return status code 400 when startDate is invalid", async () => {
     const res = await request(expressApp)
-      .get("/transactions/1?startDate=2024-14-01&endDate=2024-04-30")
+      .get(
+        "/v1/transactions/payables/total?merchantId=1&startDate=2024-14-01&endDate=2024-04-30"
+      )
       .send();
 
     expect(res.statusCode).toBe(400);
@@ -84,7 +88,9 @@ describe("payablesSummaryByPeriod", () => {
 
   it("should return status code 400 when endDate is invalid", async () => {
     const res = await request(expressApp)
-      .get("/transactions/1?startDate=2024-01-01&endDate=2024-04-32")
+      .get(
+        "/v1/transactions/payables/total?merchantId=1&startDate=2024-01-01&endDate=2024-04-32"
+      )
       .send();
 
     expect(res.statusCode).toBe(400);
@@ -96,7 +102,9 @@ describe("payablesSummaryByPeriod", () => {
 
   it("should return status code 400 when endDate is earlier than startDate", async () => {
     const res = await request(expressApp)
-      .get("/transactions/1?startDate=2024-04-20&endDate=2024-04-19")
+      .get(
+        "/v1/transactions/payables/total?merchantId=1&startDate=2024-04-20&endDate=2024-04-19"
+      )
       .send();
 
     expect(res.statusCode).toBe(400);
@@ -110,7 +118,9 @@ describe("payablesSummaryByPeriod", () => {
       .mockRejectedValue(new DatabaseError("database error"));
 
     const res = await request(expressApp)
-      .get("/transactions/1?startDate=2024-04-01&endDate=2024-04-19")
+      .get(
+        "/v1/transactions/payables/total?merchantId=1&startDate=2024-04-01&endDate=2024-04-19"
+      )
       .send();
 
     expect(res.statusCode).toBe(500);
@@ -124,7 +134,9 @@ describe("payablesSummaryByPeriod", () => {
       .mockRejectedValue(new Error("unexpected error"));
 
     const res = await request(expressApp)
-      .get("/transactions/1?startDate=2024-04-01&endDate=2024-04-19")
+      .get(
+        "/v1/transactions/payables/total?merchantId=1&startDate=2024-04-01&endDate=2024-04-19"
+      )
       .send();
 
     expect(res.statusCode).toBe(500);
@@ -146,7 +158,9 @@ describe("payablesSummaryByPeriod", () => {
       .mockResolvedValue(responseData);
 
     const res = await request(expressApp)
-      .get("/transactions/1?startDate=2024-04-01&endDate=2024-04-19")
+      .get(
+        "/v1/transactions/payables/total?merchantId=1&startDate=2024-04-01&endDate=2024-04-19"
+      )
       .send();
 
     expect(res.statusCode).toBe(200);
