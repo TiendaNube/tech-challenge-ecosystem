@@ -2,7 +2,6 @@
 # autor: Maycon Pimentel <maycon.pimentel@gmail.com>
 """ lifespan for web server for graceful """
 
-from logging import Logger
 from fastapi import FastAPI
 from fastapi.concurrency import asynccontextmanager
 from src.infrastructure.cache import Cache
