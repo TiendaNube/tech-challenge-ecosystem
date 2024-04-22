@@ -1,16 +1,11 @@
 # -*- coding: utf-8 -*-
 # autor: Maycon Pimentel <maycon.pimentel@gmail.com>
-""" Middleware returns on log a time elapsed for requests  """
+""" Middleware returns on log a time elapsed for requests """
 
 from logging import Logger
 from time import time
-
-from starlette.middleware.base import (
-    BaseHTTPMiddleware,
-    RequestResponseEndpoint,
-)
-from starlette.requests import Request
-from starlette.responses import Response
+from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
+from fastapi import Request, Response
 
 
 class ResponseTimeSpentMiddleware(BaseHTTPMiddleware):
@@ -19,12 +14,16 @@ class ResponseTimeSpentMiddleware(BaseHTTPMiddleware):
     """
 
     async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
-        initial_time = time()
+        start_time = time()
         response = await call_next(request)
-        final_time = time() - initial_time
-        elapsed_time = round(final_time, 3)
-        msg = f"{request.method}-{request.url.path} - Response: {elapsed_time}"
+        elapsed_time = round(time() - start_time, 3)
         logger = request.app.dependencies.get(Logger)
-        logger.info(msg, extra={"elapsed_time": elapsed_time})
+        logger.info("%s %s | status: %s | elapsed_time: %s",
+                    request.method,
+                    request.url.path,
+                    response.status_code,
+                    elapsed_time,
+                    extra={"elapsed_time": elapsed_time}
+                    )
 
         return response

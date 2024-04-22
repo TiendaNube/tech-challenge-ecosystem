@@ -17,8 +17,3 @@ async def lifespan(app: FastAPI):
     # use it for gracefully shutdown
     await app.dependencies.get(Cache).close_conn()
     await app.dependencies.get(PostgresConnection).close_conn()
-    # try:
-    #     await app.dependencies.get(PostgresConnection).close_conn()
-    # except Exception as err:
-    #     logger = app.dependencies.get(Logger)
-    #     logger.error('Error on get Postgres Connect on lifespan: %s', err)

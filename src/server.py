@@ -6,7 +6,7 @@ from fastapi import FastAPI
 from uvicorn import run
 
 from src.lifespan import lifespan
-from src.routes import healthcheck, readiness
+from src.routes import healthcheck, readiness, merchant, transaction, payables
 from src.utils.configuration import AppConfig
 from src.infrastructure.logger import get_logger, get_log_level
 from src.infrastructure.cache import Cache
@@ -14,12 +14,10 @@ from src.utils.fastapi_injector import Injector
 from src.infrastructure.postgres import PostgresConnection
 from src.middlewares.time_spent_middleware import ResponseTimeSpentMiddleware
 
-logger = get_logger(AppConfig.FACILITY)
-cache = Cache(logger=logger)
 
 appOptions = {
     'lifespan': lifespan,
-    'log_level': get_log_level(),
+    'log_level': 3,
     'debug': AppConfig.DEBUG
 }
 
@@ -35,7 +33,11 @@ if AppConfig.is_production():
 
 app = FastAPI(**appOptions)
 injector = Injector(app)
+
+logger = get_logger(AppConfig.FACILITY)
 postgres_conn = PostgresConnection(logger=logger)
+cache = Cache(logger=logger)
+
 dependencies = [
     injector.add(cache),
     injector.add(logger),
@@ -45,6 +47,9 @@ dependencies = [
 # api_v1 = "/api/v1"
 app.router.include_router(healthcheck.router)
 app.router.include_router(readiness.router)
+app.router.include_router(merchant.router)
+app.router.include_router(transaction.router)
+app.router.include_router(payables.router)
 # app.include_router(currency_converter_router, prefix=api_v1)
 app.add_middleware(ResponseTimeSpentMiddleware)
 
