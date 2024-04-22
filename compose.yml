@@ -5,10 +5,26 @@ services:
     image: redis:alpine
     healthcheck:
       test: [ "CMD", "redis-cli", "ping" ]
-      interval: 10s
+      interval: 1m30s
       timeout: 5s
       retries: 5
       start_period: 2s
+      start_interval: 5s
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    healthcheck:
+      test: ['CMD', 'rabbitmqctl', 'status']
+      interval: 1m30s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+      start_interval: 5s
 
   postgres:
       image: postgres:16-alpine
@@ -18,6 +34,7 @@ services:
         - 5432
       volumes:
         - db-data:/var/lib/postgresql/data
+        - ./migrations:/docker-entrypoint-initdb.d
       environment:
         POSTGRES_PASSWORD: dbsecret
         POSTGRES_USER: dbuser
@@ -25,13 +42,13 @@ services:
       restart: always
       healthcheck:
         test: ["CMD", "pg_isready", "--username=dbuser", "--dbname=payables_db"]
-        interval: 10s
+        interval: 1m30s
         timeout: 5s
         retries: 5
-        start_period: 2s
+        start_period: 5s
         start_interval: 5s
 
-  python:
+  webserver:
     build: .
     env_file:
       - .env
@@ -42,6 +59,8 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     deploy:
       mode: replicated
       replicas: 2
@@ -51,15 +70,23 @@ services:
         delay: 5s
         max_attempts: 3
         window: 120s
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail http://localhost:$WEB_SERVER_PORT/healthcheck || exit 1"]
+      interval: 1m30s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+      start_interval: 5s
 
   haproxy:
     build: ./haproxy
     ports:
-      - 8081:8081
-      - 8000:8000
+      - 8181:8181
+      - 8100:8100
     depends_on:
-      python:
-        condition: service_started
+      webserver:
+        condition: service_healthy
 
 volumes:
   db-data:
+  rabbitmq-data:
