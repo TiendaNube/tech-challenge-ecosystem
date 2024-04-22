@@ -135,3 +135,6 @@ dmypy.json
 # Fast API
 .DS_Store
 fastapi-env
+
+# Experiments
+experiments/
