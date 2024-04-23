@@ -33,10 +33,10 @@ async def get_payables_per_merchant_by_period(
     search_schema = SearchPayableRequestSchema(
         merchant_id=merchant_id, from_date=from_date, to_date=to_date)
     result: list = {}
-    summaries = await payable_repository.get_summary_by_merchant_per_period(**search_schema.model_dump())
+    summaries = await payable_repository.get_summary_by_merchant_per_period(**search_schema.model_dump(by_alias=True))
     result.update(
         {"summary": [json.loads(summary.model_dump_json()) for summary in summaries]})
-    payables = await payable_repository.get_payables_by_merchant_per_period(**search_schema.model_dump())
+    payables = await payable_repository.get_payables_by_merchant_per_period(**search_schema.model_dump(by_alias=True))
     if payables:
         status_code = HTTP_200_OK
         result.update(
@@ -58,9 +58,10 @@ async def get_payable_by_id(request: Request, payable_id: int) -> JSONResponse:
         conn = await request.app.dependencies.get(PostgresConnection).get_conn()
         payable_repository = PayableRepository(conn=conn, logger=logger)
         payable = await payable_repository.get(payable_id)
-        payable_cached = payable.model_dump_json()
-        await cache.set(f"payable::{payable_id}", payable_cached)
-        payable_cached = json.loads(payable_cached)
+        if payable:
+            payable_cached = payable.model_dump_json(by_alias=True)
+            await cache.set(f"payable::{payable_id}", payable_cached)
+            payable_cached = json.loads(payable_cached)
     status_code = HTTP_200_OK if payable_cached else HTTP_404_NOT_FOUND
     return JSONResponse(content=payable_cached, status_code=status_code)
 

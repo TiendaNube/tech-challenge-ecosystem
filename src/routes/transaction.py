@@ -8,11 +8,12 @@ from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
 from starlette.status import (HTTP_201_CREATED,
                               HTTP_200_OK, HTTP_404_NOT_FOUND, HTTP_422_UNPROCESSABLE_ENTITY)
+from src.utils.configuration import AppConfig
 from ..infrastructure.postgres import PostgresConnection
+from ..infrastructure.cache import Cache
 from ..repositories.transaction_repository import TransactionRepository
 from ..models.schemas.transaction_schemas import TransactionRequestCreateSchema
 from ..infrastructure.amqp_producer import AmqpProducer, MessageBodySchema
-from src.utils.configuration import AppConfig
 
 router = APIRouter(tags=["Transaction"], prefix="/transaction")
 
@@ -23,12 +24,19 @@ router = APIRouter(tags=["Transaction"], prefix="/transaction")
 async def get_transaction_by_id(request: Request, transaction_id: int) -> JSONResponse:
     """ GET transaction by id """
     logger = request.app.dependencies.get(Logger)
-    conn = await request.app.dependencies.get(PostgresConnection).get_conn()
-    transaction_repository = TransactionRepository(conn=conn, logger=logger)
-    transaction = await transaction_repository.get(transaction_id=transaction_id)
+    cache = request.app.dependencies.get(Cache)
+    transaction_cached = await cache.get(f'transacion::{transaction_id}')
+    if not transaction_cached:
+        conn = await request.app.dependencies.get(PostgresConnection).get_conn()
+        transaction_repository = TransactionRepository(conn=conn, logger=logger)
+        transaction = await transaction_repository.get(transaction_id=transaction_id)
+        if transaction:
+            transaction_cached = transaction.model_dump_json(by_alias=True)
+            await cache.set(f'transacion::{transaction_id}', transaction_cached)
+            transaction_cached = json.loads(transaction_cached)
     status_code = HTTP_200_OK if transaction else HTTP_404_NOT_FOUND
     return JSONResponse(
-        content=json.loads(transaction.model_dump_json(by_alias=True)),
+        content=transaction_cached,
         media_type='json',
         status_code=status_code
     )
