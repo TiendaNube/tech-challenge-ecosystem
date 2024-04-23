@@ -6,7 +6,7 @@ from pydantic import BaseModel, Field
 from ..enums.payments import PaymentsMethodEnum
 
 
-class IncomingMessageBodySchema(BaseModel):
+class MessageBodySchema(BaseModel):
     """ Incoming message schema validator"""
     transaction_id: int = Field(gt=0)
     payment_method: PaymentsMethodEnum

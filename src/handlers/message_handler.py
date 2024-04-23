@@ -6,7 +6,7 @@ import json
 from logging import Logger
 from aio_pika.abc import AbstractIncomingMessage
 from ..interfaces.message_handle_interface import MessageHandlerInterface
-from ..models.schemas.incoming_message_schema import IncomingMessageBodySchema
+from ..models.schemas.message_schema import MessageBodySchema
 from ..repositories.transaction_repository import TransactionRepository
 from ..repositories.payable_repository import PayableRepository
 from ..models.schemas.payable_schemas import CreatePayableRequestSchema
@@ -24,7 +24,7 @@ class IncomingMessageHandler(MessageHandlerInterface):
         self.payable_repository = payable_repository
         self.logger = logger
 
-    async def process_message(self, message_body: IncomingMessageBodySchema) -> None:
+    async def process_message(self, message_body: MessageBodySchema) -> None:
         transaction = await self.transaction_repository.get(message_body.transaction_id)
         if transaction.payment_method == PaymentsMethodEnum.DEBIT_CARD:
             payable_status = PayableStatusEnum.PAID
@@ -44,7 +44,7 @@ class IncomingMessageHandler(MessageHandlerInterface):
 
     async def handle_message(self, message: AbstractIncomingMessage) -> None:
         async with message.process():
-            message_body = IncomingMessageBodySchema(
+            message_body = MessageBodySchema(
                 **json.loads(message.body))
             if self.logger:
                 self.logger.info('Received new message with id: %s', message.message_id)

@@ -11,6 +11,8 @@ from starlette.status import (HTTP_201_CREATED,
 from ..infrastructure.postgres import PostgresConnection
 from ..repositories.transaction_repository import TransactionRepository
 from ..models.schemas.transaction_schemas import TransactionRequestCreateSchema
+from ..infrastructure.amqp_producer import AmqpProducer, MessageBodySchema
+from src.utils.configuration import AppConfig
 
 router = APIRouter(tags=["Transaction"], prefix="/transaction")
 
@@ -43,5 +45,8 @@ async def create_transaction(request: Request, transaction_schema: TransactionRe
     conn = await request.app.dependencies.get(PostgresConnection).get_conn()
     transaction_repo = TransactionRepository(conn=conn, logger=logger)
     transaction_id = await transaction_repo.create(transaction_schema)
+    amqp = request.app.dependencies.get(AmqpProducer)
+    message = MessageBodySchema(transaction_id=transaction_id, payment_method=transaction_schema.payment_method)
+    await amqp.send_message(message, AppConfig.AMQP_QUEUE)
     status_code = HTTP_201_CREATED if transaction_id else HTTP_422_UNPROCESSABLE_ENTITY
     return JSONResponse(content={'transaction_id': transaction_id}, status_code=status_code)

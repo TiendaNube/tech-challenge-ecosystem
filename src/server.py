@@ -13,7 +13,7 @@ from src.infrastructure.cache import Cache
 from src.utils.fastapi_injector import Injector
 from src.infrastructure.postgres import PostgresConnection
 from src.middlewares.time_spent_middleware import ResponseTimeSpentMiddleware
-
+from src.infrastructure.amqp_producer import AmqpProducer
 
 appOptions = {
     'lifespan': lifespan,
@@ -37,11 +37,13 @@ injector = Injector(app)
 logger = get_logger(AppConfig.FACILITY)
 postgres_conn = PostgresConnection(logger=logger)
 cache = Cache(logger=logger)
+amqp = AmqpProducer(logger)
 
 dependencies = [
     injector.add(cache),
     injector.add(logger),
-    injector.add(postgres_conn)
+    injector.add(postgres_conn),
+    injector.add(amqp)
 ]
 
 # api_v1 = "/api/v1"
