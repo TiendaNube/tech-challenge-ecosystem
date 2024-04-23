@@ -48,13 +48,13 @@
 
 
 ## Patrón de diseño
-La arquitectura utilizada en el proyecto es una arquitectura basada en manejadores que pueden depender o no de solicitudes específicas según su tipo. Este patrón de comportamiento se llama COR (Cadena de Responsabilidad). Más en [Referencias](#referencias)
+La arquitectura utilizada en el proyecto es una arquitectura basada en manejadores que pueden depender o no de solicitudes específicas según su tipo. Este patrón de comportamiento se llama COR (Chain Of Responsability). Más en [Referencias](#referencias)
 El trabajador y la API
 
 
 ## Referencias
 - Interfaces de Python - [Python real](https://realpython.com/python-interface/)
-- Patrones de diseño - Cadena de responsabilidad [Refactoring Guru](https://refactoring.guru/design-patterns/chain-of-responsibility)
+- Patrones de diseño - Chain Of Responsability [Refactoring Guru](https://refactoring.guru/design-patterns/chain-of-responsibility)
 
 #PENDENCIA
    - Escribir pruebas para cubrir todas las funciones.
