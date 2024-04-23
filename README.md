@@ -4,7 +4,7 @@
  - Docker desktop >= 4.28.0 Ou Docker compose >= 2.24.3 + Docker Engine >= 26.0.0
  - make é opicional
 ### Arquivo .env
- - Verifique se o arquivo `.env` consta na raiz do projeto, senão, será necessário criá-lo e confirurá-lo conforme a tabela de [variáveis de ambiente](#variáveis-de-ambiente)
+ - Verifique se o arquivo `.env` consta na raiz do projeto, senão, será necessário criá-lo e configurá-lo conforme a tabela de [variáveis de ambiente](#variáveis-de-ambiente)
 
 ## Subindo toda a arquitetura
 ```shell
@@ -26,11 +26,11 @@ make start-daemon
 ```
 
 # Sobre
-[[EN]](docs/README.EN.md)[[ES]](docs/README.ES.md)
+[[PT]](README.md)[[EN]](docs/README.EN.md)[[ES]](docs/README.ES.md)
 ## Modelo de banco de dados
 ![Database Diagram](docs/images/database_diagram.png#center)
 - Na tabela `transactions` há uma chave estrangeira `merchant_id` relacionada a tabela `merchant` e ao campo `id` que é sua chave primária. Isso significa que para haver inserção na tabela `transactions` deve haver um `merchant` previamente cadastrado.
-- Na tabela `payables` há duas chaves estrangeiras `transaction_id` e `merchant_id`. O campo `transaction_id` se relaciona com a tabela `transactions` e sua chave primária `id`. Assim, para inserir um `payable` deve antes inserir uma `transaction`.
+- Na tabela `payables` há duas chaves estrangeiras `transaction_id` e `merchant_id`. O campo `transaction_id` se relaciona com a tabela `transactions` e sua chave primária `id`. Assim, para inserir um `payable` deve-se antes inserir uma `transaction`.
 - Foi criado um `UNIQUE INDEX` na tabela `payables` para o campo `transaction_id` para garantir a relação de 1x1 entre `payable` e `transaction`. Ou seja, só poderá haver 1 `payable` para 1 `transação`
 
 ## Arquitetura de microsserviços
