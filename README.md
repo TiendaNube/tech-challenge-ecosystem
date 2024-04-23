@@ -24,6 +24,9 @@ make start
 # Subida em modo daemon, libera o terminal e não mostra os logs
 make start-daemon
 ```
+### Seeds
+![Merchants](docs/images/merchant_seeds.png)
+ - Previamente foram cadastrados e seeds para favilitar os testes. Os `merchant_id` destes seeds são `3000`, `3001`, `3002`, `3003` e `3004`
 
 # Sobre
 [[PT]](README.md)[[EN]](docs/README.EN.md)[[ES]](docs/README.ES.md)
@@ -62,7 +65,7 @@ make start-daemon
 | `POSTGRES_HOST`      | Hostname or IP for postgres instance             | `postgres`     |
 | `POSTGRES_PORT`      | Port number for postgres instance                | `5432`         |
 | `AMQP_URI`           | URI for amqp service                             | `amqp://guest:guest@rabbitmq/` |
-| `AMQP_QUEUE`         | Queue name on amqp srvice                        | `transactions` |
+| `AMQP_QUEUE`         | Queue name on amqp service                        | `transactions` |
 
 ## Desativando o Swagger para deploy em produção
 - Use a env `DEBUG` = `False`

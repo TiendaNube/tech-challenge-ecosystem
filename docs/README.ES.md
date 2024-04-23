@@ -36,13 +36,11 @@
 | `AMQP_QUEUE` | Nombre de la cola en el servicio amqp | `transacciones` |
 
 ## Deshabilitar Swagger para implementación en producción
-- Utilice un entorno `DEBUG` = `False`
+- Utilizar un entorno `DEBUG` = `False`
 - Utilizar un entorno `ENTORNO` = `producción`
 
 ## Enlaces de aplicaciones
-- Arrogancia [docs](http://127.0.0.1:8181/docs)
-- Arrogancia [redoc] (http://127.0.0.1:8181/redoc)
-- Arrogancia [openapi.json](http://127.0.0.1:8181/openapi.json)
+- Swagger [docs](http://127.0.0.1:8181/docs), [redoc] (http://127.0.0.1:8181/redoc), [openapi.json](http://127.0.0.1:8181/openapi.json)
 - Balanceador de carga HAProxy [ESTADO](http://127.0.0.1:8100/monitoring): requiere autenticación (Nombre de usuario: `nombre de usuario` | Contraseña: `contraseña`)
 - RabbitMQ [Administración] (http://127.0.0.1:15672/): requiere autenticación (Nombre de usuario: `guest` | Contraseña: `guest`)
 

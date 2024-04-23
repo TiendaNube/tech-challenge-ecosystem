@@ -1,0 +1,1 @@
+ALTER TABLE public.merchants ALTER COLUMN "document" TYPE varchar(19) USING "document"::varchar(19);

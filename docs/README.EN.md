@@ -40,9 +40,7 @@
 - Use an environment `ENVIRONMENT` = `production`
 
 ## Application Links
-- Swagger [docs](http://127.0.0.1:8181/docs)
-- Arrogance [redoc](http://127.0.0.1:8181/redoc)
-- Swagger [openapi.json](http://127.0.0.1:8181/openapi.json)
+- Swagger [docs](http://127.0.0.1:8181/docs), [redoc](http://127.0.0.1:8181/redoc), [openapi.json](http://127.0.0.1:8181/openapi.json)
 - HAProxy loadbalancer [STATUS](http://127.0.0.1:8100/monitoring): requires authentication (Username: `username` | Password: `password`)
 - RabbitMQ [Management](http://127.0.0.1:15672/): requires authentication (Username: `guest` | Password: `guest`)
 
