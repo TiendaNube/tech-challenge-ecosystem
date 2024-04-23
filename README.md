@@ -79,7 +79,7 @@ make start-daemon
 
 ## Design Pattern
 A arquitetura utilizada no projeto é uma arquitetura baseada em handlers que podem ou não processar determinada requisição dependendo de seu tipo. Esse padrão comportamental é chamado de COR(Chain Of Responsability). Mais em [References](#references)
-O worker e a API 
+Foi utilizado orientação a objetos com herança de classes e injeção de dependências
 
 
 ## References
@@ -88,4 +88,5 @@ O worker e a API
 
 # TO DO
  - Escrever testes para cobrir todas as funcionalidades.
- - Implementar segurança para a chamada dos endpoints usando Bearer Token ou X-API-Token 
+ - Implementar segurança para a chamada dos endpoints usando Bearer Token ou X-API-Token
+ - Retirar a lógica dos routers e passar para a camada de handler
