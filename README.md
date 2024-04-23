@@ -69,9 +69,7 @@ make start-daemon
 - Use a env `ENVIRONMENT` = `production`
 
 ## Links dessa aplicação
-- Swagger [docs](http://127.0.0.1:8181/docs)
-- Swagger [redoc](http://127.0.0.1:8181/redoc)
-- Swagger [openapi.json](http://127.0.0.1:8181/openapi.json)
+- Swagger [[docs]](http://127.0.0.1:8181/docs), [[redoc]](http://127.0.0.1:8181/redoc), [[openapi.json]](http://127.0.0.1:8181/openapi.json)
 - HAProxy loadbalancer [STATUS](http://127.0.0.1:8100/monitoring): autenticação necessária (Username: `username` | Password: `password`)
 - RabbitMQ [Management](http://127.0.0.1:15672/): autenticação necessária (Username: `guest` | Password: `guest`)
 
