@@ -1,10 +1,13 @@
+# -*- coding: utf-8 -*-
+# autor: Maycon Pimentel <maycon.pimentel@gmail.com>
+""" Module for AMQP consumer messages """
+
 import asyncio
 from logging import Logger
 from aio_pika import connect
 from aio_pika.abc import AbstractChannel, AbstractQueue
 from ..utils.configuration import AppConfig
 from ..interfaces.message_handle_interface import MessageHandlerInterface
-
 
 
 class AmqpConsumer:

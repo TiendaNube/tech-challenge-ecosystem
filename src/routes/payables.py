@@ -4,10 +4,14 @@
 
 import json
 from logging import Logger
-from fastapi import APIRouter, Request, Response, Query
+from datetime import date
+from typing import Annotated
+from fastapi import APIRouter, Request, Query
 from fastapi.responses import JSONResponse
-from starlette.status import HTTP_201_CREATED, HTTP_200_OK, HTTP_404_NOT_FOUND, HTTP_422_UNPROCESSABLE_ENTITY
+from starlette.status import (HTTP_201_CREATED, HTTP_200_OK,
+                              HTTP_404_NOT_FOUND, HTTP_422_UNPROCESSABLE_ENTITY)
 from ..infrastructure.postgres import PostgresConnection
+from ..infrastructure.cache import Cache
 from ..repositories.payable_repository import PayableRepository
 from ..models.schemas.payable_schemas import SearchPayableRequestSchema, CreatePayableRequestSchema
 
@@ -17,9 +21,9 @@ router = APIRouter(tags=["Payable"], prefix="/payable")
 @router.get("", response_class=JSONResponse, status_code=HTTP_200_OK)
 async def get_payables_per_merchant_by_period(
     request: Request,
-    merchant_id: int = Query(),
-    from_date: str = Query(),
-    to_date: str = Query()
+    merchant_id: Annotated[int, Query(gt=0)] ,
+    from_date: Annotated[date, Query(example="2024-01-01")],
+    to_date: Annotated[date, Query(example="2024-12-31")]
 ) -> JSONResponse:
     """ GET payables by merchant_id and period date """
 
@@ -46,11 +50,19 @@ async def get_payables_per_merchant_by_period(
 async def get_payable_by_id(request: Request, payable_id: int) -> JSONResponse:
     """ Get payable by id """
     logger = request.app.dependencies.get(Logger)
-    conn = await request.app.dependencies.get(PostgresConnection).get_conn()
-    payable_repository = PayableRepository(conn=conn, logger=logger)
-    payable = await payable_repository.get(payable_id)
-    status_code = HTTP_200_OK if payable else HTTP_404_NOT_FOUND
-    return JSONResponse(content=json.loads(payable.model_dump_json()), status_code=status_code)
+    cache = request.app.dependencies.get(Cache)
+    payable_cached = await cache.get(f"payable::{payable_id}")
+    if payable_cached:
+        logger.info('Returning payable %s from cache', payable_id)
+    else:
+        conn = await request.app.dependencies.get(PostgresConnection).get_conn()
+        payable_repository = PayableRepository(conn=conn, logger=logger)
+        payable = await payable_repository.get(payable_id)
+        payable_cached = payable.model_dump_json()
+        await cache.set(f"payable::{payable_id}", payable_cached)
+        payable_cached = json.loads(payable_cached)
+    status_code = HTTP_200_OK if payable_cached else HTTP_404_NOT_FOUND
+    return JSONResponse(content=payable_cached, status_code=status_code)
 
 
 @router.post("",

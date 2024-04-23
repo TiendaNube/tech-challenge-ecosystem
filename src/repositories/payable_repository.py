@@ -78,7 +78,7 @@ class PayableRepository:
     async def get(self, payable_id: int) -> PayableSchema:
         """ Get one payable by id on database """
         try:
-            payable_row = await self.conn.fetchrow(' SELECT * FROM payables WHERE id = $1 ', payable_id)
+            payable_row = await self.conn.fetchrow(' SELECT * FROM payables WHERE id = $1; ', payable_id)
             return PayableSchema(**payable_row)
         except Exception as err:
             if self.logger:
@@ -95,7 +95,7 @@ class PayableRepository:
                     """
                     INSERT INTO payables 
                     (transaction_id, merchant_id, status, create_date, subtotal, discount_fee, total)
-                    VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id
+                    VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id;
                     """,
                     create_schema.transaction_id,
                     create_schema.merchant_id,

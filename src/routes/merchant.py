@@ -8,35 +8,37 @@ from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
 from starlette.status import HTTP_201_CREATED, HTTP_200_OK, HTTP_404_NOT_FOUND
 from ..infrastructure.postgres import PostgresConnection
-# from ..middlewares.basic_authentication_middleware import BasicAuthenticationMiddleware
+from ..infrastructure.cache import Cache
 from ..repositories.merchant_repository import MerchantRepository
-from ..models.schemas.merchant_schemas import CreateMerchantRequestSchema
+from ..models.schemas.merchant_schemas import CreateMerchantRequestSchema, MerchantSchema
 
 
 router = APIRouter(tags=["Merchant"], prefix="/merchant")
 
 
-# @router.post("")
-# @safe_async_response
-# async def create_merchant(request: Request, credentials=Depends(BasicAuthenticationMiddleware.get_credentials):
-#     try:
-#         body = await request.json()
-
 @router.get("/{merchant_id}", response_class=JSONResponse, status_code=HTTP_200_OK)
-async def get_merchant_by_id(request: Request, merchant_id: int):
+async def get_merchant_by_id(request: Request, merchant_id: int) -> MerchantSchema:
     """ GET merchant by id """
     logger = request.app.dependencies.get(Logger)
-    conn = await request.app.dependencies.get(PostgresConnection).get_conn()
-    merchant_repository = MerchantRepository(conn=conn, logger=logger)
-    merchant = await merchant_repository.get(merchant_id=merchant_id)
-    status_code = HTTP_200_OK if merchant else HTTP_404_NOT_FOUND
+    cache = request.app.dependencies.get(Cache)
+    merchant_cached = await cache.get(f"merchant::{merchant_id}")
+    if merchant_cached:
+        logger.info('Returning merchant %s from cache', merchant_id)
+    else:
+        conn = await request.app.dependencies.get(PostgresConnection).get_conn()
+        merchant_repository = MerchantRepository(conn=conn, logger=logger)
+        merchant = await merchant_repository.get(merchant_id=merchant_id)
+        merchant_cached = merchant.model_dump_json()
+        await cache.set(f"merchant::{merchant_id}", merchant_cached)
+        merchant_cached = json.loads(merchant_cached)
+    status_code = HTTP_200_OK if merchant_cached else HTTP_404_NOT_FOUND
     return JSONResponse(
-        content=json.loads(merchant.model_dump_json()),
+        content=merchant_cached,
         status_code=status_code
     )
 
 
-@router.post("/",
+@router.post("",
              status_code=HTTP_201_CREATED,
              response_class=JSONResponse,
              response_model=CreateMerchantRequestSchema

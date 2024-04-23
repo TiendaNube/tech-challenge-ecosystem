@@ -8,6 +8,8 @@ import redis.asyncio as redis
 from ..interfaces.cache_interface import CacheInterface
 from ..utils.configuration import AppConfig
 
+# 1h
+DEFAULT_TTL = 60 * 60
 
 class Cache(CacheInterface):
     """ Class for use redis cache server """
@@ -17,9 +19,14 @@ class Cache(CacheInterface):
         self.client = redis.Redis.from_pool(self.pool)
         self.logger = logger
 
+    def gen_cache_key(self, key: str) -> str:
+        """ Padronize cache key """
+        return f"{AppConfig.FACILITY}::{key}"
+
     async def get(self, key: str) -> str | dict:
         """ Get data in a key on redis cache server """
         value = None
+        key = self.gen_cache_key(key)
         try:
             value: str = await self.client.get(key)
             if value:
@@ -32,8 +39,9 @@ class Cache(CacheInterface):
                 'Error getting key %s from redis. Error: %s', key, err)
         return value
 
-    async def set(self, key: str, value: str | dict, ttl: int = None) -> bool:
+    async def set(self, key: str, value: str | dict, ttl: int = DEFAULT_TTL) -> bool:
         """ Set data in a key on redis cache server """
+        key = self.gen_cache_key(key)
         try:
             if isinstance(value, dict):
                 value = json.dumps(value)
@@ -49,6 +57,7 @@ class Cache(CacheInterface):
 
     async def delete(self, key: str) -> bool:
         """ Delete data in a key on redis cache server """
+        key = self.gen_cache_key(key)
         try:
             await self.client.delete(key)
             return True
