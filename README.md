@@ -1,3 +1,31 @@
+# Como Usar
+## Antes de subir
+### Dependências do sistema operacional
+ - Docker desktop >= 4.28.0 Ou Docker compose >= 2.24.3 + Docker Engine >= 26.0.0
+ - make é opicional
+### Arquivo .env
+ - Verifique se o arquivo `.env` consta na raiz do projeto, senão, será necessário criá-lo e confirurá-lo conforme a tabela de [variáveis de ambiente](#variáveis-de-ambiente)
+
+## Subindo toda a arquitetura
+```shell
+# Subida observando os logs
+docker compose up --build
+```
+```shell
+# Subida em modo daemon, libera o terminal e não mostra os logs
+docker compose up --build -d
+```
+ou
+```shell
+# Subida observando os logs
+make start
+```
+```shell
+# Subida em modo daemon, libera o terminal e não mostra os logs
+make start-daemon
+```
+
+# Sobre
 [[EN]](docs/README.EN.md)[[ES]](docs/README.ES.md)
 ## Modelo de banco de dados
 ![Database Diagram](docs/images/database_diagram.png#center)
