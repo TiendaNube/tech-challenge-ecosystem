@@ -87,6 +87,21 @@ services:
       webserver:
         condition: service_healthy
 
+  worker:
+    build: .
+    command: python3 -m src.worker
+    env_file:
+      - .env
+    volumes:
+      - .:/usr/payables
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
 volumes:
   db-data:
   rabbitmq-data:

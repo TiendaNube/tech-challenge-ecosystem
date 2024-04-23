@@ -1,36 +1,33 @@
-
+import asyncio
+from logging import Logger
 from aio_pika import connect
-from aio_pika.abc import AbstractChannel, AbstractQueue, AbstractIncomingMessage
+from aio_pika.abc import AbstractChannel, AbstractQueue
 from ..utils.configuration import AppConfig
+from ..interfaces.message_handle_interface import MessageHandlerInterface
 
-# async def on_message(message: AbstractIncomingMessage) -> None:
-#     """
-#     on_message doesn't necessarily have to be defined as async.
-#     Here it is to show that it's possible.
-#     """
-#     print(" [x] Received message %r" % message)
-#     print("Message body is: %r" % message.body)
-
-#     print("Before sleep!")
-#     await asyncio.sleep(5)  # Represents async I/O operations
-#     print("After sleep!")
 
 
 class AmqpConsumer:
-    async def __init__(self) -> None:
-        self.connection = await connect(AppConfig.AMQP_URI)
+    """ Amqp Consumer """
 
-    async def inicialize_consumer(self, queue_name: str, message_hander) -> None:
+    def __init__(self, logger: Logger = None) -> None:
+        self.connection = None
+        self.logger = logger
+
+    async def inicialize_consumer(self, queue_name: str, message_hander: MessageHandlerInterface) -> None:
         """ Use for inicialize reader using a custom handler """
+        if not self.connection:
+            self.connection = await connect(AppConfig.AMQP_URI)
+        self.logger.info('AMQP Consumer inicialized')
         async with self.connection:
-
             # Creating channel
             channel: AbstractChannel = await self.connection.channel()
-
             # Declaring queue
             queue: AbstractQueue = await channel.declare_queue(
                 queue_name,
                 auto_delete=True,
                 durable=True
             )
-            await queue.consume(message_hander, no_ack=True)
+            # Consume messages
+            await queue.consume(message_hander.handle_message, no_ack=False)
+            await asyncio.Future()
