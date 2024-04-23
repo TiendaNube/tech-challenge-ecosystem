@@ -1,7 +1,22 @@
-## Database model
-![Database Diagram](images_doc/database_diagram.png#center)
+[[EN]](docs/README.EN.md)[[ES]](docs/README.ES.md)
+## Modelo de banco de dados
+![Database Diagram](docs/images/database_diagram.png#center)
+- Na tabela `transactions` há uma chave estrangeira `merchant_id` relacionada a tabela `merchant` e ao campo `id` que é sua chave primária. Isso significa que para haver inserção na tabela `transactions` deve haver um `merchant` previamente cadastrado.
+- Na tabela `payables` há duas chaves estrangeiras `transaction_id` e `merchant_id`. O campo `transaction_id` se relaciona com a tabela `transactions` e sua chave primária `id`. Assim, para inserir um `payable` deve antes inserir uma `transaction`.
+- Foi criado um `UNIQUE INDEX` na tabela `payables` para o campo `transaction_id` para garantir a relação de 1x1 entre `payable` e `transaction`. Ou seja, só poderá haver 1 `payable` para 1 `transação`
 
-## Environments variables
+## Arquitetura de microsserviços
+![Microservices architecture](docs/images/arquitetura_payables.png#center)
+- O cliente faz um request para o `loadbalancer`
+- O `loadbalancer` usa a estratégia `roundrobin` para direcionar o request para 1 das API de `payable`
+- Conforme o tipo de request a API de `payable` pode buscar a informação no cache (Redis) e se não encontrar, busca no banco de dados (Postgres). Se for um request de escrita, ele acessa diretamente o banco.
+- Caso o request da API seja para cadastrar uma nova `transaction` após ser gravada no banco de dados a API publica uma mensagem numa fila do serviço de AMQP (RabbitMQ).
+- O worker (AMQP consumer) fica conectado a mesma fila do servico AMQP escutando para saber se há alguma mensagem. Quando recebe uma nova mensagem contendo o `transaction_id`, o worker busca a transação no banco de dados e cria uma nova entidade de `payable` conforme as regras do `schema`.
+
+## Mono repo
+- Para garantir que a API e o worker usem as mesmas regras e Schemas eles compartilham o mesmo repositório de código. Assim eles compartilham regras e código.
+
+## Variáveis de ambiente
 
 | Name                 | Description                                      | Default Values |
 | -------------------- | ------------------------------------------------ | -------------- |
@@ -21,22 +36,27 @@
 | `AMQP_URI`           | URI for amqp service                             | `amqp://guest:guest@rabbitmq/` |
 | `AMQP_QUEUE`         | Queue name on amqp srvice                        | `transactions` |
 
-## Deactivate Swagger for production deployment
-- Use env `DEBUG` = `False`
-- Use env `ENVIRONMENT` = `production`
+## Desativando o Swagger para deploy em produção
+- Use a env `DEBUG` = `False`
+- Use a env `ENVIRONMENT` = `production`
 
-## Application links
+## Links dessa aplicação
 - Swagger [docs](http://127.0.0.1:8181/docs)
 - Swagger [redoc](http://127.0.0.1:8181/redoc)
 - Swagger [openapi.json](http://127.0.0.1:8181/openapi.json)
-- HAProxy loadbalancer [STATUS](http://127.0.0.1:8100/monitoring): require authentication (Username: `username` | Password: `password`)
-- RabbitMQ [Management](http://127.0.0.1:15672/): require authentication (Username: `guest` | Password: `guest`)
+- HAProxy loadbalancer [STATUS](http://127.0.0.1:8100/monitoring): autenticação necessária (Username: `username` | Password: `password`)
+- RabbitMQ [Management](http://127.0.0.1:15672/): autenticação necessária (Username: `guest` | Password: `guest`)
 
 
 ## Design Pattern
 A arquitetura utilizada no projeto é uma arquitetura baseada em handlers que podem ou não processar determinada requisição dependendo de seu tipo. Esse padrão comportamental é chamado de COR(Chain Of Responsability). Mais em [References](#references)
+O worker e a API 
 
 
 ## References
 - Python Interfaces - [Real Python](https://realpython.com/python-interface/)
 - Design Patterns - Chain of Responsibility [Refactoring Guru](https://refactoring.guru/design-patterns/chain-of-responsibility)
+
+# TO DO
+ - Escrever testes para cobrir todas as funcionalidades.
+ - Implementar segurança para a chamada dos endpoints usando Bearer Token ou X-API-Token 
