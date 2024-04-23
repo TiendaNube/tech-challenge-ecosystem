@@ -46,13 +46,11 @@ dependencies = [
     injector.add(amqp)
 ]
 
-# api_v1 = "/api/v1"
 app.router.include_router(healthcheck.router)
 app.router.include_router(readiness.router)
 app.router.include_router(merchant.router)
 app.router.include_router(transaction.router)
 app.router.include_router(payables.router)
-# app.include_router(currency_converter_router, prefix=api_v1)
 app.add_middleware(ResponseTimeSpentMiddleware)
 
 if __name__ == "__main__":
