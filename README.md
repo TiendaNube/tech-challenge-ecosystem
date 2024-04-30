@@ -1,6 +1,5 @@
 # PT-BR 🇧🇷
 
-Desafio desenvolvido em curto prazo de tempo por conta do momento atual, com isso foi necessário adiar alguns processos com o objetivo de entregar o desafio da melhor maneira possivel. 
 Para facilitar os testes é realizado de maneira automatica um seed com um merchant.
 
 
