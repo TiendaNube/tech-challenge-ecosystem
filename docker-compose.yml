@@ -1,0 +1,88 @@
+name: tiendanube
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    ports:
+      - 5672:5672
+      - 15672:15672
+    expose:
+      - 15672
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    healthcheck:
+      test: ['CMD', 'rabbitmqctl', 'status']
+      interval: 1m30s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+      start_interval: 5s
+
+  postgres:
+    hostname: postgres
+    image: postgres:16-alpine
+    ports:
+      - ${DATABASE_PORT}:5432
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ./init-db:/docker-entrypoint-initdb.d
+    environment:
+      POSTGRES_USER: ${DATABASE_USERNAME}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
+    restart: always  
+    healthcheck:
+      test: ["CMD", "pg_isready", "--username=${DATABASE_USERNAME}", "--dbname=${DATABASE_NAME}"]
+      interval: 1m30s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+      start_interval: 5s
+    
+  gateway: 
+    build: ./api-gateway
+    hostname: gatewayc
+    env_file:
+      - ./api-gateway/.env
+    ports:
+      - "3000:3000"
+    expose:
+     - 3000
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  merchants: 
+    build: ./microservices/merchants
+    # hostname: merchants
+    # env_file:
+    #   - ./microservices/merchants/.env
+    ports:
+      - "3001:3001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  transactions: 
+    build: ./microservices/transactions
+    # env_file:
+    #   - ./microservices/transactions/.env
+    ports:
+      - "3002:3002"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  payables: 
+    build: ./microservices/payables
+    # env_file:
+    #   - ./microservices/payables/.env
+    ports:
+      - "3003:3003"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  rabbitmq-data:
+  db-data: 

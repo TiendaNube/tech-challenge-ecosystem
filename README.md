@@ -1,94 +1,97 @@
 # PT-BR 🇧🇷
 
-# Tech Challenge
+Para facilitar os testes é realizado de maneira automatica um seed com um merchant.
 
-O desafio consiste em implementar novas **API's** para trabalhar com as transações de nossos merchants (vendedores).
 
-## Nós precisamos que você implemente:
-
-1. Um endpoint para processar transações e pagamentos de um determinado merchant (vendedor)
-
-- Uma transação possui as informações a seguir:
-
-  - O valor total da transação
-  - Descrição da transação, por exemplo "T-Shirt Black M"
-  - Método de pagamento: **debit_card** ou **credit_card**
-  - O número do cartão (devemos armazenar e retornar somente os últimos 4 dígitos do cartão, por ser uma informação sensível)
-  - O nome do dono do cartão
-  - Data de Expiração
-  - CVV do cartão
-  - O id do merchant (vendedor)
-
-  Exemplo de transação:
-
-| Campo                | Valor           |
-| -------------------- | --------------- |
-| Merchant Id          | 2441            |
-| Description          | T-Shirt Black/M |
-| Payment Method       | Credit_Card     |
-| Card Number          | 4338            |
-| Card Holder          | John Smith      |
-| Card Expiration Date | 12/2028         |
-| Card CVV             | 123             |
-
-- Ao criar uma transação, também deve ser criado um recebível do merchant (payables), com as seguintes regras de negócio:
-
-  - Transação **Debit card**:
-
-    - O payable deve ser criado com **status = paid**, indicando que o merchant irá receber o valor
-    - O payable deve ser criado com a data igual a data de criação (D + 0).
-
-  - Transação **Credit card**:
-
-    - O payable deve ser criado com **status = waiting_funds**, indicando que o merchant irá receber esse valor no futuro
-    - O Payable deve ser criado com a data igual a data de criação da transação + 30 dias (D + 30)
-
-  - Ao criar payables, devemos descontar uma taxa de processamento (chamada de `fee`). Considere **2%** para transações **debit_card**
-    e **4%** para transações **credit_card**. Exemplo: Quando um payable é criado no valor de R$ 100,00 a partir de uma transação **credit_card** ele receberá R$ 96,00.
-
-    Exemplo de payable:
-
-| Campo       | Valor      |
-| ----------- | ---------- |
-| Merchant Id | 2343       |
-| Status      | paid       |
-| Create Date | 08/12/2023 |
-| Subtotal    | 200        |
-| Discount    | 4          |
-| Total       | 196        |
-
-2. Um endpoint que calcule o total de Recebíveis (payables) do merchant num período de datas informado, a resposta deve conter:
-
-- Valor total de recebíveis pagos
-- Total cobrado de taxa nos recebíveis pagos
-- Valor a receber para o futuro
-
-## Pré-requisitos
-
-Você pode utilizar qualquer linguagem de programação (recomendamos que utilize a que você possui maior familiaridade), frameworks e biblioteca
-
-Para a execução do projeto, é necessário configurar um banco de dados, de preferência relacional, para armazenar os dados(transactions e payables). Recomenda-se utilizar Docker para facilitar o gerenciamento do ambiente de desenvolvimento.
-
-### Configuração do Banco de Dados
-
-O banco de dados deve ser iniciado utilizando o seguinte comando:
-
-```bash
-docker compose up
+```
+id: 8e33fb74-8bdb-4f38-9f64-ca56c3051fa5
+name: Jhon Smith
+documentId: 1112223334455
 ```
 
-## Critérios de avaliação
+## Tecnologias
 
-- Assertividade: A aplicação está fazendo o que é esperado? Se algo estiver faltando, o README explica o motivo?
-- Legibilidade do código (incluindo comentários)
-- Segurança: Existem vulnerabilidades claras?
-- Cobertura de testes (Não esperamos cobertura completa)
-- Histórico de commits (estrutura e qualidade)
-- Escolhas técnicas: A escolha de bibliotecas, banco de dados, arquitetura, etc., é a melhor escolha para a aplicação?
-- Escalabilidade: A aplicação é capaz de lidar com um aumento significativo do tráfego?
-- Manutenibilidade: O código é fácil de manter e modificar?
-- Resiliência: A aplicação é resiliente a falhas e erros inesperados?
+- Typescript
+- NestJS
+- RabbitMQ
+- Postgres
+- TypeORM
+- Jest
+- Docker
 
-## Como entregar
+## Patterns
 
-- Fork esse desafio no seu repositório pessoal. Crie uma branch para desenvolver sua implementação e, assim que finalizar, submeta um pull request na branch main desse repo, marcando @ewma18, @AndreAffonso e @rafaelito91 como reviewers
+Para melhor abstração da aplicação e consequencimento legibilidade para a condicional do modo de pagamento na entidade payable foi utilizado o abstract factory.
+Para (não só) confiabilidade do pipeline durante o processo de pagamento entre os microserviços e pelo ganho em escalabilidade foi utilizado o pattern SAGA (não-completo).
+Os services assim como events handler e commands (no caso do saga) são utilizados como camada de dominio. 
+Os endpoints estão respeitando o padrão restful.
+
+
+## API docs
+
+```
+POST /merchants/:id/transactions
+GET /merchants/:id/payables?page=1&limit=10&start_date=yyyy-MM-dd&end_date=yyyy-MM-dd
+```
+
+ou swagger disponível em
+```
+http://localhost:3000/docs#
+```
+
+## Infraestrutura
+
+Para solução do desafio proposto segui a arquitetura de microserviços com a utilização do pattern SAGA.
+
+Os principais beneficios da arquitetura de microserviços para este problema é o ganho na escalabilidade, monitoramento e manunteção a longo prazo. Os microserviços só poderão ser utilizados na rede interna, usando como paralelismo uma infraestrutura AWS os microserviços só poderiam ser consultados dentro da VPC.
+
+A utilização do pattern SAGA traz o beneficio não só de confiabilidade durante o pipeline do processamento de pagamento como também escalabilidade por todos processamentos serem executados por eventos.
+Há um ganho significado na complexidade da aplicação quando utilizado SAGA por conta da interface rxjs implementada pelo framework nestjs, que é o caso do desafio. Para comunicação entre os microserviços foi utilizado o message broker RabbitMQ. O ganho de velocidade do protocolo AMQP ao invés do http traz ganhos significativos em performance da aplicação conforme escala.
+
+Foi adicionado um serviço de api-gateway no qual expoe dois endpoints http para ser consumido pelo usuario final.
+Cada serviço possui o seu proprio banco de dados. A confiabilidade de pesistencia de dados é dada ao uso do SAGA.
+
+Sugestão de solução na cloud:
+
+![Microservices architecture](docs/images/architecture-diagram.png#center)
+
+
+## Entity relationship diagram
+
+Utilizado o banco de dados relacional postgres.
+
+*Apenas é salvo os ultimos 4 digitos do cartão do usuario no banco de dados. Os dados necessários para o processamento do pagamento é trafegado pelo massage broker.
+
+![ERD](docs/images/erd.png#center)
+
+
+## Como executar
+
+```
+docker compose up -d
+```
+*É necessário possuir docker compose version > v2.24 e docker > 24.0.0 ou execute o serviço postgres antes dos outros*
+```
+docker compose up -d postgres
+docker compose up -d --build
+``` 
+
+
+## Executar os testes
+
+```
+npm run test
+```
+
+ou para executar os testes com coverage
+
+```
+npm run test:cov
+```
+
+## TO DO
+- Aumentar a cobertura de Testes unitários (principalmente nos metodos saga)
+- Funcionalidade de rollback em caso de falhas no pipeline pelo saga
+- Monitoramento/Observabilidade
+- Melhor abstração das camadas de comunicação com message broker
+- Adição de cache
