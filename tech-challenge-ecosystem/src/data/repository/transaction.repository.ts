@@ -1,7 +1,7 @@
 import { TransactionDatasource } from '../../core/constracts/data/transaction.datasource';
 import { Repository } from 'typeorm';
 import { TransactionEntity } from '../entities/transaction.entity';
-import { Transaction } from '../../core/models/Transaction';
+import { Transaction } from '../../core/models/transaction';
 import { Inject, Injectable } from '@nestjs/common';
 import { TRANSACTION_TYPEORM_REPOSITORY } from '../entities/entities.providers';
 

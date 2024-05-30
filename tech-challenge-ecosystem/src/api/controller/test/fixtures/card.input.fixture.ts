@@ -1,4 +1,4 @@
-import { CardInput } from '../../../models/CardInput';
+import { CardInput } from '../../../models/card.input';
 
 export class CardInputFixture {
   public static default(): CardInput {

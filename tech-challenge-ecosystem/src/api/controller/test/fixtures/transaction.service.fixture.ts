@@ -1,4 +1,4 @@
-import { Transaction } from '../../../../core/models/Transaction';
+import { Transaction } from '../../../../core/models/transaction';
 
 export class TransactionServiceFixture {
   createTransaction(transaction: Transaction): Promise<Transaction> {

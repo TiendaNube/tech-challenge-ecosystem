@@ -3,7 +3,7 @@ import { TransactionController } from './api/controller/transaction.controller';
 import {
   TRANSACTION_SERVICE_PROVIDE,
   TransactionService,
-} from './core/services/transaction/TransactionService';
+} from './core/services/transaction/transaction.service';
 import { DatabaseModule } from './data/database.module';
 import { entitiesProviders } from './data/entities/entities.providers';
 import { TransactionDatasource } from './core/constracts/data/transaction.datasource';

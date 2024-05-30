@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TransactionController } from '../transaction.controller';
-import { TRANSACTION_SERVICE_PROVIDE } from '../../../core/services/transaction/TransactionService';
-import { TransactionInputFixture } from './fixtures/TransactionInputFixture';
+import { TRANSACTION_SERVICE_PROVIDE } from '../../../core/services/transaction/transaction.service';
+import { TransactionInputFixture } from './fixtures/transaction.input.fixture';
 import { TransactionServiceFixture } from './fixtures/transaction.service.fixture';
 
 describe('TransactionController', () => {

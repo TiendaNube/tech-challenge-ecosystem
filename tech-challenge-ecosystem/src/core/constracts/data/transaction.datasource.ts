@@ -1,4 +1,4 @@
-import { Transaction } from '../../models/Transaction';
+import { Transaction } from '../../models/transaction';
 
 export const TransactionDatasource = 'TransactionDatasource';
 export interface TransactionDatasource {

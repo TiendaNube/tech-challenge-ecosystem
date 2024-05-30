@@ -1,5 +1,5 @@
-import { Card } from '../../core/models/Card';
-import { Transaction } from '../../core/models/Transaction';
+import { Card } from '../../core/models/card';
+import { Transaction } from '../../core/models/transaction';
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()

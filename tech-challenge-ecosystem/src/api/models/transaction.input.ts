@@ -1,7 +1,7 @@
 import { IsNumber, IsString, ValidateNested } from 'class-validator';
-import { CardInput } from './CardInput';
+import { CardInput } from './card.input';
 import { Type } from 'class-transformer';
-import { Transaction } from '../../core/models/Transaction';
+import { Transaction } from '../../core/models/transaction';
 
 export class TransactionInput {
   @IsNumber()

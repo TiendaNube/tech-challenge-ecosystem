@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Transaction } from '../../models/Transaction';
+import { Transaction } from '../../models/transaction';
 import { TransactionDatasource } from '../../constracts/data/transaction.datasource';
 
 export const TRANSACTION_SERVICE_PROVIDE = 'TRANSACTION_SERVICE_PROVIDE';

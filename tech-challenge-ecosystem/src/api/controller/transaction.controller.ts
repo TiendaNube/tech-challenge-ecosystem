@@ -2,9 +2,9 @@ import { Body, Controller, Inject, Put } from '@nestjs/common';
 import {
   TRANSACTION_SERVICE_PROVIDE,
   TransactionService,
-} from '../../core/services/transaction/TransactionService';
-import { TransactionInput } from '../models/TransactionInput';
-import { Transaction } from '../../core/models/Transaction';
+} from '../../core/services/transaction/transaction.service';
+import { TransactionInput } from '../models/transaction.input';
+import { Transaction } from '../../core/models/transaction';
 
 @Controller('/transaction')
 export class TransactionController {

@@ -1,5 +1,5 @@
-import { TransactionInput } from '../../../models/TransactionInput';
-import { CardInputFixture } from './CardInputFixture';
+import { TransactionInput } from '../../../models/transaction.input';
+import { CardInputFixture } from './card.input.fixture';
 
 export class TransactionInputFixture {
   public static default() {
