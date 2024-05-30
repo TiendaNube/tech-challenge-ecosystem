@@ -1,12 +1,16 @@
-import { Controller, Put } from '@nestjs/common';
-import { TransactionService } from '../../core/services/transaction/TransactionService'
+import { Body, Controller, Put } from '@nestjs/common';
+import { TransactionService } from '../../core/services/transaction/TransactionService';
+import { TransactionInput } from '../models/TransactionInput';
+import { Transaction } from '../../core/models/Transaction';
 
-@Controller("/transaction")
+@Controller('/transaction')
 export class TransactionController {
   constructor(private readonly transactionService: TransactionService) {}
 
   @Put()
-  createTransaction(): string {
-    return this.transactionService.createTransaction();
+  createTransaction(@Body() transactionInput: TransactionInput): Transaction {
+    return this.transactionService.createTransaction(
+      transactionInput.toTransaction(),
+    );
   }
 }

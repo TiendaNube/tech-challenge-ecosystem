@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TransactionController } from '../transaction.controller';
-import { TransactionService } from '../../../core/services/transaction/TransactionService'
+import { TransactionService } from '../../../core/services/transaction/TransactionService';
+import { TransactionInputFixture } from './fixtures/TransactionInputFixture';
 
 describe('TransactionController', () => {
   let transactionController: TransactionController;
@@ -11,12 +12,17 @@ describe('TransactionController', () => {
       providers: [TransactionService],
     }).compile();
 
-    transactionController = app.get<TransactionController>(TransactionController);
+    transactionController = app.get<TransactionController>(
+      TransactionController,
+    );
   });
 
-  describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(transactionController.createTransaction()).toBe('Hello from TransactionService.createTransaction()');
+  describe('PUT /transaction', () => {
+    it('should return Transaction model', () => {
+      const transactionInput = TransactionInputFixture.default();
+      expect(transactionController.createTransaction(transactionInput)).toEqual(
+        transactionInput.toTransaction(),
+      );
     });
   });
 });

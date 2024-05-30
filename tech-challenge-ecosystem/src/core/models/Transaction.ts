@@ -1,10 +1,11 @@
-import { Card } from "./Card"
+import { Card } from './Card';
 
 export class Transaction {
-    public merchantId: string
-    public description: string
+  constructor(
+    public merchantId: number,
+    public description: string,
     // TODO: Use an ENUM
-    public paymentMethod: string
-    public cardNumber: number
-    public card: Card
+    public paymentMethod: string,
+    public card: Card,
+  ) {}
 }

@@ -1,6 +1,8 @@
 export class Card {
-    public number: number
-    public holder: string
-    public expirationDate: Date
-    public cvv: number
+  constructor(
+    public number: string,
+    public holder: string,
+    public expirationDate: string,
+    public cvv: string,
+  ) {}
 }
