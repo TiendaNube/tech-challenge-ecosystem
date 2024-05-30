@@ -1,4 +1,7 @@
+import { TRANSACTION_DATASOURCE_PROVIDE } from 'src/core/constracts/data/transaction.datasource';
 import { DataSource } from 'typeorm';
+import { TransactionRepoistory } from './repository/transaction.repository';
+import { entitiesProviders } from './entities/entities.providers';
 
 export const databaseProviders = [
   {
@@ -18,4 +21,9 @@ export const databaseProviders = [
       return dataSource.initialize();
     },
   },
+  ...entitiesProviders,
+  {
+    provide: TRANSACTION_DATASOURCE_PROVIDE,
+    useClass: TransactionRepoistory,
+  }
 ];

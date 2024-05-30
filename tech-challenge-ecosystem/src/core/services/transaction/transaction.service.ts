@@ -21,4 +21,9 @@ export class TransactionService {
 
     return createdTransaction
   }
+
+  public async handleTransactionCreation(transaction: Transaction): Promise<Transaction> {
+    console.log("Transaction on handler: ", transaction)
+    return 
+  }
 }
