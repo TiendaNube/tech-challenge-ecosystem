@@ -1,10 +1,27 @@
 import { Module } from '@nestjs/common';
 import { TransactionController } from './api/controller/transaction.controller';
-import { TransactionService } from './core/services/transaction/TransactionService';
+import {
+  TRANSACTION_SERVICE_PROVIDE,
+  TransactionService,
+} from './core/services/transaction/TransactionService';
+import { DatabaseModule } from './data/database.module';
+import { entitiesProviders } from './data/entities/entities.providers';
+import { TransactionDatasource } from './core/constracts/data/transaction.datasource';
+import { TransactionRepoistory } from './data/repository/transaction.repository';
 
 @Module({
-  imports: [],
+  imports: [DatabaseModule],
   controllers: [TransactionController],
-  providers: [TransactionService],
+  providers: [
+    ...entitiesProviders,
+    {
+      provide: TransactionDatasource,
+      useClass: TransactionRepoistory,
+    },
+    {
+      provide: TRANSACTION_SERVICE_PROVIDE,
+      useClass: TransactionService,
+    },
+  ],
 })
 export class AppModule {}

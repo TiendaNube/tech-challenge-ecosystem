@@ -1,0 +1,13 @@
+version: '3.3'
+
+services:
+  postgres:
+    container_name: tech-challenge-ecosystem-db
+    image: postgres:15.6
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: r00t
+      POSTGRES_DB: tech-challenge-ecosystem-db
+    ports:
+      - "5432:5432"

@@ -1,7 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TransactionController } from '../transaction.controller';
-import { TransactionService } from '../../../core/services/transaction/TransactionService';
+import { TRANSACTION_SERVICE_PROVIDE } from '../../../core/services/transaction/TransactionService';
 import { TransactionInputFixture } from './fixtures/TransactionInputFixture';
+import { TransactionServiceFixture } from './fixtures/transaction.service.fixture';
 
 describe('TransactionController', () => {
   let transactionController: TransactionController;
@@ -9,7 +10,12 @@ describe('TransactionController', () => {
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
       controllers: [TransactionController],
-      providers: [TransactionService],
+      providers: [
+        {
+          provide: TRANSACTION_SERVICE_PROVIDE,
+          useClass: TransactionServiceFixture,
+        },
+      ],
     }).compile();
 
     transactionController = app.get<TransactionController>(
@@ -18,11 +24,11 @@ describe('TransactionController', () => {
   });
 
   describe('PUT /transaction', () => {
-    it('should return Transaction model', () => {
+    it('should return Transaction model', async () => {
       const transactionInput = TransactionInputFixture.default();
-      expect(transactionController.createTransaction(transactionInput)).toEqual(
-        transactionInput.toTransaction(),
-      );
+      expect(
+        await transactionController.createTransaction(transactionInput),
+      ).toEqual(transactionInput.toTransaction());
     });
   });
 });
