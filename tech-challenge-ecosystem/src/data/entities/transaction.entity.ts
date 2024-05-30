@@ -52,6 +52,7 @@ export class TransactionEntity {
         this.cardExpirationDate,
         this.cardCvv,
       ),
+      this.id
     );
   }
 }

@@ -8,9 +8,10 @@ import { DatabaseModule } from './data/database.module';
 import { entitiesProviders } from './data/entities/entities.providers';
 import { TransactionDatasource } from './core/constracts/data/transaction.datasource';
 import { TransactionRepoistory } from './data/repository/transaction.repository';
+import { TransactionProducerModule } from './messaging/producer/transaction/transaction.producer.module';
 
 @Module({
-  imports: [DatabaseModule],
+  imports: [TransactionProducerModule, DatabaseModule],
   controllers: [TransactionController],
   providers: [
     ...entitiesProviders,

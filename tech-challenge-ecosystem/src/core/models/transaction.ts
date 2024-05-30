@@ -7,5 +7,6 @@ export class Transaction {
     // TODO: Use an ENUM
     public paymentMethod: string,
     public card: Card,
+    public id?: string
   ) {}
 }
