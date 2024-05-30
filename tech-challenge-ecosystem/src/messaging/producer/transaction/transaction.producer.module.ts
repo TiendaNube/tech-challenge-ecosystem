@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
 import { SqsModule } from '@ssut/nestjs-sqs';
 import { SQSClient } from '@aws-sdk/client-sqs';
-import { TransactionMessageProducer } from './transaction.message.producer';
+import { TransactionSQSMessageProducer } from './transaction.message.producer';
+import { TRANSACTION_MESSAGE_PRODUCER_PROVIDE } from '../../../core/constracts/messaging/transaction.message.producer';
 
 // TODO: isolate into config service
 const config = {
@@ -37,8 +38,14 @@ const config = {
           })
     ],
     controllers: [],
-    providers: [TransactionMessageProducer],
-    exports: [TransactionMessageProducer]
+    providers: [{
+      provide: TRANSACTION_MESSAGE_PRODUCER_PROVIDE,
+      useClass: TransactionSQSMessageProducer,
+    }],
+    exports: [{
+      provide: TRANSACTION_MESSAGE_PRODUCER_PROVIDE,
+      useClass: TransactionSQSMessageProducer,
+    }]
 })
 
 export class TransactionProducerModule { }

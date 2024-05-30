@@ -1,6 +1,6 @@
 import { Transaction } from '../../models/transaction';
 
-export const TransactionDatasource = 'TransactionDatasource';
+export const TRANSACTION_DATASOURCE_PROVIDE = 'TransactionDatasource';
 export interface TransactionDatasource {
   create(transaction: Transaction): Promise<Transaction>;
 }

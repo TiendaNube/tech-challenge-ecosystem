@@ -6,7 +6,7 @@ import {
 } from './core/services/transaction/transaction.service';
 import { DatabaseModule } from './data/database.module';
 import { entitiesProviders } from './data/entities/entities.providers';
-import { TransactionDatasource } from './core/constracts/data/transaction.datasource';
+import { TRANSACTION_DATASOURCE_PROVIDE } from './core/constracts/data/transaction.datasource';
 import { TransactionRepoistory } from './data/repository/transaction.repository';
 import { TransactionProducerModule } from './messaging/producer/transaction/transaction.producer.module';
 
@@ -16,7 +16,7 @@ import { TransactionProducerModule } from './messaging/producer/transaction/tran
   providers: [
     ...entitiesProviders,
     {
-      provide: TransactionDatasource,
+      provide: TRANSACTION_DATASOURCE_PROVIDE,
       useClass: TransactionRepoistory,
     },
     {

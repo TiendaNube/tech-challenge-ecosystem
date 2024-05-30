@@ -1,15 +1,16 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Transaction } from '../../models/transaction';
-import { TransactionDatasource } from '../../constracts/data/transaction.datasource';
-import { TransactionMessageProducer } from '../../../messaging/producer/transaction/transaction.message.producer';
+import { TRANSACTION_DATASOURCE_PROVIDE, TransactionDatasource } from '../../constracts/data/transaction.datasource';
+import { TRANSACTION_MESSAGE_PRODUCER_PROVIDE, TransactionMessageProducer } from '../../constracts/messaging/transaction.message.producer';
 
 export const TRANSACTION_SERVICE_PROVIDE = 'TRANSACTION_SERVICE_PROVIDE';
 
 @Injectable()
 export class TransactionService {
   constructor(
-    @Inject(TransactionDatasource)
+    @Inject(TRANSACTION_DATASOURCE_PROVIDE)
     private transactionDatasource: TransactionDatasource,
+    @Inject(TRANSACTION_MESSAGE_PRODUCER_PROVIDE)
     private transactionMessageProducer: TransactionMessageProducer
   ) {}
   
