@@ -1,7 +1,7 @@
 import { Type } from "class-transformer"
-import { IsNumber, IsString, ValidateNested } from "class-validator"
+import { IsDate, IsDateString, IsNumber, IsString, ValidateNested } from "class-validator"
 import { CardMessageDTO } from "./card.message.dto"
-import { Transaction } from "src/core/models/transaction"
+import { PaymentMethod, Transaction } from "../../core/models/transaction"
 
 export class TransactionMessageDTO {
     @IsString()
@@ -10,11 +10,17 @@ export class TransactionMessageDTO {
     @IsNumber()
     public merchantId: number
 
+    @IsNumber()
+    public amount: number
+
     @IsString()
     public description: string
 
     @IsString()
     public paymentMethod: string
+
+    @IsDateString()
+    public createdAt: Date
 
     @ValidateNested()
     @Type(() => CardMessageDTO)
@@ -24,9 +30,11 @@ export class TransactionMessageDTO {
         return new Transaction(
             this.merchantId, 
             this.description,
-            this.paymentMethod,
+            PaymentMethod[this.paymentMethod],
+            this.amount,
             this.card.toCard(),
-            this.id
+            this.id,
+            this.createdAt
         )
     }
 }

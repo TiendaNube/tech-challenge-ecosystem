@@ -1,15 +1,16 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { SqsMessageHandler } from "@ssut/nestjs-sqs";
 import { Message } from "aws-sdk/clients/sqs";
-import { TRANSACTION_SERVICE_PROVIDE, TransactionService } from "../../../core/services/transaction/transaction.service";
 import { validateAndTransform } from "src/messaging/validators/validateAndTransform";
 import { TransactionMessageDTO } from "src/messaging/models/transaction.message.dto";
+import { PAYABLE_SERVICE_PROVIDE, PayableService } from "../../../core/services/payable/payable.service";
+
 
 @Injectable()
 export class TransactionSQSQueueConsumer {
   constructor(
-    @Inject(TRANSACTION_SERVICE_PROVIDE)
-    private transactionService: TransactionService
+    @Inject(PAYABLE_SERVICE_PROVIDE)
+    private payableService: PayableService
   ) {}
 
   // TODO: isolate into config service
@@ -19,7 +20,7 @@ export class TransactionSQSQueueConsumer {
         const msgBody = JSON.parse(message.Body);
         console.log('Consumer of Queue Start ....:', JSON.stringify(msgBody));
         const transactionMessage = await validateAndTransform(msgBody, TransactionMessageDTO)
-        await this.transactionService.handleTransactionCreation(transactionMessage.toTransaction())
+        await this.payableService.createPayableFromTransaction(transactionMessage.toTransaction())
     } catch(err) {
         console.log(err)
         throw err

@@ -1,11 +1,14 @@
 import { IsNumber, IsString, ValidateNested } from 'class-validator';
 import { CardInput } from './card.input';
 import { Type } from 'class-transformer';
-import { Transaction } from '../../core/models/transaction';
+import { PaymentMethod, Transaction } from '../../core/models/transaction';
 
 export class TransactionInput {
   @IsNumber()
   public merchantId: number;
+
+  @IsNumber()
+  public amount: number;
 
   @IsString()
   public description: string;
@@ -22,7 +25,8 @@ export class TransactionInput {
     return new Transaction(
       this.merchantId,
       this.description,
-      this.paymentMethod,
+      PaymentMethod[this.paymentMethod],
+      this.amount,
       this.card.toCard(),
     );
   }

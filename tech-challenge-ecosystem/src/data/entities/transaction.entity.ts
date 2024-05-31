@@ -1,12 +1,14 @@
 import { Card } from '../../core/models/card';
-import { Transaction } from '../../core/models/transaction';
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { PaymentMethod, Transaction } from '../../core/models/transaction';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { BaseEntity } from './base.entity';
+import { Payable } from 'src/core/models/payable';
+import { PayableEntity } from './payable.entity';
+
+export const TRANSACTION_TYPEORM_REPOSITORY = 'TRANSACTION_TYPEORM_REPOSITORY';
 
 @Entity()
-export class TransactionEntity {
-  @PrimaryGeneratedColumn('uuid')
-  public id: string;
-
+export class TransactionEntity extends BaseEntity {
   @Column({ name: 'merchant_id' })
   public merchantId: number;
 
@@ -15,6 +17,9 @@ export class TransactionEntity {
 
   @Column({ name: 'paymnet_method' })
   public paymentMethod: string;
+
+  @Column({ type: 'decimal', precision: 13, scale: 2, default: 0 })
+  public amount: number;
 
   @Column({ name: 'card_number' })
   public cardNumber: string;
@@ -28,9 +33,14 @@ export class TransactionEntity {
   @Column({ name: 'card_cvv' })
   public cardCvv: string;
 
+  @OneToMany(() => PayableEntity, (payable) => payable.transaction, { eager: false })
+  public payables: Payable[];
+
   public static fromTransaction(transaction: Transaction): TransactionEntity {
     const entity = new TransactionEntity();
+
     entity.merchantId = transaction.merchantId;
+    entity.amount = transaction.amount;
     entity.description = transaction.description;
     entity.paymentMethod = transaction.paymentMethod;
     entity.cardNumber = transaction.card.number;
@@ -45,14 +55,16 @@ export class TransactionEntity {
     return new Transaction(
       this.merchantId,
       this.description,
-      this.paymentMethod,
+      PaymentMethod[this.paymentMethod],
+      Number(this.amount),
       new Card(
         this.cardNumber,
         this.cardHolder,
         this.cardExpirationDate,
         this.cardCvv,
       ),
-      this.id
+      this.id,
+      this.createdAt
     );
   }
 }

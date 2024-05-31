@@ -10,6 +10,7 @@ export class TransactionService {
   constructor(
     @Inject(TRANSACTION_DATASOURCE_PROVIDE)
     private transactionDatasource: TransactionDatasource,
+    
     @Inject(TRANSACTION_MESSAGE_PRODUCER_PROVIDE)
     private transactionMessageProducer: TransactionMessageProducer
   ) {}
@@ -20,10 +21,5 @@ export class TransactionService {
     await this.transactionMessageProducer.sendMessage(createdTransaction)
 
     return createdTransaction
-  }
-
-  public async handleTransactionCreation(transaction: Transaction): Promise<Transaction> {
-    console.log("Transaction on handler: ", transaction)
-    return 
   }
 }
