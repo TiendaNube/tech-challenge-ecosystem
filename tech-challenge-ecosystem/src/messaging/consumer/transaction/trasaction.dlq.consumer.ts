@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { SqsMessageHandler } from '@ssut/nestjs-sqs';
 import { Message } from 'aws-sdk/clients/sqs';
 import { validateAndTransform } from '../../validators/validateAndTransform';
@@ -15,12 +15,15 @@ export class TransactionSQSDLQConsumer {
     private payableService: PayableService,
   ) {}
 
+  private logger = new Logger(TransactionSQSDLQConsumer.name)
   // TODO: isolate into config service
   @SqsMessageHandler(/** name: */ 'transactions-dlq', /** batch: */ false)
   async handleMessage(message: Message) {
     try {
       const msgBody = JSON.parse(message.Body);
-      console.log('Consumer of DLQ Start ....:', JSON.stringify(msgBody));
+
+      this.logger.log(`Starting consuming transactions-dlq: ${JSON.stringify(msgBody)}`);
+
       const transactionMessage = await validateAndTransform(
         msgBody,
         TransactionMessageDTO,
@@ -28,8 +31,9 @@ export class TransactionSQSDLQConsumer {
       await this.payableService.createPayableFromTransaction(
         transactionMessage.toTransaction(),
       );
+      this.logger.log('Consumed message successfully');      
     } catch (err) {
-      console.log(err);
+      this.logger.error(`Error on consuming transactions-dlq: ${err}`);
       throw err;
     }
   }

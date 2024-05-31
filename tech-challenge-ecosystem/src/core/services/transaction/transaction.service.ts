@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { Transaction } from '../../models/transaction';
 import {
   TRANSACTION_DATASOURCE_PROVIDE,
@@ -21,11 +21,15 @@ export class TransactionService {
     private transactionMessageProducer: TransactionMessageProducer,
   ) {}
 
+  private logger: Logger = new Logger(TransactionService.name)
+
   public async createTransaction(
     transaction: Transaction,
   ): Promise<Transaction> {
     const createdTransaction =
       await this.transactionDatasource.create(transaction);
+
+    this.logger.log(`Transaction created with id: ${createdTransaction.id}`)
 
     await this.transactionMessageProducer.sendMessage(createdTransaction);
 

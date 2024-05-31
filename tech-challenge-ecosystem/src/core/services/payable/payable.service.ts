@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { Transaction } from '../../models/transaction';
 import {
   PayableDatasource,
@@ -18,12 +18,21 @@ export class PayableService {
     private payableFromTransactionBusiness: PayableFromTransactionBusiness,
   ) {}
 
+  private logger = new Logger(PayableService.name)
+
   public async createPayableFromTransaction(
     transaction: Transaction,
   ): Promise<Payable> {
+    this.logger.log(`Creating payable from transaction (id=${transaction.id})`);      
+    
     const payable =
       this.payableFromTransactionBusiness.createPayable(transaction);
-    return this.payableDatasource.create(payable);
+    
+    const createdPayable = await this.payableDatasource.create(payable);
+
+    this.logger.log(`Created payable (id=${createdPayable.id}) from transaction (id=${transaction.id})`);  
+    
+    return createdPayable
   }
 
   public async summarizeByMerchant(
@@ -36,6 +45,8 @@ export class PayableService {
       startDate,
       endDate,
     );
+
+    this.logger.log("Found payables for summary")
 
     const summaryByStatus = new Map<PayableStatus, SummarizedPayables>();
 
@@ -52,8 +63,6 @@ export class PayableService {
       summary.discount += payable.discount;
       summary.subtotal += payable.subtotal;
     });
-
-    console.log(summaryByStatus);
 
     return Array.from(summaryByStatus.keys()).map((status) =>
       summaryByStatus.get(status),
