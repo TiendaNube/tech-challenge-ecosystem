@@ -1,8 +1,8 @@
 import { Card } from './card';
 
 export enum PaymentMethod {
-  CREDIT_CARD = "CREDIT_CARD",
-  DEBIT_CARD = "DEBIT_CARD"
+  CREDIT_CARD = 'CREDIT_CARD',
+  DEBIT_CARD = 'DEBIT_CARD',
 }
 
 export class Transaction {
@@ -13,6 +13,6 @@ export class Transaction {
     public amount: number,
     public card: Card,
     public id: string = undefined,
-    public createdAt: Date = undefined
+    public createdAt: Date = undefined,
   ) {}
 }

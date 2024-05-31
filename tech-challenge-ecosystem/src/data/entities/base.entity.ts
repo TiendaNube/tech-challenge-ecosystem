@@ -1,12 +1,16 @@
-import { CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import {
+  CreateDateColumn,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 export class BaseEntity {
-    @PrimaryGeneratedColumn('uuid')
-    public id: string;
+  @PrimaryGeneratedColumn('uuid')
+  public id: string;
 
-    @CreateDateColumn({name: "created_at", type: "timestamp" })
-    public createdAt: Date;
+  @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
+  public createdAt: Date;
 
-    @UpdateDateColumn({name: "updated_at", type: "timestamp" })
-    public updatedAt: Date;
+  @UpdateDateColumn({ name: 'updated_at', type: 'timestamp' })
+  public updatedAt: Date;
 }

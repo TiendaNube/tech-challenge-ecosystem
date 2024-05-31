@@ -21,5 +21,5 @@ export const databaseProviders = [
     },
   },
   ...entitiesProviders,
-  ...repositoryProviders
+  ...repositoryProviders,
 ];

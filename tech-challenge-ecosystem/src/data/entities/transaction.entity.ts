@@ -1,6 +1,6 @@
 import { Card } from '../../core/models/card';
 import { PaymentMethod, Transaction } from '../../core/models/transaction';
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Entity, Column, OneToMany } from 'typeorm';
 import { BaseEntity } from './base.entity';
 import { Payable } from 'src/core/models/payable';
 import { PayableEntity } from './payable.entity';
@@ -33,7 +33,9 @@ export class TransactionEntity extends BaseEntity {
   @Column({ name: 'card_cvv' })
   public cardCvv: string;
 
-  @OneToMany(() => PayableEntity, (payable) => payable.transaction, { eager: false })
+  @OneToMany(() => PayableEntity, (payable) => payable.transaction, {
+    eager: false,
+  })
   public payables: Payable[];
 
   public static fromTransaction(transaction: Transaction): TransactionEntity {
@@ -64,7 +66,7 @@ export class TransactionEntity extends BaseEntity {
         this.cardCvv,
       ),
       this.id,
-      this.createdAt
+      this.createdAt,
     );
   }
 }

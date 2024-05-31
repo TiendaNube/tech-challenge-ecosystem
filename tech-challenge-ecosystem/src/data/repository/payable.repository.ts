@@ -10,7 +10,6 @@ import {
   PayableEntity,
 } from '../entities/payable.entity';
 import { Payable } from '../../core/models/payable';
-import * as dayjs from 'dayjs';
 
 @Injectable()
 export class PayableRepository implements PayableDatasource {

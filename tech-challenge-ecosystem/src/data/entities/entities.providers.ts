@@ -1,5 +1,8 @@
 import { DataSource } from 'typeorm';
-import { TRANSACTION_TYPEORM_REPOSITORY, TransactionEntity } from './transaction.entity';
+import {
+  TRANSACTION_TYPEORM_REPOSITORY,
+  TransactionEntity,
+} from './transaction.entity';
 import { PAYABLE_TYPEORM_REPOSITORY, PayableEntity } from './payable.entity';
 
 export const entitiesProviders = [
@@ -15,5 +18,4 @@ export const entitiesProviders = [
       dataSource.getRepository(PayableEntity),
     inject: ['DATA_SOURCE'],
   },
-
 ];
