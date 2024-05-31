@@ -18,21 +18,23 @@ export class PayableService {
     private payableFromTransactionBusiness: PayableFromTransactionBusiness,
   ) {}
 
-  private logger = new Logger(PayableService.name)
+  private logger = new Logger(PayableService.name);
 
   public async createPayableFromTransaction(
     transaction: Transaction,
   ): Promise<Payable> {
-    this.logger.log(`Creating payable from transaction (id=${transaction.id})`);      
-    
+    this.logger.log(`Creating payable from transaction (id=${transaction.id})`);
+
     const payable =
       this.payableFromTransactionBusiness.createPayable(transaction);
-    
+
     const createdPayable = await this.payableDatasource.create(payable);
 
-    this.logger.log(`Created payable (id=${createdPayable.id}) from transaction (id=${transaction.id})`);  
-    
-    return createdPayable
+    this.logger.log(
+      `Created payable (id=${createdPayable.id}) from transaction (id=${transaction.id})`,
+    );
+
+    return createdPayable;
   }
 
   public async summarizeByMerchant(
@@ -46,7 +48,7 @@ export class PayableService {
       endDate,
     );
 
-    this.logger.log("Found payables for summary")
+    // this.logger.log('Found payables for summary');
 
     const summaryByStatus = new Map<PayableStatus, SummarizedPayables>();
 

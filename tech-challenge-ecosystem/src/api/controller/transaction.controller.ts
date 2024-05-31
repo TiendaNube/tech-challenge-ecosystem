@@ -13,13 +13,13 @@ export class TransactionController {
     private readonly transactionService: TransactionService,
   ) {}
 
-  private readonly logger = new Logger(TransactionController.name)
+  private readonly logger = new Logger(TransactionController.name);
 
   @Put()
   createTransaction(
     @Body() transactionInput: TransactionInput,
   ): Promise<Transaction> {
-    this.logger.log("Starting creating transaction")
+    this.logger.log('Starting creating transaction');
     return this.transactionService.createTransaction(
       transactionInput.toTransaction(),
     );

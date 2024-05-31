@@ -21,7 +21,7 @@ export class TransactionService {
     private transactionMessageProducer: TransactionMessageProducer,
   ) {}
 
-  private logger: Logger = new Logger(TransactionService.name)
+  private logger: Logger = new Logger(TransactionService.name);
 
   public async createTransaction(
     transaction: Transaction,
@@ -29,7 +29,7 @@ export class TransactionService {
     const createdTransaction =
       await this.transactionDatasource.create(transaction);
 
-    this.logger.log(`Transaction created with id: ${createdTransaction.id}`)
+    this.logger.log(`Transaction created with id: ${createdTransaction.id}`);
 
     await this.transactionMessageProducer.sendMessage(createdTransaction);
 

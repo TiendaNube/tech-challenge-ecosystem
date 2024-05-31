@@ -15,7 +15,7 @@ export class TransactionSQSQueueConsumer {
     private payableService: PayableService,
   ) {}
 
-  private logger = new Logger(TransactionSQSQueueConsumer.name)
+  private logger = new Logger(TransactionSQSQueueConsumer.name);
 
   // TODO: isolate into config service
   @SqsMessageHandler(/** name: */ 'transactions-queue', /** batch: */ false)
@@ -23,8 +23,10 @@ export class TransactionSQSQueueConsumer {
     try {
       const msgBody = JSON.parse(message.Body);
 
-      this.logger.log(`Starting consuming transactions-queue: ${JSON.stringify(msgBody)}`);      
-      
+      this.logger.log(
+        `Starting consuming transactions-queue: ${JSON.stringify(msgBody)}`,
+      );
+
       const transactionMessage = await validateAndTransform(
         msgBody,
         TransactionMessageDTO,
@@ -32,8 +34,7 @@ export class TransactionSQSQueueConsumer {
       await this.payableService.createPayableFromTransaction(
         transactionMessage.toTransaction(),
       );
-      this.logger.log('Consumed message successfully');      
-
+      this.logger.log('Consumed message successfully');
     } catch (err) {
       this.logger.error(`Error on consuming transactions-dlq: ${err}`);
       throw err;
