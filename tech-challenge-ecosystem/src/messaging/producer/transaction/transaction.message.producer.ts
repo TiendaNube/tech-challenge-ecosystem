@@ -17,18 +17,17 @@ export class TransactionSQSMessageProducer
       body: JSON.stringify(body),
     };
     this.logger.log(
-      `Sending message to transactions-queue: ${JSON.stringify(message)}`,
+      `Sending message to ${process.env.TRANSACTIONS_QUEUE_NAME}: ${JSON.stringify(message)}`,
     );
     try {
       await this.sqsService.send(
-        // TODO: isolate into config service
-        'transactions-queue',
+        process.env.TRANSACTIONS_QUEUE_NAME,
         message,
       );
     } catch (error) {
       // TODO: improve error handling
       this.logger.error(
-        `Error on sending message to transactions-queue: ${error}`,
+        `Error on sending message to ${process.env.TRANSACTIONS_QUEUE_NAME}: ${error}`,
       );
       console.log('error in producing image!', error);
       throw error;

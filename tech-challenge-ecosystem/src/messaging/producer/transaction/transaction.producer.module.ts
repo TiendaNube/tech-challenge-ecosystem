@@ -7,24 +7,18 @@ import { TransactionSQSQueueConsumer } from '../../consumer/transaction/trasacti
 import { ServicesModule } from 'src/core/services/services.module';
 import { TransactionSQSDLQConsumer } from '../../consumer/transaction/trasaction.dlq.consumer';
 
-// TODO: isolate into config service
-const config = {
-  AWS_REGION: 'us-east-1',
-  ACCESS_KEY_ID: 'ACCESS_KEY_ID',
-  SECRET_ACCESS_KEY: 'SECRET_ACCESS_KEY',
-};
-
 const sharedSQSRegistry = {
-  region: config.AWS_REGION, // url of the queue
+  region: process.env.AWS_REGION, 
   sqs: new SQSClient({
-    region: config.AWS_REGION,
+    region: process.env.AWS_REGIONN,
     credentials: {
-      accessKeyId: config.ACCESS_KEY_ID,
-      secretAccessKey: config.SECRET_ACCESS_KEY,
+      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+      secretAccessKey: process.env.AWS_ACCESS_KEY_ID,
     },
   }),
 };
 
+console.log(process.env)
 @Module({
   imports: [
     ServicesModule,
@@ -33,26 +27,20 @@ const sharedSQSRegistry = {
         return {
           consumers: [
             {
-              // TODO: isolate into config service
-              name: 'transactions-queue',
-              // TODO: isolate into config service
-              queueUrl: 'http://localhost:4566/000000000000/transactions-queue',
+              name: process.env.TRANSACTIONS_QUEUE_NAME,
+              queueUrl: process.env.TRANSACTIONS_QUEUE_URL,
               ...sharedSQSRegistry,
             },
             {
-              // TODO: isolate into config service
-              name: 'transactions-dlq',
-              // TODO: isolate into config service
-              queueUrl: 'http://localhost:4566/000000000000/transactions-dlq',
+              name: process.env.TRANSACTIONS_DLQ_NAME,
+              queueUrl: process.env.TRANSACTIONS_DLQ_URL,
               ...sharedSQSRegistry,
             },
           ],
           producers: [
             {
-              // TODO: isolate into config service
-              name: 'transactions-queue',
-              // TODO: isolate into config service
-              queueUrl: 'http://localhost:4566/000000000000/transactions-queue',
+              name: process.env.TRANSACTIONS_QUEUE_NAME,
+              queueUrl: process.env.TRANSACTIONS_QUEUE_URL,
               ...sharedSQSRegistry,
             },
           ],

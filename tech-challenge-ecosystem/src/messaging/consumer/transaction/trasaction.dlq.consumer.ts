@@ -16,8 +16,8 @@ export class TransactionSQSDLQConsumer {
   ) {}
 
   private logger = new Logger(TransactionSQSDLQConsumer.name);
-  // TODO: isolate into config service
-  @SqsMessageHandler(/** name: */ 'transactions-dlq', /** batch: */ false)
+
+  @SqsMessageHandler(/** name: */ process.env.TRANSACTIONS_DLQ_NAME, /** batch: */ false)
   async handleMessage(message: Message) {
     try {
       const msgBody = JSON.parse(message.Body);
