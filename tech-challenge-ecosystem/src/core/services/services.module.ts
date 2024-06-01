@@ -5,7 +5,7 @@ import {
 } from './transaction/transaction.service';
 import { DatabaseModule } from '../../data/database.module';
 import { TRANSACTION_MESSAGE_PRODUCER_PROVIDE } from '../constracts/messaging/transaction.message.producer';
-import { TransactionSQSMessageProducer } from 'src/messaging/producer/transaction/transaction.message.producer';
+import { TransactionSQSMessageProducer } from 'src/messaging/sqs/transaction/transaction.message.producer';
 import { PayableFromTransactionBusiness } from '../business/payable/payable.from.transaction.business';
 import {
   PAYABLE_SERVICE_PROVIDE,

@@ -6,7 +6,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { CardMessageDTO } from './card.message.dto';
-import { PaymentMethod, Transaction } from '../../core/models/transaction';
+import { PaymentMethod, Transaction } from '../../../core/models/transaction';
 
 export class TransactionMessageDTO {
   @IsString()

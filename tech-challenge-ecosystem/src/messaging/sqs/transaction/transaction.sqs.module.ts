@@ -3,9 +3,9 @@ import { SqsModule } from '@ssut/nestjs-sqs';
 import { SQSClient } from '@aws-sdk/client-sqs';
 import { TransactionSQSMessageProducer } from './transaction.message.producer';
 import { TRANSACTION_MESSAGE_PRODUCER_PROVIDE } from '../../../core/constracts/messaging/transaction.message.producer';
-import { TransactionSQSQueueConsumer } from '../../consumer/transaction/trasaction.queue.consumer';
+import { TransactionSQSQueueConsumer } from '../consumer/transaction/trasaction.queue.consumer';
 import { ServicesModule } from 'src/core/services/services.module';
-import { TransactionSQSDLQConsumer } from '../../consumer/transaction/trasaction.dlq.consumer';
+import { TransactionSQSDLQConsumer } from '../consumer/transaction/trasaction.dlq.consumer';
 
 const sharedSQSRegistry = {
   region: process.env.AWS_REGION,
@@ -63,4 +63,4 @@ const sharedSQSRegistry = {
     },
   ],
 })
-export class TransactionProducerModule {}
+export class TransactionSQSModule {}

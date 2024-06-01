@@ -1,5 +1,5 @@
 import { IsString } from 'class-validator';
-import { Card } from '../../core/models/card';
+import { Card } from '../../../core/models/card';
 
 export class CardMessageDTO {
   @IsString()

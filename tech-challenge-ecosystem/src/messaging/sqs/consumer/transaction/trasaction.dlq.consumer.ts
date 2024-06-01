@@ -1,12 +1,12 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { SqsMessageHandler } from '@ssut/nestjs-sqs';
 import { Message } from 'aws-sdk/clients/sqs';
-import { validateAndTransform } from '../../validators/validateAndTransform';
+import { validateAndTransform } from '../../../validators/validateAndTransform';
 import { TransactionMessageDTO } from '../../models/transaction.message.dto';
 import {
   PAYABLE_SERVICE_PROVIDE,
   PayableService,
-} from '../../../core/services/payable/payable.service';
+} from '../../../../core/services/payable/payable.service';
 
 @Injectable()
 export class TransactionSQSDLQConsumer {
