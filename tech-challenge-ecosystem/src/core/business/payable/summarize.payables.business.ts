@@ -2,6 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { Payable, PayableStatus } from '../../../core/models/payable';
 import { SummarizedPayables } from '../../../core/models/summarized.payables';
 
+export const SUMMARIZE_PAYABLE_BUSINESS_PROVIDE =
+  'SUMMARIZE_PAYABLE_BUSINESS_PROVIDE';
+
 @Injectable()
 export class SummarizePayableBusiness {
   public summarize(payables: Payable[]) {

@@ -3,6 +3,9 @@ import { PaymentMethod, Transaction } from '../../models/transaction';
 import * as dayjs from 'dayjs';
 import { PayableStatus, Payable } from '../../models/payable';
 
+export const PAYABLE_FROM_TRANSACTION_BUSINESS_PROVIDE =
+  'PAYABLE_FROM_TRANSACTION_BUSINESS_PROVIDE';
+
 @Injectable()
 export class PayableFromTransactionBusiness {
   public generatePayableProperties(paymentMethod: PaymentMethod) {

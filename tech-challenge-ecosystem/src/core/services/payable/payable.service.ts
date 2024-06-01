@@ -4,9 +4,15 @@ import {
   PayableDatasource,
   PAYABLE_DATASOURCE_PROVIDE,
 } from '../../../core/constracts/data/payable.datasource';
-import { PayableFromTransactionBusiness } from '../../../core/business/payable/payable.from.transaction.business';
+import {
+  PAYABLE_FROM_TRANSACTION_BUSINESS_PROVIDE,
+  PayableFromTransactionBusiness,
+} from '../../../core/business/payable/payable.from.transaction.business';
 import { Payable } from '../../../core/models/payable';
-import { SummarizePayableBusiness } from '../../../core/business/payable/summarize.payables.business';
+import {
+  SUMMARIZE_PAYABLE_BUSINESS_PROVIDE,
+  SummarizePayableBusiness,
+} from '../../../core/business/payable/summarize.payables.business';
 
 export const PAYABLE_SERVICE_PROVIDE = 'PAYABLE_SERVICE_PROVIDE';
 
@@ -15,7 +21,9 @@ export class PayableService {
   constructor(
     @Inject(PAYABLE_DATASOURCE_PROVIDE)
     private payableDatasource: PayableDatasource,
+    @Inject(PAYABLE_FROM_TRANSACTION_BUSINESS_PROVIDE)
     private payableFromTransactionBusiness: PayableFromTransactionBusiness,
+    @Inject(SUMMARIZE_PAYABLE_BUSINESS_PROVIDE)
     private summarizePayableBusiness: SummarizePayableBusiness,
   ) {}
 
