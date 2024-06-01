@@ -3,11 +3,11 @@ import { Transaction } from '../../models/transaction';
 import {
   TRANSACTION_DATASOURCE_PROVIDE,
   TransactionDatasource,
-} from '../../constracts/data/transaction.datasource';
+} from '../../contracts/data/transaction.datasource';
 import {
   TRANSACTION_MESSAGE_PRODUCER_PROVIDE,
   TransactionMessageProducer,
-} from '../../constracts/messaging/transaction.message.producer';
+} from '../../contracts/messaging/transaction.message.producer';
 
 export const TRANSACTION_SERVICE_PROVIDE = 'TRANSACTION_SERVICE_PROVIDE';
 

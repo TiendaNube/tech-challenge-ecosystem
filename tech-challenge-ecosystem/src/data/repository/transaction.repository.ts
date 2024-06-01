@@ -1,4 +1,4 @@
-import { TransactionDatasource } from '../../core/constracts/data/transaction.datasource';
+import { TransactionDatasource } from '../../core/contracts/data/transaction.datasource';
 import { Repository } from 'typeorm';
 import {
   TRANSACTION_TYPEORM_REPOSITORY,

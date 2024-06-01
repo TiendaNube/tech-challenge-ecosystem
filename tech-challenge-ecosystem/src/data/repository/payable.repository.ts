@@ -4,7 +4,7 @@ import {
   TransactionEntity,
 } from '../entities/transaction.entity';
 import { Inject, Injectable } from '@nestjs/common';
-import { PayableDatasource } from 'src/core/constracts/data/payable.datasource';
+import { PayableDatasource } from 'src/core/contracts/data/payable.datasource';
 import {
   PAYABLE_TYPEORM_REPOSITORY,
   PayableEntity,

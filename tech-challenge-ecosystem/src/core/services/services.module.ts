@@ -4,7 +4,7 @@ import {
   TransactionService,
 } from './transaction/transaction.service';
 import { DatabaseModule } from '../../data/database.module';
-import { TRANSACTION_MESSAGE_PRODUCER_PROVIDE } from '../constracts/messaging/transaction.message.producer';
+import { TRANSACTION_MESSAGE_PRODUCER_PROVIDE } from '../contracts/messaging/transaction.message.producer';
 import { TransactionSQSMessageProducer } from 'src/messaging/sqs/transaction/transaction.message.producer';
 import {
   PAYABLE_FROM_TRANSACTION_BUSINESS_PROVIDE,

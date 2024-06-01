@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { PAYABLE_TYPEORM_REPOSITORY } from '../../entities/payable.entity';
 import { TRANSACTION_TYPEORM_REPOSITORY } from '../../entities/transaction.entity';
 import { PayableRepository } from '../payable.repository';
-import { PAYABLE_DATASOURCE_PROVIDE } from '../../../core/constracts/data/payable.datasource';
+import { PAYABLE_DATASOURCE_PROVIDE } from '../../../core/contracts/data/payable.datasource';
 import { transactionTypeormRepositoryFixture } from './fixtures/transaction.typeorm.repository.fixture';
 import { payableTypeormRepositoryFixture } from './fixtures/payable.typeorm.repository.fixture';
 import { PayableEntityFixture } from '../../entities/fixtures/payable.entity.fixture';

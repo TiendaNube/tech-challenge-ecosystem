@@ -4,10 +4,10 @@ import {
   TRANSACTION_SERVICE_PROVIDE,
   TransactionService,
 } from '../transaction.service';
-import { TRANSACTION_MESSAGE_PRODUCER_PROVIDE } from '../../../constracts/messaging/transaction.message.producer';
-import { transactionMessageProducerFixture } from '../../../constracts/messaging/fixture/transaction.message.producer.fixture';
-import { TRANSACTION_DATASOURCE_PROVIDE } from '../../../constracts/data/transaction.datasource';
-import { transactionDatasourceFixture } from '../../../constracts/data/fixtures/transaction.datasource.fixture';
+import { TRANSACTION_MESSAGE_PRODUCER_PROVIDE } from '../../../contracts/messaging/transaction.message.producer';
+import { transactionMessageProducerFixture } from '../../../contracts/messaging/fixture/transaction.message.producer.fixture';
+import { TRANSACTION_DATASOURCE_PROVIDE } from '../../../contracts/data/transaction.datasource';
+import { transactionDatasourceFixture } from '../../../contracts/data/fixtures/transaction.datasource.fixture';
 
 describe('TransactionService', () => {
   let transactionService: TransactionService;

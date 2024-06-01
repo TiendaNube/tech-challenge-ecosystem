@@ -6,7 +6,7 @@ import {
 import { transactionTypeormRepositoryFixture } from './fixtures/transaction.typeorm.repository.fixture';
 import { TransactionFixture } from '../../../core/models/test/fixtures/transaction.fixture';
 import { TransactionRepository } from '../transaction.repository';
-import { TRANSACTION_DATASOURCE_PROVIDE } from '../../../core/constracts/data/transaction.datasource';
+import { TRANSACTION_DATASOURCE_PROVIDE } from '../../../core/contracts/data/transaction.datasource';
 
 describe('TransactionRepository', () => {
   let transactionRepository: TransactionRepository;

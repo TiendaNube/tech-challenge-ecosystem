@@ -3,7 +3,7 @@ import { Transaction } from '../../models/transaction';
 import {
   PayableDatasource,
   PAYABLE_DATASOURCE_PROVIDE,
-} from '../../../core/constracts/data/payable.datasource';
+} from '../../contracts/data/payable.datasource';
 import {
   PAYABLE_FROM_TRANSACTION_BUSINESS_PROVIDE,
   PayableFromTransactionBusiness,

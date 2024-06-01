@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { PAYABLE_DATASOURCE_PROVIDE } from '../../../constracts/data/payable.datasource';
+import { PAYABLE_DATASOURCE_PROVIDE } from '../../../contracts/data/payable.datasource';
 import { PayableFixture } from '../../../models/test/fixtures/payable.fixture';
 import { TransactionFixture } from '../../../models/test/fixtures/transaction.fixture';
 import { PAYABLE_SERVICE_PROVIDE, PayableService } from '../payable.service';
@@ -7,7 +7,7 @@ import { PAYABLE_FROM_TRANSACTION_BUSINESS_PROVIDE } from '../../../business/pay
 import { payableFromTransactionBusinessFixture } from '../../../business/test/fixture/payable.from.transaction.business.fixture';
 import { summarizePayableBusinessFixture } from '../../../business/test/fixture/summarize.payable.business.fixture';
 import { SUMMARIZE_PAYABLE_BUSINESS_PROVIDE } from '../../../business/payable/summarize.payables.business';
-import { payableDatasourceFixture } from '../../../constracts/data/fixtures/payable.datasource.fixture';
+import { payableDatasourceFixture } from '../../../contracts/data/fixtures/payable.datasource.fixture';
 import { SummarizedPayablesFixture } from '../../../../api/controller/test/fixtures/summarized.payable.fixture';
 
 describe('PayableService', () => {

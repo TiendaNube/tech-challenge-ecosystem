@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { SqsService } from '@ssut/nestjs-sqs';
 import { Transaction } from '../../../core/models/transaction';
 import { v4 as uuid } from 'uuid';
-import { TransactionMessageProducer } from '../../../core/constracts/messaging/transaction.message.producer';
+import { TransactionMessageProducer } from '../../../core/contracts/messaging/transaction.message.producer';
 
 @Injectable()
 export class TransactionSQSMessageProducer

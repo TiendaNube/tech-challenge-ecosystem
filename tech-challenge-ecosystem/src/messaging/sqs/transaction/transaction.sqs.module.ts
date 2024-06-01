@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { SqsModule } from '@ssut/nestjs-sqs';
 import { SQSClient } from '@aws-sdk/client-sqs';
 import { TransactionSQSMessageProducer } from './transaction.message.producer';
-import { TRANSACTION_MESSAGE_PRODUCER_PROVIDE } from '../../../core/constracts/messaging/transaction.message.producer';
+import { TRANSACTION_MESSAGE_PRODUCER_PROVIDE } from '../../../core/contracts/messaging/transaction.message.producer';
 import { TransactionSQSQueueConsumer } from '../consumer/transaction/trasaction.queue.consumer';
 import { ServicesModule } from 'src/core/services/services.module';
 import { TransactionSQSDLQConsumer } from '../consumer/transaction/trasaction.dlq.consumer';
