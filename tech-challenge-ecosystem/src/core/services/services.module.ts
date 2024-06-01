@@ -11,6 +11,7 @@ import {
   PAYABLE_SERVICE_PROVIDE,
   PayableService,
 } from './payable/payable.service';
+import { SummarizePayableBusiness } from '../business/payable/summarize.payables.business';
 
 @Module({
   imports: [DatabaseModule],
@@ -28,6 +29,7 @@ import {
       useClass: TransactionSQSMessageProducer,
     },
     PayableFromTransactionBusiness,
+    SummarizePayableBusiness,
   ],
   exports: [
     {

@@ -5,8 +5,8 @@ import {
   PAYABLE_DATASOURCE_PROVIDE,
 } from '../../../core/constracts/data/payable.datasource';
 import { PayableFromTransactionBusiness } from '../../../core/business/payable/payable.from.transaction.business';
-import { Payable, PayableStatus } from '../../../core/models/payable';
-import { SummarizedPayables } from 'src/core/models/summarized.payables';
+import { Payable } from '../../../core/models/payable';
+import { SummarizePayableBusiness } from 'src/core/business/payable/summarize.payables.business';
 
 export const PAYABLE_SERVICE_PROVIDE = 'PAYABLE_SERVICE_PROVIDE';
 
@@ -16,6 +16,7 @@ export class PayableService {
     @Inject(PAYABLE_DATASOURCE_PROVIDE)
     private payableDatasource: PayableDatasource,
     private payableFromTransactionBusiness: PayableFromTransactionBusiness,
+    private summarizePayableBusiness: SummarizePayableBusiness,
   ) {}
 
   private logger = new Logger(PayableService.name);
@@ -48,26 +49,8 @@ export class PayableService {
       endDate,
     );
 
-    // this.logger.log('Found payables for summary');
+    this.logger.log(`Found ${payables.length} payables for summary `);
 
-    const summaryByStatus = new Map<PayableStatus, SummarizedPayables>();
-
-    payables.forEach((payable) => {
-      if (!summaryByStatus.get(payable.status)) {
-        summaryByStatus.set(
-          payable.status,
-          new SummarizedPayables(payable.status),
-        );
-      }
-
-      const summary = summaryByStatus.get(payable.status);
-      summary.amount += payable.amount;
-      summary.discount += payable.discount;
-      summary.subtotal += payable.subtotal;
-    });
-
-    return Array.from(summaryByStatus.keys()).map((status) =>
-      summaryByStatus.get(status),
-    );
+    return this.summarizePayableBusiness.summarize(payables);
   }
 }
