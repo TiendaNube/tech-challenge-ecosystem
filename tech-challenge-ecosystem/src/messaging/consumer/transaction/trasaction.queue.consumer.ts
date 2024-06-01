@@ -13,11 +13,14 @@ export class TransactionSQSQueueConsumer {
   constructor(
     @Inject(PAYABLE_SERVICE_PROVIDE)
     private payableService: PayableService,
-  ){}
+  ) {}
 
   private logger = new Logger(TransactionSQSQueueConsumer.name);
 
-  @SqsMessageHandler(/** name: */ process.env.TRANSACTIONS_QUEUE_NAME, /** batch: */ false)
+  @SqsMessageHandler(
+    /** name: */ process.env.TRANSACTIONS_QUEUE_NAME,
+    /** batch: */ false,
+  )
   async handleMessage(message: Message) {
     try {
       const msgBody = JSON.parse(message.Body);
@@ -35,7 +38,9 @@ export class TransactionSQSQueueConsumer {
       );
       this.logger.log('Consumed message successfully');
     } catch (err) {
-      this.logger.error(`Error on consuming ${process.env.TRANSACTIONS_QUEUE_NAME}: ${err}`);
+      this.logger.error(
+        `Error on consuming ${process.env.TRANSACTIONS_QUEUE_NAME}: ${err}`,
+      );
       throw err;
     }
   }

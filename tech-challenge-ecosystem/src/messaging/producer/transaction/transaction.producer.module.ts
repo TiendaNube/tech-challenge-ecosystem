@@ -8,7 +8,7 @@ import { ServicesModule } from 'src/core/services/services.module';
 import { TransactionSQSDLQConsumer } from '../../consumer/transaction/trasaction.dlq.consumer';
 
 const sharedSQSRegistry = {
-  region: process.env.AWS_REGION, 
+  region: process.env.AWS_REGION,
   sqs: new SQSClient({
     region: process.env.AWS_REGIONN,
     credentials: {
@@ -18,7 +18,6 @@ const sharedSQSRegistry = {
   }),
 };
 
-console.log(process.env)
 @Module({
   imports: [
     ServicesModule,

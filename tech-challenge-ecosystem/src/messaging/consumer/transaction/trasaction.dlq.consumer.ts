@@ -17,7 +17,10 @@ export class TransactionSQSDLQConsumer {
 
   private logger = new Logger(TransactionSQSDLQConsumer.name);
 
-  @SqsMessageHandler(/** name: */ process.env.TRANSACTIONS_DLQ_NAME, /** batch: */ false)
+  @SqsMessageHandler(
+    /** name: */ process.env.TRANSACTIONS_DLQ_NAME,
+    /** batch: */ false,
+  )
   async handleMessage(message: Message) {
     try {
       const msgBody = JSON.parse(message.Body);
