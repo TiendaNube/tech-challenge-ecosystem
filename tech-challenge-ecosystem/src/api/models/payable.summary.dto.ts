@@ -1,5 +1,5 @@
-import { PayableStatus } from 'src/core/models/payable';
-import { SummarizedPayables } from 'src/core/models/summarized.payables';
+import { PayableStatus } from '../../core/models/payable';
+import { SummarizedPayables } from '../../core/models/summarized.payables';
 
 export class PayableSummaryDTO {
   public paidAmount: number = 0;

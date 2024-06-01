@@ -6,7 +6,7 @@ import {
 } from '../../../core/constracts/data/payable.datasource';
 import { PayableFromTransactionBusiness } from '../../../core/business/payable/payable.from.transaction.business';
 import { Payable } from '../../../core/models/payable';
-import { SummarizePayableBusiness } from 'src/core/business/payable/summarize.payables.business';
+import { SummarizePayableBusiness } from '../../../core/business/payable/summarize.payables.business';
 
 export const PAYABLE_SERVICE_PROVIDE = 'PAYABLE_SERVICE_PROVIDE';
 
