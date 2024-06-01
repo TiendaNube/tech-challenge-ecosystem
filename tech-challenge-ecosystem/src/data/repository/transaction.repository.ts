@@ -8,7 +8,7 @@ import { Transaction } from '../../core/models/transaction';
 import { Inject, Injectable } from '@nestjs/common';
 
 @Injectable()
-export class TransactionRepoistory implements TransactionDatasource {
+export class TransactionRepository implements TransactionDatasource {
   constructor(
     @Inject(TRANSACTION_TYPEORM_REPOSITORY)
     private transactionTypeormRepository: Repository<TransactionEntity>,
