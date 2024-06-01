@@ -4,7 +4,7 @@ import { Card } from '../../core/models/card';
 // TODO: isolate this min length in business layer
 export const CARD_NUMBER_MIN_LENGTH = 4;
 
-export class CardInput {
+export class CardDTO {
   @IsString()
   @MinLength(CARD_NUMBER_MIN_LENGTH)
   public number: string;

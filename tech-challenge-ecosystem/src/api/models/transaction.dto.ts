@@ -1,9 +1,9 @@
 import { IsNumber, IsString, ValidateNested } from 'class-validator';
-import { CardInput } from './card.input';
+import { CardDTO } from './card.dto';
 import { Type } from 'class-transformer';
 import { PaymentMethod, Transaction } from '../../core/models/transaction';
 
-export class TransactionInput {
+export class TransactionDTO {
   @IsNumber()
   public merchantId: number;
 
@@ -13,13 +13,12 @@ export class TransactionInput {
   @IsString()
   public description: string;
 
-  // TODO: Use an ENUM
   @IsString()
   public paymentMethod: string;
 
   @ValidateNested()
-  @Type(() => CardInput)
-  public card: CardInput;
+  @Type(() => CardDTO)
+  public card: CardDTO;
 
   public toTransaction(): Transaction {
     return new Transaction(

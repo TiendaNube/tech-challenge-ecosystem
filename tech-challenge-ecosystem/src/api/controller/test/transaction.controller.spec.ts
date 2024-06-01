@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TransactionController } from '../transaction.controller';
 import { TRANSACTION_SERVICE_PROVIDE } from '../../../core/services/transaction/transaction.service';
-import { TransactionInputFixture } from './fixtures/transaction.input.fixture';
+import { TransactionDTOFixture } from './fixtures/transaction.dto.fixture';
 import { TransactionServiceFixture } from './fixtures/transaction.service.fixture';
 
 describe('TransactionController', () => {
@@ -25,7 +25,7 @@ describe('TransactionController', () => {
 
   describe('PUT /transaction', () => {
     it('should return Transaction model', async () => {
-      const transactionInput = TransactionInputFixture.default();
+      const transactionInput = TransactionDTOFixture.default();
       expect(
         await transactionController.createTransaction(transactionInput),
       ).toEqual(transactionInput.toTransaction());

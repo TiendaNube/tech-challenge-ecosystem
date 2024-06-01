@@ -3,7 +3,7 @@ import {
   TRANSACTION_SERVICE_PROVIDE,
   TransactionService,
 } from '../../core/services/transaction/transaction.service';
-import { TransactionInput } from '../models/transaction.input';
+import { TransactionDTO } from '../models/transaction.dto';
 import { Transaction } from '../../core/models/transaction';
 
 @Controller('/transaction')
@@ -17,7 +17,7 @@ export class TransactionController {
 
   @Put()
   createTransaction(
-    @Body() transactionInput: TransactionInput,
+    @Body() transactionInput: TransactionDTO,
   ): Promise<Transaction> {
     this.logger.log('Starting creating transaction');
     return this.transactionService.createTransaction(

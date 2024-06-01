@@ -1,8 +1,8 @@
-import { CardInput } from '../../../models/card.input';
+import { CardDTO } from '../../../models/card.dto';
 
-export class CardInputFixture {
-  public static default(): CardInput {
-    const cardInput = new CardInput();
+export class CardDTOFixture {
+  public static default(): CardDTO {
+    const cardInput = new CardDTO();
     cardInput.number = '1234567898754321';
     cardInput.holder = 'John Smith';
     cardInput.expirationDate = '12/2028';

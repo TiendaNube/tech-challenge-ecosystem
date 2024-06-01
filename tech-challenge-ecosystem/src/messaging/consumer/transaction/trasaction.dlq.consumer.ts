@@ -26,7 +26,7 @@ export class TransactionSQSDLQConsumer {
       const msgBody = JSON.parse(message.Body);
 
       this.logger.log(
-        `Starting consuming transactions-dlq: ${JSON.stringify(msgBody)}`,
+        `Starting consuming ${process.env.TRANSACTIONS_DLQ_NAME}: ${JSON.stringify(msgBody)}`,
       );
 
       const transactionMessage = await validateAndTransform(
@@ -38,7 +38,9 @@ export class TransactionSQSDLQConsumer {
       );
       this.logger.log('Consumed message successfully');
     } catch (err) {
-      this.logger.error(`Error on consuming transactions-dlq: ${err}`);
+      this.logger.error(
+        `Error on consuming ${process.env.TRANSACTIONS_DLQ_NAME}: ${err}`,
+      );
       throw err;
     }
   }
