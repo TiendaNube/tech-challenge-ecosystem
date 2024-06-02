@@ -1,7 +1,6 @@
 import { IsString, MinLength } from 'class-validator';
 import { Card } from '../../core/models/card';
 
-// TODO: isolate this min length in business layer
 export const CARD_NUMBER_MIN_LENGTH = 4;
 
 export class CardDTO {

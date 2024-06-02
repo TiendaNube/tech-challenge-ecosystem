@@ -22,7 +22,6 @@ export class TransactionSQSMessageProducer
     try {
       await this.sqsService.send(process.env.TRANSACTIONS_QUEUE_NAME, message);
     } catch (error) {
-      // TODO: improve error handling
       this.logger.error(
         `Error on sending message to ${process.env.TRANSACTIONS_QUEUE_NAME}: ${error}`,
       );

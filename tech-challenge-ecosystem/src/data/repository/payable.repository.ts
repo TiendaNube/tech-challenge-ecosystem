@@ -26,7 +26,6 @@ export class PayableRepository implements PayableDatasource {
     });
 
     if (!transaction) {
-      // TODO: Improve error handling
       throw new Error('transaction not found');
     }
 
