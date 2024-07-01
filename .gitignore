@@ -273,3 +273,6 @@ MigrationBackup/
 FodyWeavers.xsd
 # VS Code
 .code-workspace
+
+git config --global user.name "Lucas Pernas"
+git config --global user.email lucas.gabriel.pf@gmail.com
