@@ -8,11 +8,12 @@ namespace TechChallenge.Infrastructure.Repositories
     public class TransactionRepository : ITransactionRepository
     {
         private readonly string _connectionString = "server=localhost;port=3306;database=payment_processing;User=root;Password=Caralho!1";
-        public async Task<dynamic> InsertTransaction(AuthorizationRequest request, string paymentId)
+        public async Task<dynamic> InsertTransaction(AuthorizationRequest request, string paymentId, DateTime createDate)
         {
             using var connection = new MySqlConnection(_connectionString);
-            string query = @"INSERT INTO transactions (merchant_id, description, payment_method, card_number, card_holder_name, card_expiration_date, card_cvv, payment_id) 
-                     VALUES (@MerchantId, @Description, @PaymentMethod, @CardNumber, @CardHolderName, @CardExpirationDate, @CardCVV, @PaymentId)";
+            string query = @"
+                INSERT INTO transactions (merchant_id, description, payment_method, card_number, card_holder_name, card_expiration_date, card_cvv, payment_id, create_date) 
+                VALUES (@MerchantId, @Description, @PaymentMethod, @CardNumber, @CardHolderName, @CardExpirationDate, @CardCVV, @PaymentId, @createDate)";
 
             var parameters = new
             {
@@ -23,7 +24,8 @@ namespace TechChallenge.Infrastructure.Repositories
                 request.CardHolderName,
                 request.CardExpirationDate,
                 request.CardCVV,
-                PaymentId = paymentId
+                PaymentId = paymentId,
+                createDate
             };
 
             return await connection.ExecuteAsync(query, parameters);

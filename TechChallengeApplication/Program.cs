@@ -12,8 +12,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddTransient<TransactionAuthorizationService>();
 builder.Services.AddTransient<ITransactionRepository, TransactionRepository>();
-
-builder.WebHost.UseUrls("http://*:5000", "https://*:5001");
+builder.Services.AddTransient<IReceivablesRepository, ReceivablesRepository>();
+builder.Services.AddTransient<ReceivablesService>();
 
 var app = builder.Build();
 

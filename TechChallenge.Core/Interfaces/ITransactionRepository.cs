@@ -9,6 +9,6 @@ namespace TechChallenge.Core.Interfaces
 {
     public interface ITransactionRepository
     {
-        public Task<dynamic> InsertTransaction(AuthorizationRequest request, string paymentId);
+        public Task<dynamic> InsertTransaction(AuthorizationRequest request, string paymentId, DateTime createDate);
     }
 }
