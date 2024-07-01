@@ -9,13 +9,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TechChallengeApplication", 
 		{899887E8-499D-415E-93F7-63ED6F117135} = {899887E8-499D-415E-93F7-63ED6F117135}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TechChallenge.Core", "..\TechChallenge.Core\TechChallenge.Core.csproj", "{6AFD1ECE-95B7-4A77-8FBE-53BA66F21247}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TechChallenge.Core", "..\TechChallenge.Core\TechChallenge.Core.csproj", "{6AFD1ECE-95B7-4A77-8FBE-53BA66F21247}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TechChallenge.Infrastructure", "..\TechChallenge.Infrastructure\TechChallenge.Infrastructure.csproj", "{899887E8-499D-415E-93F7-63ED6F117135}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TechChallenge.Infrastructure", "..\TechChallenge.Infrastructure\TechChallenge.Infrastructure.csproj", "{899887E8-499D-415E-93F7-63ED6F117135}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{829AC0F6-F82F-422D-A173-617AF661F22D}"
 	ProjectSection(SolutionItems) = preProject
+		.dockerignore = .dockerignore
 		.gitignore = .gitignore
+		..\docker-compose.yml = ..\docker-compose.yml
+		Dockerfile = Dockerfile
+		..\Dockerfile = ..\Dockerfile
 	EndProjectSection
 EndProject
 Global
