@@ -16,7 +16,7 @@ namespace TechChallengeApplication.Controllers
         }
 
         [HttpGet]
-        [Route("{merchantId}/")]
+        [Route("{merchantId}")]
         public async Task<IActionResult> GetReceivables(string merchantId)
         {
             if (string.IsNullOrEmpty(merchantId))

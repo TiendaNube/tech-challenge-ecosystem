@@ -28,7 +28,7 @@ namespace TechChallenge.Core.Services
                 DateTime transactionDate = DateTime.Now;
                 var transactionResult = await _transactionRepository.InsertTransaction(transaction, id, transactionDate);
                
-                var receivablesResult = await this.CreateTransactionReceivables(transaction, id, transactionDate);
+                var receivablesResult = await this.CreateTransactionReceivables(transaction, transactionDate);
 
                 if (transactionResult > 0 && receivablesResult > 0)
                 {
@@ -48,7 +48,7 @@ namespace TechChallenge.Core.Services
             }
         }
 
-        private async Task<int> CreateTransactionReceivables (AuthorizationRequest transaction, string paymentId, DateTime transactionDate)
+        private async Task<int> CreateTransactionReceivables (AuthorizationRequest transaction, DateTime transactionDate)
         {
             var feePercentage = transaction.PaymentMethod == "debit_card" ? 0.02m : 0.04m;
             var status = transaction.PaymentMethod == "debit_card" ? "paid" : "waiting_funds";
@@ -57,7 +57,7 @@ namespace TechChallenge.Core.Services
             var total = transaction.Amount - discount;
             var subtotal = transaction.Amount;
 
-            return await _receivablesService.CreateReceivablesAsync(paymentId, status, total, discount, createDate, subtotal);
+            return await _receivablesService.CreateReceivablesAsync(transaction.MerchantId, status, total, discount, createDate, subtotal);
         }
     }
 }

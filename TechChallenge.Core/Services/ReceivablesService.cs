@@ -11,19 +11,17 @@ namespace TechChallenge.Core.Services
             _receivablesRepository = receivablesRepository;
         }
 
-        public async Task<ReceivablesResponse> GetReceivablesAsync(string merchantId)
-        {
-            ReceivablesResponse response = new();
-
+        public async Task<dynamic> GetReceivablesAsync(string merchantId)
+        {            
             try
             {
                 var result = await _receivablesRepository.SelectReceivablesByMerchantId(merchantId);
 
-                return response;
+                return result;
             }
-            catch
+            catch(Exception e)
             {
-                return response;
+                return null;
             }
         }
 

@@ -21,6 +21,8 @@ namespace TechChallenge.Infrastructure.Repositories
                 AND create_date BETWEEN @StartDate AND @EndDate
                 GROUP BY status;";
 
+            decimal totalPaid = 0m, totalFeesPaid = 0m, totalToReceive = 0m;
+
             using (var connection = new MySqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
@@ -32,34 +34,32 @@ namespace TechChallenge.Infrastructure.Repositories
 
                     using (var reader = await command.ExecuteReaderAsync())
                     {
-                        dynamic result = new
-                        {
-                            TotalPaid = 0m,
-                            TotalFeesPaid = 0m,
-                            TotalToReceive = 0m
-                        };
-
                         while (await reader.ReadAsync())
                         {
                             var status = reader["status"].ToString();
-                            var totalAmount = (decimal)reader["TotalAmount"];
-                            var totalFees = (decimal)reader["TotalFees"];
+                            var totalAmount = reader.GetDecimal(reader.GetOrdinal("TotalAmount"));
+                            var totalFees = reader.GetDecimal(reader.GetOrdinal("TotalFees"));
 
                             if (status == "paid")
                             {
-                                result.TotalPaid += totalAmount;
-                                result.TotalFeesPaid += totalFees;
+                                totalPaid += totalAmount;
+                                totalFeesPaid += totalFees;
                             }
                             else if (status == "waiting_funds")
                             {
-                                result.TotalToReceive += totalAmount;
+                                totalToReceive += totalAmount;
                             }
                         }
-
-                        return result;
                     }
                 }
             }
+
+            return new
+            {
+                TotalPaid = totalPaid,
+                TotalFeesPaid = totalFeesPaid,
+                TotalToReceive = totalToReceive
+            };
         }
 
         public async Task<int> InsertReceivableAsync(string merchantId, string status, Decimal total, Decimal discount, DateTime createDate, Decimal transactionAmount)
