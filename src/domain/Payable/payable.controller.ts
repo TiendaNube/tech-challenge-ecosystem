@@ -1,5 +1,5 @@
-import { Controller, Get } from '@nestjs/common';
-import { PayableService } from './payable.service';
+import { Controller, Get } from '@nestjs/common'
+import { PayableService } from './payable.service'
 
 @Controller()
 export class PayableController {
@@ -7,6 +7,6 @@ export class PayableController {
 
   @Get()
   getHello(): string {
-    return this.appService.getHello();
+    return this.appService.getHello()
   }
 }
