@@ -70,4 +70,6 @@ export class Transaction extends BaseEntity {
     nullable: false,
   })
     updatedAt!: Date
+
+
 }

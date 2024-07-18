@@ -1,9 +1,8 @@
 import {Body, Controller, Get, Post} from '@nestjs/common'
 import { TransactionService } from './transaction.service'
-import {Transaction} from "typeorm";
 import {TransactionDTO} from "./transaction.dto";
 
-@Controller()
+@Controller('/transaction')
 export class TransactionController {
   constructor(private readonly appService: TransactionService) {}
 
