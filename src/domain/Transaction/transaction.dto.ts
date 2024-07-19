@@ -1,4 +1,14 @@
-import { IsDateString, IsDecimal, IsDefined, IsIn, IsInt, IsISO8601, IsNumber, IsString } from 'class-validator'
+import {
+  IsDateString,
+  IsDecimal,
+  IsDefined,
+  IsIn,
+  IsInt,
+  IsISO8601,
+  IsNumber,
+  IsString, MaxLength,
+  MinLength
+} from 'class-validator'
 import { PaymentMethod } from './transaction'
 
 export class TransactionDTO {
@@ -16,6 +26,8 @@ export class TransactionDTO {
 
   @IsDefined()
   @IsString()
+  @MinLength(4)
+  @MaxLength(4)
     cardNumber: string
 
   @IsDefined()
