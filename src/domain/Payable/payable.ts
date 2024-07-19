@@ -1,4 +1,11 @@
-import {BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn} from 'typeorm'
+import { BaseEntity,
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn } from 'typeorm'
+import { Transaction } from '../Transaction/transaction'
 
 export enum PayableStatus {
   PAID = 'paid',
@@ -9,48 +16,59 @@ export enum PayableStatus {
 export class Payable extends BaseEntity {
   @Column()
   @PrimaryGeneratedColumn('uuid')
-  uuid!: string
+    uuid!: string
 
   @Column({
     type: 'real',
     nullable: false,
   })
-  subtotal!: number
+    subtotal!: number
 
   @Column({
     type: 'real',
     nullable: false,
   })
-  total!: number
+    total!: number
 
   @Column({
     type: 'real',
     nullable: false,
   })
-  discount!: number
+    discount!: number
 
   @Column({
     type: 'enum',
     enum: PayableStatus,
     nullable: false,
   })
-  payableStatus!: PayableStatus
+    status!: PayableStatus
+
+  @Column({
+    type: 'timestamptz',
+    nullable: false,
+  })
+    date!: Date
 
   @Column({
     type: 'int',
     nullable: false,
   })
-  merchantId!: number
+    merchantId!: number
+
+  @ManyToOne(() => Transaction, {
+    nullable: false,
+  })
+    originatingTransaction!: Transaction
 
   @CreateDateColumn({
     type: 'timestamp',
     nullable: false,
   })
-  createdAt!: Date
+    createdAt!: Date
 
   @UpdateDateColumn({
     type: 'timestamp',
     nullable: false,
   })
-  updatedAt!: Date
+    updatedAt!: Date
 }

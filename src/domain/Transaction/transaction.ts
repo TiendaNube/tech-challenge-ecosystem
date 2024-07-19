@@ -36,10 +36,10 @@ export class Transaction extends BaseEntity {
     paymentMethod!: PaymentMethod
 
   @Column({
-    type: 'int',
+    type: 'varchar',
     nullable: false,
   })
-    cardNumber!: number
+    cardNumber!: string
 
   @Column({
     type: 'varchar',
@@ -59,6 +59,12 @@ export class Transaction extends BaseEntity {
   })
     cardCVV!: number
 
+  @Column({
+    type: 'real',
+    nullable: false,
+  })
+    value!: number
+
   @CreateDateColumn({
     type: 'timestamp',
     nullable: false,
@@ -70,6 +76,4 @@ export class Transaction extends BaseEntity {
     nullable: false,
   })
     updatedAt!: Date
-
-
 }

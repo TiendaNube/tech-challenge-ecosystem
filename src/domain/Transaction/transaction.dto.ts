@@ -1,32 +1,35 @@
-import {IsDefined, IsIn, IsInt, IsISO8601, IsString} from "class-validator";
-import {PaymentMethod} from "./Transaction";
+import { IsDateString, IsDecimal, IsDefined, IsIn, IsInt, IsISO8601, IsNumber, IsString } from 'class-validator'
+import { PaymentMethod } from './transaction'
 
 export class TransactionDTO {
   @IsDefined()
   @IsInt()
-  merchantId: number
+    merchantId: number
 
   @IsDefined()
   @IsString()
-  description: string
+    description: string
 
   @IsDefined()
   @IsIn(Object.values(PaymentMethod))
-  paymentMethod: PaymentMethod
-
-  @IsDefined()
-  @IsInt()
-  cardNumber: number
+    paymentMethod: PaymentMethod
 
   @IsDefined()
   @IsString()
-  cardHolder: string
+    cardNumber: string
 
   @IsDefined()
-  @IsISO8601()
-  cardExpirationDate: Date
+  @IsString()
+    cardHolder: string
+
+  @IsDefined()
+  @IsNumber({ maxDecimalPlaces: 2 })
+    value: number
+
+  @IsDateString({ strict: false, strictSeparator: false })
+    cardExpirationDate: Date
 
   @IsDefined()
   @IsInt()
-  cardCVV: number
+    cardCVV: number
 }
