@@ -5,7 +5,10 @@ import { BaseEntity,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn } from 'typeorm'
-import { Transaction } from '../Transaction/transaction'
+import { addDays } from 'date-fns'
+import { PaymentMethod, Transaction } from '../Transaction/transaction'
+import { toCurrency } from '../../commons/utils'
+import { CREDIT_CARD_FEE, DEBIT_CARD_FEE } from './fee.constants'
 
 export enum PayableStatus {
   PAID = 'paid',
@@ -71,4 +74,33 @@ export class Payable extends BaseEntity {
     nullable: false,
   })
     updatedAt!: Date
+
+  public static createPayableFromTransaction(transaction: Transaction) : Payable {
+    const payableSetupsByPaymentMethod = {
+      [PaymentMethod.DEBIT_CARD]: this.setupPayableFromDebitTransaction(transaction),
+      [PaymentMethod.CREDIT_CARD]: this.setupPayableFromCreditTransaction(transaction),
+    }
+
+    const newPayable = payableSetupsByPaymentMethod[transaction.paymentMethod]
+    newPayable.merchantId = transaction.merchantId
+    newPayable.subtotal = toCurrency(transaction.value)
+    newPayable.total = toCurrency(newPayable.subtotal - newPayable.discount)
+    return newPayable
+  }
+
+  private static setupPayableFromDebitTransaction(transaction: Transaction) : Payable {
+    const newPayable = new Payable()
+    newPayable.status = PayableStatus.PAID
+    newPayable.date = new Date()
+    newPayable.discount = toCurrency(transaction.value * DEBIT_CARD_FEE)
+    return newPayable
+  }
+
+  private static setupPayableFromCreditTransaction(transaction: Transaction) : Payable {
+    const newPayable = new Payable()
+    newPayable.status = PayableStatus.WAITING_FUNDS
+    newPayable.date = addDays(new Date(), 30)
+    newPayable.discount = toCurrency(transaction.value * CREDIT_CARD_FEE)
+    return newPayable
+  }
 }

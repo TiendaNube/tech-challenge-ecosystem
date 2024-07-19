@@ -1,38 +1,33 @@
 import { Injectable } from '@nestjs/common'
-import { addDays } from 'date-fns'
-import { PaymentMethod, Transaction } from '../Transaction/transaction'
+import { Between } from 'typeorm'
 import { toCurrency } from '../../commons/utils'
 import { Payable, PayableStatus } from './payable'
-import { CREDIT_CARD_FEE, DEBIT_CARD_FEE } from './fee.constants'
+import { PayableQueryParams } from './payable.query-params'
+import { PayablesTotalsResponse } from './payable.controller'
 
 @Injectable()
 export class PayableService {
-  async createPayableFromTransaction(transaction: Transaction) : Promise<Payable> {
-    const payableSetupsByPaymentMethod = {
-      [PaymentMethod.DEBIT_CARD]: this.setupPayableFromDebitTransaction(transaction),
-      [PaymentMethod.CREDIT_CARD]: this.setupPayableFromCreditTransaction(transaction),
+  async getPayablesTotalsByMerchant(queryParams: PayableQueryParams) : Promise<PayablesTotalsResponse> {
+    const { merchantId, fromDate, toDate } = queryParams
+
+    const payables = await Payable.find({
+      where: {
+        merchantId,
+        date: Between(fromDate, toDate),
+      },
+    })
+
+    const paidPayables = payables.filter((p) => p.status === PayableStatus.PAID)
+    const futurePayables = payables.filter((p) => p.status === PayableStatus.WAITING_FUNDS)
+
+    const totalPaid = paidPayables.reduce((sum, payable): number => (sum + payable.total), 0)
+    const totalPaidFees = paidPayables.reduce((sum, payable): number => (sum + payable.discount), 0)
+    const totalToBeReceived = futurePayables.reduce((sum, payable): number => (sum + payable.total), 0)
+
+    return {
+      totalPaid: toCurrency(totalPaid),
+      totalPaidFees: toCurrency(totalPaidFees),
+      totalToBeReceived: toCurrency(totalToBeReceived),
     }
-
-    const newPayable = payableSetupsByPaymentMethod[transaction.paymentMethod]
-    newPayable.merchantId = transaction.merchantId
-    newPayable.subtotal = toCurrency(transaction.value)
-    newPayable.total = toCurrency(newPayable.subtotal - newPayable.discount)
-    return newPayable
-  }
-
-  private setupPayableFromDebitTransaction(transaction: Transaction) : Payable {
-    const newPayable = new Payable()
-    newPayable.status = PayableStatus.PAID
-    newPayable.date = new Date()
-    newPayable.discount = toCurrency(transaction.value * DEBIT_CARD_FEE)
-    return newPayable
-  }
-
-  private setupPayableFromCreditTransaction(transaction: Transaction) : Payable {
-    const newPayable = new Payable()
-    newPayable.status = PayableStatus.WAITING_FUNDS
-    newPayable.date = addDays(new Date(), 30)
-    newPayable.discount = toCurrency(transaction.value * CREDIT_CARD_FEE)
-    return newPayable
   }
 }

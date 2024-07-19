@@ -1,12 +1,12 @@
 import { TransactionDTO } from '../../src/domain/Transaction/transaction.dto'
 import { PaymentMethod, Transaction } from '../../src/domain/Transaction/transaction'
 
-export const buildCreditCardTransactionDTO = () => {
+export const buildTransactionDTO = (paymentMethod = PaymentMethod.CREDIT_CARD) => {
   const transactionDTO = new TransactionDTO()
   transactionDTO.merchantId = 1
   transactionDTO.description = 'test'
   transactionDTO.value = 100.50
-  transactionDTO.paymentMethod = PaymentMethod.CREDIT_CARD
+  transactionDTO.paymentMethod = paymentMethod
   transactionDTO.cardCVV = 123
   transactionDTO.cardHolder = '123'
   transactionDTO.cardExpirationDate = new Date()

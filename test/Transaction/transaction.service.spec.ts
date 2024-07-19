@@ -5,13 +5,13 @@ import { TransactionService } from '../../src/domain/Transaction/transaction.ser
 import { transactionModuleMetadata } from '../../src/domain/Transaction/transaction.module'
 import { Payable } from '../../src/domain/Payable/payable'
 import { PayableService } from '../../src/domain/Payable/payable.service'
-import { buildCreditCardTransactionDTO } from './transaction.fixture'
+import { buildTransactionDTO } from './transaction.fixture'
 
 /**
  * @group integration
  */
 describe('TransactionService', () => {
-  const creditCradTransactionDTO = buildCreditCardTransactionDTO()
+  const creditCradTransactionDTO = buildTransactionDTO()
   let transactionService: TransactionService
   let payableService: PayableService
   let module: TestingModule
@@ -48,9 +48,11 @@ describe('TransactionService', () => {
   })
 
   it('should not create a transaction without a payable', async () => {
-    jest.spyOn(payableService, 'createPayableFromTransaction').mockImplementationOnce(() => {
+    jest.mock('../../src/domain/Payable/payable')
+    Payable.createPayableFromTransaction = jest.fn().mockImplementationOnce(() => {
       throw new Error('error creating payable')
     })
+
     try {
       await transactionService.createTransaction(creditCradTransactionDTO)
       fail('it\'s not supposed to reach here.')
