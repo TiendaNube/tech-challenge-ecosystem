@@ -1,10 +1,8 @@
 import {
   IsDateString,
-  IsDecimal,
   IsDefined,
   IsIn,
   IsInt,
-  IsISO8601,
   IsNumber,
   IsString, MaxLength,
   MinLength
