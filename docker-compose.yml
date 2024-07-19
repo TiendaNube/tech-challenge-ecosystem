@@ -6,6 +6,14 @@ services:
     environment:
       POSTGRES_USER: nuvemshop
       POSTGRES_PASSWORD: nuvemshop
-      POSTGRES_DB: nuvemshop_test
+      POSTGRES_DB: nuvemshop
     ports:
       - ${DB_PORT:-5432}:5432
+  dbtest:
+    image: postgres:13.10-alpine
+    environment:
+      POSTGRES_USER: nuvemshop
+      POSTGRES_PASSWORD: nuvemshop
+      POSTGRES_DB: nuvemshop_test
+    ports:
+      - 5554:5432
