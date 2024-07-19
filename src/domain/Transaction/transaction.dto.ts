@@ -26,6 +26,7 @@ export class TransactionDTO {
   @IsNumber({ maxDecimalPlaces: 2 })
     value: number
 
+  @IsDefined()
   @IsDateString({ strict: false, strictSeparator: false })
     cardExpirationDate: Date
 

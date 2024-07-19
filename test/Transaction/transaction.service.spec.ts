@@ -22,6 +22,10 @@ describe('TransactionService', () => {
     payableService = module.get(PayableService)
   })
 
+  afterAll(async () => {
+    module.close()
+  })
+
   afterEach(async () => {
     await Payable.delete({})
     await Transaction.delete({})
@@ -29,6 +33,7 @@ describe('TransactionService', () => {
 
   it('should create a transaction and a payable', async () => {
     const transaction = await transactionService.createTransaction(creditCradTransactionDTO)
+    const transactions = await Transaction.find({})
     const payables = await Payable.find({ relations: ['originatingTransaction'] })
 
     expect(transaction).toEqual(expect.objectContaining({
@@ -39,6 +44,11 @@ describe('TransactionService', () => {
     }))
 
     expect(payables).toHaveLength(1)
+    expect(transactions).toHaveLength(1)
+    expect(transactions[0]).toEqual(expect.objectContaining({
+      merchantId: transaction.merchantId,
+      value: transaction.value,
+    }))
     expect(payables[0]).toEqual(expect.objectContaining({
       merchantId: transaction.merchantId,
       subtotal: transaction.value,

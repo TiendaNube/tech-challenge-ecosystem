@@ -26,6 +26,10 @@ describe('PayableService', () => {
     transactionService = module.get(TransactionService)
   })
 
+  afterAll(async () => {
+    module.close()
+  })
+
   afterEach(async () => {
     await Payable.delete({})
     await Transaction.delete({})

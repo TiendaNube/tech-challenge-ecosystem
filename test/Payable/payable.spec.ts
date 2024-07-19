@@ -18,6 +18,10 @@ describe('Payable', () => {
     module = await createModuleForUnitTest(payableModuleMetadata)
   })
 
+  afterAll(async () => {
+    module.close()
+  })
+
   it('should create a payable from a credit card transaction', async () => {
     const payable = Payable.createPayableFromTransaction(creditCradTransaction)
     expect(payable.merchantId).toBe(creditCradTransaction.merchantId)
