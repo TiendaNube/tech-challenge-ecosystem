@@ -1,4 +1,50 @@
-# PT-BR 🇧🇷
+
+# Tech Challenge - Lucas Machado Peres
+
+## Instalação
+
+```bash
+$ npm install
+```
+
+## Rodando a aplicação
+
+```bash
+# primeiramente inicialize os containers do banco de dados
+$ docker compose up -d
+
+# development
+$ npm run start
+
+# watch mode
+$ npm run start:dev
+
+# production mode
+$ npm run start:prod
+```
+
+## Testando a aplicação
+
+```bash
+# lembre-se de inicializar os containers do banco de dados
+$ docker compose up -d
+
+# unit tests
+$ npm run test
+
+# test coverage
+$ npm run test:cov
+```
+
+## Rodando o lint
+
+```bash
+# unit tests
+$ npm run lint
+
+```
+
+------------
 
 # Tech Challenge
 
@@ -93,34 +139,3 @@ docker compose up
 
 - Fork esse desafio no seu repositório pessoal. Crie uma branch para desenvolver sua implementação e, assim que finalizar, submeta um pull request na branch main desse repo, marcando @ewma18, @AndreAffonso e @rafaelito91 como reviewers
 
-## Installation
-
-```bash
-$ npm install
-```
-
-## Running the app
-
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
-```
-
-## Test
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
