@@ -2,8 +2,8 @@ import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { TransactionModule } from './domain/Transaction/transaction.module'
 import { PayableModule } from './domain/Payable/payable.module'
-import { Payable } from './domain/Payable/Payable'
-import { Transaction } from './domain/Transaction/Transaction'
+import { Payable } from './domain/Payable/payable'
+import { Transaction } from './domain/Transaction/transaction'
 
 @Module({
   imports: [
@@ -15,7 +15,7 @@ import { Transaction } from './domain/Transaction/Transaction'
       port: 5432,
       username: 'nuvemshop',
       password: 'nuvemshop',
-      database: 'nuvemshop_test',
+      database: 'nuvemshop',
       entities: [Payable, Transaction],
       synchronize: true,
       migrations: [

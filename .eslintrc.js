@@ -1,13 +1,9 @@
 module.exports = {
-  parser: '@typescript-eslint/parser',
   parserOptions: {
-    project: 'tsconfig.json',
-    tsconfigRootDir: __dirname,
-    sourceType: 'module',
+    parser: '@typescript-eslint/parser',
   },
   plugins: ['@typescript-eslint/eslint-plugin'],
   extends: [
-
     'airbnb-base',
     'eslint:recommended',
     'plugin:import/recommended',
@@ -22,14 +18,13 @@ module.exports = {
   },
   ignorePatterns: ['.eslintrc.js'],
   rules: {
-    semi: 0,
     'no-trailing-spaces': 1,
     'no-console': 'off',
     semi: 'off',
     'no-unused-vars': 'off',
     quotes: ['error', 'single'],
     'max-len': 'off',
-    camelcase: 'off',
+    camelcase: 1,
     'no-param-reassign': ['error', { props: false }],
     'no-use-before-define': 'off',
     radix: 'off',
@@ -51,19 +46,16 @@ module.exports = {
       ImportDeclaration: 'never',
       ExportDeclaration: 'never',
     }],
-
     'no-await-in-loop': 'off',
     'import/no-cycle': 'off',
     'no-restricted-syntax': 'off',
     'no-continue': 'off',
     'class-methods-use-this': 'off',
     'no-empty-function': 'off',
-
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/semi': ['error', 'never'],
     '@typescript-eslint/no-unused-vars': 'off',
     '@typescript-eslint/no-shadow': ['error'],
-
     'import/no-named-as-default-member': 'off',
     'import/newline-after-import': ['warn'],
     'import/no-mutable-exports': ['error'],
@@ -72,7 +64,7 @@ module.exports = {
     'import/order': ['warn', { groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index', 'object'] }],
     'import/extensions': 'off',
     'import/prefer-default-export': 'off',
-    'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
+    "import/no-extraneous-dependencies": 'off',
     quotes: ['error', 'single'],
     'prefer-destructuring': ['error', { object: true, array: false }],
     '@typescript-eslint/interface-name-prefix': 'off',
