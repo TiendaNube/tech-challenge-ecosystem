@@ -1,6 +1,5 @@
-import { Inject, Injectable } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { DataSource } from 'typeorm'
-import { PayableService } from '../Payable/payable.service'
 import { Payable } from '../Payable/payable'
 import { Transaction } from './transaction'
 
