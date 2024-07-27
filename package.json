@@ -1,0 +1,27 @@
+{
+  "name": "tech-challenge-ecosystem",
+  "version": "1.0.0",
+  "description": "O desafio consiste em implementar novas **API's** para trabalhar com as transações de nossos merchants (vendedores).",
+  "main": "index.js",
+  "scripts": {
+    "start-dev": "nodemon src/bin/server.js",
+    "test-unit": "jest --config tests/unit/jest.config.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@hapi/joi": "^17.1.1",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "log4js": "^6.9.1",
+    "sequelize": "^6.37.3",
+    "uuid": "^10.0.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.4",
+    "supertest": "^7.0.0"
+  }
+}
