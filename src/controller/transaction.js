@@ -4,6 +4,7 @@ const InvalidError = require('../Errors/Invalid')
 
 module.exports.createTransaction = async ({ body }) => {
     const { merchantId } = body
+    console.log("🚀 ~ module.exports.createTransaction= ~ merchantId:", merchantId)
 
     const merchant = await merchantService.findMerchant(merchantId)
 

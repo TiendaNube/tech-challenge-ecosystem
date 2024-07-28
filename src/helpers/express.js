@@ -3,6 +3,8 @@ const {
     toPairs,
   } = require('ramda')
   
+  //Wrap every request in express and ensure that every response is properly formatted
+
   module.exports.wrapAction = action => async (req, res, next) => {
     try {
       const response = await action(req)

@@ -23,8 +23,8 @@ const notFoundResponse = () => {
     throw new NotFoundError('url')
 }
 
-app.all('*', apiLogger, wrapAction(notFoundResponse))
+/* app.all('*', apiLogger, wrapAction(notFoundResponse))
 
-app.use(errorHandler)
+app.use(errorHandler) */
 
 module.exports = app

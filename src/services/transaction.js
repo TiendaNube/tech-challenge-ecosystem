@@ -10,4 +10,7 @@ module.exports.createTransaction = async (body) => {
     );
     // In the future, that could be a routine just to create payables
     await createPayable(transaction)
+
+
+    return transaction
 }
