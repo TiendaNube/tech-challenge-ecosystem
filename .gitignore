@@ -11,17 +11,12 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 
-/.swc
-.npm
-.env*
-
 # OS
 .DS_Store
 
 # Tests
 /coverage
 /.nyc_output
-/nyc-reports
 
 # IDEs and editors
 /.idea
@@ -37,6 +32,10 @@ lerna-debug.log*
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
-
-.ash_history
-azurite
+!.vscode/extensions.json
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+# yarn.lock
