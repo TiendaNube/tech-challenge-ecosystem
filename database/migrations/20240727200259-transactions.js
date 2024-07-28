@@ -19,7 +19,7 @@ module.exports = {
         type: DataTypes.STRING,
         allowNull: false,
         references:{
-          model: 'mechants',
+          model: 'merchants',
           key: 'id'
         },
         onUpdate: 'CASCADE'

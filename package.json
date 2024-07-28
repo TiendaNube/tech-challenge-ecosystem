@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start-dev": "nodemon src/bin/server.js",
-    "test-unit": "jest --config tests/unit/jest.config.js"
+    "test-unit": "jest --config tests/unit/jest.config.js",
+    "migrate": "sequelize db:migrate",
+    "seed": "sequelize db:seed:all"
   },
   "keywords": [],
   "author": "",

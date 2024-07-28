@@ -1,0 +1,43 @@
+version: '3.5'
+
+services:
+  m01: &api
+    hostname: m01
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3000"
+    depends_on:
+        - db
+
+  m02:
+    <<: *api
+    hostname: m02
+    ports:
+      - "3002:3000"
+
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - m01
+      - m02
+    ports:
+      - "9999:9999"
+    
+  db:
+    image: postgres
+    environment:
+      POSTGRES_USER: 'postgres'
+      POSTGRES_PASSWORD: 'postgres'
+      POSTGRES_DB: 'financial'
+    ports:
+      - "5432:5432"
+    command: "postgres -c max_connections=20 -c listen_addresses='*' -c effective_io_concurrency=2 -c autovacuum=on"
+
+networks:
+  default:
+    driver: bridge
+    name: financial-nginx
