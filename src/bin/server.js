@@ -13,3 +13,5 @@ const start = async() => {
         logger.debug(`Server is running on port ${PORT}`)
     })
 }
+
+start()
