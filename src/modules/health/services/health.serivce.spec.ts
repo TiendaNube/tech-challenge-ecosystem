@@ -1,117 +1,128 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { HealthService } from './health.service';
 import {
-    HealthCheckResult,
     HealthCheckService,
-    HealthIndicatorFunction,
+    HealthCheckResult,
+    HealthIndicatorResult,
+    HealthCheckError,
     HttpHealthIndicator,
 } from '@nestjs/terminus';
 import { ConfigService } from '@nestjs/config';
-import { FakeHealthCheckResult, TestUtils } from '@commons/test/test.utils';
+import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
+
 describe('HealthService', () => {
-    const mockHttpHealthIndicator = {
-        pingCheck: jest.fn(),
-    };
-
-    const mockConfigService = {
-        get: jest.fn(),
-    };
-
-    const mockHealthCheckService = {
-        check: jest.fn(),
-    };
-
     let healthService: HealthService;
-    const testeUtils = new TestUtils();
+    let healthCheckService: HealthCheckService;
+    let httpHealthIndicator: HttpHealthIndicator;
+    let configService: ConfigService;
+    let amqpConnection: AmqpConnection;
 
     beforeEach(async () => {
-        jest.resetModules(); // Most important - it clears the cache
-        const service: TestingModule = await Test.createTestingModule({
+        const module: TestingModule = await Test.createTestingModule({
             providers: [
                 HealthService,
                 {
                     provide: HealthCheckService,
-                    useValue: mockHealthCheckService,
+                    useValue: {
+                        check: jest.fn(),
+                    },
                 },
                 {
                     provide: HttpHealthIndicator,
-                    useValue: mockHttpHealthIndicator,
+                    useValue: {
+                        pingCheck: jest.fn(),
+                    },
                 },
                 {
                     provide: ConfigService,
-                    useValue: mockConfigService,
+                    useValue: {
+                        get: jest.fn().mockImplementation((key: string) => {
+                            switch (key) {
+                                case 'NODE_DOCKER_HOST':
+                                    return 'localhost';
+                                case 'NODE_DOCKER_PORT':
+                                    return 3000;
+                                default:
+                                    return null;
+                            }
+                        }),
+                    },
+                },
+                {
+                    provide: AmqpConnection,
+                    useValue: {
+                        managedConnection: {
+                            createChannel: jest.fn(),
+                        },
+                    },
                 },
             ],
         }).compile();
 
-        healthService = service.get<HealthService>(HealthService);
+        healthService = module.get<HealthService>(HealthService);
+        healthCheckService = module.get<HealthCheckService>(HealthCheckService);
+        httpHealthIndicator = module.get<HttpHealthIndicator>(HttpHealthIndicator);
+        configService = module.get<ConfigService>(ConfigService);
+        amqpConnection = module.get<AmqpConnection>(AmqpConnection);
     });
 
-    describe('root', () => {
-        it('should be defined"', () => {
-            expect(healthService).toBeDefined();
-        });
+    it('should be defined', () => {
+        expect(healthService).toBeDefined();
     });
 
     describe('getUrl', () => {
-        it('should mock process.env', () => {
-            mockConfigService.get.mockImplementation((value: string) => {
-                if (value === 'NODE_DOCKER_HOST') {
-                    return 'localhost';
-                } else if (value === 'NODE_DOCKER_PORT') {
-                    return '4000';
-                }
-            });
-
-            const res = healthService.getUrl();
-            expect(res).toBe('http://localhost:4000');
+        it('should return the correct URL', () => {
+            const url = healthService.getUrl();
+            expect(url).toBe('http://localhost:3000');
         });
     });
 
     describe('readiness', () => {
-        it('should return ok"', async () => {
-            // const r = testeUtils.getHealthIndicatorResult('up')
+        it('should return the readiness check result', async () => {
+            const result: HealthCheckResult = { status: 'ok', info: {}, error: {}, details: {} };
+            const pingCheckResult: HealthIndicatorResult = { Self: { status: 'up' } };
+            const rabbitCheckResult: HealthIndicatorResult = { rabbitmq: { status: 'up' } };
 
-            mockHttpHealthIndicator.pingCheck.mockImplementationOnce(() =>
-                Promise.resolve(
-                    new FakeHealthCheckResult('ok', testeUtils.getHealthIndicatorResult('up')),
-                ),
-            );
+            jest.spyOn(healthCheckService, 'check').mockResolvedValue(result);
+            jest.spyOn(httpHealthIndicator, 'pingCheck').mockResolvedValue(pingCheckResult);
+            jest.spyOn(healthService as any, 'isRabbitMQHealthy').mockResolvedValue(rabbitCheckResult);
 
-            mockHealthCheckService.check.mockImplementationOnce(
-                async (healthIndicators: HealthIndicatorFunction[]) => {
-                    for await (const func of healthIndicators) {
-                        await func();
-                    }
-                    return {
-                        status: 'ok',
-                    } as HealthCheckResult;
-                },
-            );
-
-            const result = await healthService.readiness();
-
-            expect(result.status).toBe('ok');
+            expect(await healthService.readiness()).toBe(result);
+            expect(healthCheckService.check).toHaveBeenCalledWith([
+                expect.any(Function),
+                expect.any(Function),
+            ]);
         });
     });
 
     describe('liveness', () => {
-        it('should return ok"', async () => {
-            mockHttpHealthIndicator.pingCheck.mockImplementationOnce(() =>
-                Promise.resolve(
-                    new FakeHealthCheckResult('ok', testeUtils.getHealthIndicatorResult('up')),
-                ),
-            );
+        it('should return the liveness check result', async () => {
+            const result: HealthCheckResult = { status: 'ok', info: {}, error: {}, details: {} };
+            const pingCheckResult: HealthIndicatorResult = { Self: { status: 'up' } };
 
-            mockHealthCheckService.check.mockImplementationOnce(() => {
-                return {
-                    status: 'ok',
-                } as HealthCheckResult;
+            jest.spyOn(healthCheckService, 'check').mockResolvedValue(result);
+            jest.spyOn(httpHealthIndicator, 'pingCheck').mockResolvedValue(pingCheckResult);
+
+            expect(await healthService.liveness()).toBe(result);
+            expect(healthCheckService.check).toHaveBeenCalledWith([expect.any(Function)]);
+        });
+    });
+
+    describe('isRabbitMQHealthy', () => {
+        it('should return rabbitmq status up', async () => {
+            const result = { rabbitmq: { status: 'up' } };
+            jest.spyOn(amqpConnection.managedConnection, 'createChannel').mockImplementation(() => {});
+
+            expect(await healthService['isRabbitMQHealthy']()).toEqual(result);
+        });
+
+        it('should throw HealthCheckError if RabbitMQ is down', async () => {
+            const error = new Error('Connection failed');
+            jest.spyOn(amqpConnection.managedConnection, 'createChannel').mockImplementation(() => {
+                throw error;
             });
 
-            const result = await healthService.liveness();
-
-            expect(result.status).toBe('ok');
+            await expect(healthService['isRabbitMQHealthy']()).rejects.toThrow(HealthCheckError);
         });
     });
 });

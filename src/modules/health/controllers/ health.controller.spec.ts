@@ -1,74 +1,49 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { FakeHealthCheckResult, TestUtils } from '@commons/test/test.utils';
 import { HealthController } from './health.controller';
 import { HealthService } from '../services/health.service';
+import { HealthCheckResult } from '@nestjs/terminus';
 
 describe('HealthController', () => {
     let healthController: HealthController;
-    const testeUtils = new TestUtils();
-
-    const mockHealthService = {
-        readiness: jest.fn(),
-        liveness: jest.fn(),
-    };
+    let healthService: HealthService;
 
     beforeEach(async () => {
-        const app: TestingModule = await Test.createTestingModule({
+        const module: TestingModule = await Test.createTestingModule({
             controllers: [HealthController],
             providers: [
                 {
                     provide: HealthService,
-                    useValue: mockHealthService,
+                    useValue: {
+                        readiness: jest.fn(),
+                        liveness: jest.fn(),
+                    },
                 },
             ],
         }).compile();
 
-        healthController = app.get<HealthController>(HealthController);
+        healthController = module.get<HealthController>(HealthController);
+        healthService = module.get<HealthService>(HealthService);
     });
 
-    describe('root', () => {
-        it('should be defined"', () => {
-            expect(healthController).toBeDefined();
-        });
+    it('should be defined', () => {
+        expect(healthController).toBeDefined();
     });
 
     describe('readiness', () => {
-        it('should return an object HealthCheckResult"', async () => {
-            mockHealthService.readiness.mockImplementationOnce(
-                () =>
-                    new Promise(resolve => {
-                        resolve(
-                            new FakeHealthCheckResult(
-                                'ok',
-                                testeUtils.getHealthIndicatorResult('up'),
-                            ),
-                        );
-                    }),
-            );
+        it('should return the readiness check result', async () => {
+            const result: HealthCheckResult = { status: 'ok', info: {}, error: {}, details: {} };
+            jest.spyOn(healthService, 'readiness').mockResolvedValue(result);
 
-            const { status } = await healthController.readiness();
-
-            expect(status).toBe('ok');
+            expect(await healthController.readiness()).toBe(result);
         });
     });
 
     describe('liveness', () => {
-        it('should return an object HealthCheckResult"', async () => {
-            mockHealthService.liveness.mockImplementationOnce(
-                () =>
-                    new Promise(resolve => {
-                        resolve(
-                            new FakeHealthCheckResult(
-                                'ok',
-                                testeUtils.getHealthIndicatorResult('up'),
-                            ),
-                        );
-                    }),
-            );
+        it('should return the liveness check result', async () => {
+            const result: HealthCheckResult = { status: 'ok', info: {}, error: {}, details: {} };
+            jest.spyOn(healthService, 'liveness').mockResolvedValue(result);
 
-            const { status } = await healthController.liveness();
-
-            expect(status).toBe('ok');
+            expect(await healthController.liveness()).toBe(result);
         });
     });
 });

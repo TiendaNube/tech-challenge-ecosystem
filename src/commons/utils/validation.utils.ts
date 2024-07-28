@@ -10,8 +10,6 @@ export class IsValidExpirationDateConstraint implements ValidatorConstraintInter
     validate(date: string) {
         const [month, year] = date.split('/').map(Number);
 
-        console.log(month, year);
-
         if (!month || !year || month < 1 || month > 12) {
             return false;
         }

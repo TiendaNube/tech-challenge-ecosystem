@@ -1,3 +1,4 @@
+import './environment';
 import { NestFactory } from '@nestjs/core';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import { RequestMethod, ValidationPipe, VersioningType } from '@nestjs/common';
@@ -70,4 +71,5 @@ async function bootstrap() {
 
     await app.listen(portCfg, '0.0.0.0');
 }
+
 bootstrap();

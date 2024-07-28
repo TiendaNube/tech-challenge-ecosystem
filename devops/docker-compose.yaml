@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+    rabbitmq:
+        image: rabbitmq:3-management
+        container_name: rabbitmq
+        ports:
+            - '5672:5672'
+            - '15672:15672'
+        volumes:
+            - ./rabbitmq:/etc/rabbitmq
+        environment:
+            RABBITMQ_DEFAULT_USER: userRabbitmq
+            RABBITMQ_DEFAULT_PASS: oq3TdgCyDb7qyKB
+            RABBITMQ_ERLANG_COOKIE: '6cb84771-0a30-4982-b6c2-0e19648c5063'
+        command: >
+            sh -c "
+            rabbitmq-plugins enable rabbitmq_management;
+            rabbitmq-server;
+            "
+
+    setup:
+        image: rabbitmq:3-management
+        depends_on:
+            - rabbitmq
+        volumes:
+            - ./setup.sh:/setup.sh
+        entrypoint: ['/bin/bash', '/setup.sh']

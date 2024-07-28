@@ -3,7 +3,8 @@ import { ConfigModule } from '@nestjs/config';
 import { ConfigEnv } from '@commons/config-module.env';
 import { HomeModule } from '@modules/home/home.module';
 import { HealthModule } from '@modules/health/health.module';
-import { TransactionModule } from './modules/transaction/transaction.module';
+import { TransactionModule } from '@modules/transaction/transaction.module';
+import { CustomRabbitMQModule } from './modules/rabbitmq/rabbitmq.module';
 
 @Module({
     imports: [
