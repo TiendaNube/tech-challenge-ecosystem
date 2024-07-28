@@ -39,8 +39,8 @@ module.exports = {
         type: DataTypes.CHAR(255),
         allowNull: false
       },
-      expiration_date:{
-        type: DataTypes.DATE,
+      card_expiration:{
+        type: DataTypes.CHAR(7),
         allowNull: false
       },
       card_cvv:{
@@ -51,7 +51,7 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
-      },      
+      }  
     })
   },
 

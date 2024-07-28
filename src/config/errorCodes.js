@@ -6,6 +6,11 @@ module.exports = {
         url: '1101',
         user: '1102',
     },
+    invalid: {
+        generic: '1300',
+        body: '1301',
+        password: '1303',
+      },
     validationErrors: {
         // Got from https:/'/'github.com/hapijs/joi/blob/master/API.md#list.of.errors
         'alternatives.base': '1000.1',
