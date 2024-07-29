@@ -2,6 +2,44 @@
 
 # Tech Challenge
 
+## Features
+
+A ideia desse projeto era criar uma arquitetura modular baseada em MVC(Model-View-Controller). Para esse projeto, quis trabalhar com alguns conceitos e boas práticas de arquitetura como Global Error Handling, Validação das requisições com Joi, separação de responsabilidade, entre outras.
+
+Também tomei a liberdade de adicionar um proxy reverso/load balance, afim de já pensar em como escalar essa aplicação.
+
+Algumas pastas importantes:
+  - Errors: Classes que estedem do Erro padrão do node
+  - helpers: Funções auxiliares. Possui um wrapper do Express para atuar como "middleware" para o global error Handling.
+  - strategies: Pasta para o Pattern strategies para validar e estender o payment_method
+  - validator: Utilização do JOI para validar os requests para as APIs.
+
+Sobre os testes, por conta do tempo não consegui implementar testes unitários. Portanto, implementei só algumas validações e2e para a rota /transactions. Importante notar que como também não existe uma rota para merchants, é necessário realizar o seed e buscar o id do merchant antes dos testes.
+## Instalar
+
+```bash
+$ npm install
+$ yarn
+```
+
+## Iniciando a aplicação
+```bash
+$ docker-compose up -d
+
+# executar as migrations
+$ yarn migrate
+
+# executar as seed
+$ yarn seed
+```
+
+## Testes
+``` bash
+# testes e2e
+$ yarn test-e2e
+
+```
+
 O desafio consiste em implementar novas **API's** para trabalhar com as transações de nossos merchants (vendedores).
 
 ## Nós precisamos que você implemente:
