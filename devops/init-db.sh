@@ -23,6 +23,8 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
         subtotal NUMERIC CHECK (subtotal > 0),
         discount NUMERIC CHECK (discount > 0),
         total NUMERIC CHECK (total > 0),
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP         
     );
+
+    CREATE INDEX idx_payables_merchant_status_date ON payables (merchant_id, status, create_date);
 EOSQL
