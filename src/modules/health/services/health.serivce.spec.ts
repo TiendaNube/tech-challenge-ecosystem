@@ -6,6 +6,7 @@ import {
     HealthIndicatorResult,
     HealthCheckError,
     HttpHealthIndicator,
+    TypeOrmHealthIndicator,
 } from '@nestjs/terminus';
 import { ConfigService } from '@nestjs/config';
 import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
@@ -16,6 +17,7 @@ describe('HealthService', () => {
     let httpHealthIndicator: HttpHealthIndicator;
     let configService: ConfigService;
     let amqpConnection: AmqpConnection;
+    let postgresqlHealth: TypeOrmHealthIndicator;
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
@@ -56,6 +58,12 @@ describe('HealthService', () => {
                         },
                     },
                 },
+                {
+                    provide: TypeOrmHealthIndicator,
+                    useValue: {
+                        pingCheck: jest.fn(),
+                    },
+                },
             ],
         }).compile();
 
@@ -64,6 +72,7 @@ describe('HealthService', () => {
         httpHealthIndicator = module.get<HttpHealthIndicator>(HttpHealthIndicator);
         configService = module.get<ConfigService>(ConfigService);
         amqpConnection = module.get<AmqpConnection>(AmqpConnection);
+        postgresqlHealth = module.get<TypeOrmHealthIndicator>(TypeOrmHealthIndicator);
     });
 
     it('should be defined', () => {
@@ -82,13 +91,16 @@ describe('HealthService', () => {
             const result: HealthCheckResult = { status: 'ok', info: {}, error: {}, details: {} };
             const pingCheckResult: HealthIndicatorResult = { Self: { status: 'up' } };
             const rabbitCheckResult: HealthIndicatorResult = { rabbitmq: { status: 'up' } };
+            const postgresCheckResult: HealthIndicatorResult = { PostgreSQL: { status: 'up' } };
 
             jest.spyOn(healthCheckService, 'check').mockResolvedValue(result);
             jest.spyOn(httpHealthIndicator, 'pingCheck').mockResolvedValue(pingCheckResult);
             jest.spyOn(healthService as any, 'isRabbitMQHealthy').mockResolvedValue(rabbitCheckResult);
+            jest.spyOn(postgresqlHealth, 'pingCheck').mockResolvedValue(postgresCheckResult);
 
             expect(await healthService.readiness()).toBe(result);
             expect(healthCheckService.check).toHaveBeenCalledWith([
+                expect.any(Function),
                 expect.any(Function),
                 expect.any(Function),
             ]);

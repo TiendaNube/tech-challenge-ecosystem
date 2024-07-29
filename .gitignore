@@ -39,3 +39,7 @@ lerna-debug.log*
 .env.test
 .env.production
 # yarn.lock
+
+#DevOps
+/devops/rabbitmq
+/devops/postgres-data

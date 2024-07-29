@@ -8,6 +8,7 @@ import {
     HealthCheckService,
     HealthIndicatorResult,
     HttpHealthIndicator,
+    TypeOrmHealthIndicator,
 } from '@nestjs/terminus';
 
 /**
@@ -22,6 +23,7 @@ export class HealthService {
         private http: HttpHealthIndicator,
         private configService: ConfigService,
         private amqpConnection: AmqpConnection,
+        private postgresqlHealth: TypeOrmHealthIndicator,
     ) {}
 
     /**
@@ -36,7 +38,7 @@ export class HealthService {
     }
 
     /**
-     * Verifica a prontidão da aplicação, incluindo verificações de HTTP e RabbitMQ.
+     * Verifica a prontidão da aplicação, incluindo verificações de HTTP, RabbitMQ e PostgreSQL.
      *
      * @returns Um resultado de verificação de saúde indicando se a aplicação está pronta para receber tráfego.
      */
@@ -44,6 +46,7 @@ export class HealthService {
         return this.health.check([
             () => this.http.pingCheck('Self', this.getUrl()),
             () => this.isRabbitMQHealthy(),
+            () => this.postgresqlHealth.pingCheck('PostgreSQL', { timeout: 30000 }),
         ]);
     }
 
