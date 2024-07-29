@@ -1,18 +1,18 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsDateString, IsEnum, IsNumber, IsPositive } from 'class-validator';
-import { ReceivableStatus } from '../enums/receivable-status.enum';
+import { PayablesStatus } from '../enums/payables-status.enum';
 import { AutoMap } from '@automapper/classes';
 
 /**
  * DTO para a criação de um recebível.
  */
-export class CreateReceivableDto {
+export class CreatePayablesDto {
     /**
-     * Construtor da classe CreateReceivableDto.
+     * Construtor da classe CreatePayablesDto.
      *
      * @param partial - Objeto parcial para inicializar as propriedades do DTO.
      */
-    constructor(partial: Partial<CreateReceivableDto>) {
+    constructor(partial: Partial<CreatePayablesDto>) {
         Object.assign(this, partial);
     }
 
@@ -27,12 +27,12 @@ export class CreateReceivableDto {
 
     /**
      * O status do recebível.
-     * Deve ser um valor enumerado válido de ReceivableStatus.
+     * Deve ser um valor enumerado válido de PayablesStatus.
      */
     @AutoMap()
-    @ApiProperty({ example: 'paid', enum: ReceivableStatus })
-    @IsEnum(ReceivableStatus)
-    status: ReceivableStatus;
+    @ApiProperty({ example: 'paid', enum: PayablesStatus })
+    @IsEnum(PayablesStatus)
+    status: PayablesStatus;
 
     /**
      * A data de criação do recebível.

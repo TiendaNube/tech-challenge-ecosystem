@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmConfigService } from '../config/config-typorm-module';
 import { PaymentEntity } from './entities/payment.entity';
-import { ReceivableEntity } from './entities/receivable.entity';
+import { PayablesEntity } from './entities/payables.entity';
 import { PostgreSqlTransactionsExpService } from './services/postgresql.transactions.service';
 
 @Module({
@@ -12,7 +12,7 @@ import { PostgreSqlTransactionsExpService } from './services/postgresql.transact
             imports: [ConfigModule],
             useClass: TypeOrmConfigService,
         }),
-        TypeOrmModule.forFeature([PaymentEntity, ReceivableEntity]),
+        TypeOrmModule.forFeature([PaymentEntity, PayablesEntity]),
     ],
     providers: [PostgreSqlTransactionsExpService],
     exports: [TypeOrmModule, PostgreSqlTransactionsExpService],

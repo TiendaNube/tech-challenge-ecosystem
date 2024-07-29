@@ -2,10 +2,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { RabbitMQProducerService } from '@modules/rabbitmq/services/rabbitmq.producer.services';
 import { RabbitMQHeaderType } from '@/modules/rabbitmq/enums/rabbitmq.header.type.enum';
 import { PaymentMethod } from '../enums/payment-method.enum';
-import { ReceivableStatus } from '../enums/receivable-status.enum';
+import { PayablesStatus } from '../enums/payables-status.enum';
 import { TransactionService } from './transaction.service';
 import { CreatePaymentDto } from '../dtos/payment.create.dto';
-import { CreateReceivableDto } from '../dtos/receivable.create.dto';
+import { CreatePayablesDto } from '../dtos/payables.create.dto';
 import { format } from 'date-fns';
 
 describe('TransactionService', () => {
@@ -46,9 +46,9 @@ describe('TransactionService', () => {
                 cardCVV: '123',
             };
 
-            const expectedReceivable: CreateReceivableDto = {
+            const expectedPayables: CreatePayablesDto = {
                 merchantId: 1,
-                status: ReceivableStatus.PAID,
+                status: PayablesStatus.PAID,
                 createDate: expect.any(String),
                 subtotal: 100,
                 discount: 2,
@@ -60,15 +60,15 @@ describe('TransactionService', () => {
             expect(rabbitMQProducerService.sendMessage).toHaveBeenCalledWith(
                 {
                     payment: createPaymentDto,
-                    receivable: expectedReceivable,
+                    payables: expectedPayables,
                 },
                 RabbitMQHeaderType.TRANSACTION,
             );
         });
     });
 
-    describe('createReceivable', () => {
-        it('should create a receivable for a debit card payment', () => {
+    describe('createPayables', () => {
+        it('should create a payables for a debit card payment', () => {
             const createPaymentDto: CreatePaymentDto = {
                 total: 100,
                 merchantId: 1,
@@ -80,11 +80,11 @@ describe('TransactionService', () => {
                 cardCVV: '123',
             };
 
-            const receivable = service['createReceivable'](createPaymentDto);
+            const payables = service['createPayables'](createPaymentDto);
 
-            expect(receivable).toEqual({
+            expect(payables).toEqual({
                 merchantId: 1,
-                status: ReceivableStatus.PAID,
+                status: PayablesStatus.PAID,
                 createDate: expect.any(String),
                 subtotal: 100,
                 discount: 2,
@@ -92,7 +92,7 @@ describe('TransactionService', () => {
             });
         });
 
-        it('should create a receivable for a credit card payment', () => {
+        it('should create a payables for a credit card payment', () => {
             const createPaymentDto: CreatePaymentDto = {
                 total: 100,
                 merchantId: 1,
@@ -104,11 +104,11 @@ describe('TransactionService', () => {
                 cardCVV: '123',
             };
 
-            const receivable = service['createReceivable'](createPaymentDto);
+            const payables = service['createPayables'](createPaymentDto);
 
-            expect(receivable).toEqual({
+            expect(payables).toEqual({
                 merchantId: 1,
-                status: ReceivableStatus.WAITING_FUNDS,
+                status: PayablesStatus.WAITING_FUNDS,
                 createDate: expect.any(String),
                 subtotal: 100,
                 discount: 4,

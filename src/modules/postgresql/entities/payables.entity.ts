@@ -2,8 +2,8 @@ import { Column, Entity } from 'typeorm';
 import { BasePostgreSqlEntity } from './base/base.entity';
 import { AutoMap } from '@automapper/classes';
 
-@Entity({ name: 'receivable' })
-export class ReceivableEntity extends BasePostgreSqlEntity<ReceivableEntity> {
+@Entity({ name: 'payables' })
+export class PayablesEntity extends BasePostgreSqlEntity<PayablesEntity> {
     /**
      * O ID do comerciante.
      * Deve ser um número inteiro e não nulo.

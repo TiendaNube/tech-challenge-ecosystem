@@ -15,7 +15,7 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
 
-    CREATE TABLE receivable (
+    CREATE TABLE payables (
         id SERIAL PRIMARY KEY,
         merchant_id INTEGER NOT NULL,
         status VARCHAR NOT NULL,

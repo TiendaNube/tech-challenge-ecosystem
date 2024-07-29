@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
-import { ReceivableEntity } from '../postgresql/entities/receivable.entity';
+import { PayablesEntity } from '../postgresql/entities/payables.entity';
 import { PaymentEntity } from '../postgresql/entities/payment.entity';
 
 @Injectable()
@@ -16,7 +16,7 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
             username: this.configService.get<string>('DB_USERNAME'),
             password: this.configService.get<string>('DB_PASSWORD'),
             database: this.configService.get<string>('DB_DATABASE'),
-            entities: [PaymentEntity, ReceivableEntity],
+            entities: [PaymentEntity, PayablesEntity],
             ssl: false,
             logging: false,
             schema: 'public',

@@ -1,7 +1,7 @@
 /**
  * Enumeração que define os status dos recebíveis.
  */
-export enum ReceivableStatus {
+export enum PayablesStatus {
     /**
      * Recebível pago.
      */

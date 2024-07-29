@@ -41,7 +41,7 @@ describe('TransactionServiceController', () => {
             cardCVV: '123',
         };
 
-        await controller.post(createPaymentDto);
+        await controller.postTransaction(createPaymentDto);
 
         expect(service.process).toHaveBeenCalledWith(createPaymentDto);
     });

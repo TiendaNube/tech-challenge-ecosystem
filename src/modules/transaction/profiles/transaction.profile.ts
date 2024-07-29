@@ -2,9 +2,9 @@ import { Mapper, MappingProfile, createMap, forMember, mapFrom } from '@automapp
 import { AutomapperProfile, InjectMapper } from '@automapper/nestjs';
 import { Injectable } from '@nestjs/common';
 import { PaymentEntity } from '@/modules/postgresql/entities/payment.entity';
-import { ReceivableEntity } from '@/modules/postgresql/entities/receivable.entity';
+import { PayablesEntity } from '@/modules/postgresql/entities/payables.entity';
 import { CreatePaymentDto } from '../dtos/payment.create.dto';
-import { CreateReceivableDto } from '../dtos/receivable.create.dto';
+import { CreatePayablesDto } from '../dtos/payables.create.dto';
 
 @Injectable()
 export class TransactionProfile extends AutomapperProfile {
@@ -28,8 +28,8 @@ export class TransactionProfile extends AutomapperProfile {
             // Mapeamento de PaymentEntity para CreatePaymentDto
             createMap(mapper, PaymentEntity, CreatePaymentDto);
 
-            // Mapeamento de ReceivableEntity para CreateReceivableDto
-            createMap(mapper, ReceivableEntity, CreateReceivableDto);
+            // Mapeamento de PayablesEntity para CreatePayablesDto
+            createMap(mapper, PayablesEntity, CreatePayablesDto);
         };
     }
 }

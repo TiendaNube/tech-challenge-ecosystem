@@ -2,11 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { CreatePaymentDto } from '../dtos/payment.create.dto';
 import { RabbitMQProducerService } from '@modules/rabbitmq/services/rabbitmq.producer.services';
 import { RabbitMQHeaderType } from '@/modules/rabbitmq/enums/rabbitmq.header.type.enum';
-import { CreateReceivableDto } from '../dtos/receivable.create.dto';
+import { CreatePayablesDto } from '../dtos/payables.create.dto';
 import { PaymentMethod } from '../enums/payment-method.enum';
-import { ReceivableStatus } from '../enums/receivable-status.enum';
+import { PayablesStatus } from '../enums/payables-status.enum';
 import { addDays, format } from 'date-fns';
 import { TransactionTransportDto } from '../dtos/transaction.transport.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { PayablesEntity } from '@/modules/postgresql/entities/payables.entity';
+import { Repository } from 'typeorm';
 
 /**
  * Serviço responsável pelo processamento de transações e criação de recebíveis.
@@ -30,39 +33,58 @@ export class TransactionService {
         return this.rabbitMQProducerService.sendMessage<TransactionTransportDto>(
             {
                 payment: createPaymentDto,
-                receivable: this.createReceivable(createPaymentDto),
+                payables: this.createPayables(createPaymentDto),
             },
             RabbitMQHeaderType.TRANSACTION,
         );
     }
 
-    async save(transactionTransportDto: TransactionTransportDto): Promise<void> {
-        console.log();
+    async calculatePayabless(merchantId: number, startDate: Date, endDate: Date) {
+        // const paidPayabless = await this.payablesRepository
+        //     .createQueryBuilder('payables')
+        //     .where('payables.merchantId = :merchantId', { merchantId })
+        //     .andWhere('payables.status = :status', { status: 'paid' })
+        //     .andWhere('payables.createDate BETWEEN :startDate AND :endDate', { startDate, endDate })
+        //     .getMany();
+        // const waitingFundsPayabless = await this.payablesRepository
+        //     .createQueryBuilder('payables')
+        //     .where('payables.merchantId = :merchantId', { merchantId })
+        //     .andWhere('payables.status = :status', { status: 'waiting_funds' })
+        //     .andWhere('payables.createDate BETWEEN :startDate AND :endDate', { startDate, endDate })
+        //     .getMany();
+        // const totalPaid = paidPayabless.reduce((sum, payables) => sum + payables.total, 0);
+        // const totalDiscounts = paidPayabless.reduce((sum, payables) => sum + payables.discount, 0);
+        // const totalWaitingFunds = waitingFundsPayabless.reduce((sum, payables) => sum + payables.total, 0);
+        // return {
+        //     totalPaid,
+        //     totalDiscounts,
+        //     totalWaitingFunds,
+        // };
     }
 
     /**
      * Cria um recebível com base nos dados do pagamento.
      *
      * @param createPaymentDto - Objeto DTO contendo os dados do pagamento.
-     * @returns Um objeto `CreateReceivableDto` representando o recebível criado.
+     * @returns Um objeto `CreatePayablesDto` representando o recebível criado.
      */
-    private createReceivable(createPaymentDto: CreatePaymentDto): CreateReceivableDto {
+    private createPayables(createPaymentDto: CreatePaymentDto): CreatePayablesDto {
         return createPaymentDto.paymentMethod === PaymentMethod.DEBIT_CARD
-            ? this.createReceivableForDebit(createPaymentDto)
-            : this.createReceivableForCredit(createPaymentDto);
+            ? this.createPayablesForDebit(createPaymentDto)
+            : this.createPayablesForCredit(createPaymentDto);
     }
 
     /**
      * Cria um recebível para um pagamento via cartão de débito.
      *
      * @param createPaymentDto - Objeto DTO contendo os dados do pagamento.
-     * @returns Um objeto `CreateReceivableDto` representando o recebível criado.
+     * @returns Um objeto `CreatePayablesDto` representando o recebível criado.
      */
-    private createReceivableForDebit(createPaymentDto: CreatePaymentDto): CreateReceivableDto {
+    private createPayablesForDebit(createPaymentDto: CreatePaymentDto): CreatePayablesDto {
         const { discount, total } = this.calculateProcessingFee(createPaymentDto.total, this.FEE_DEBIT);
-        return new CreateReceivableDto({
+        return new CreatePayablesDto({
             merchantId: createPaymentDto.merchantId,
-            status: ReceivableStatus.PAID,
+            status: PayablesStatus.PAID,
             createDate: this.getDate(this.DPLUS_DEBIT),
             subtotal: createPaymentDto.total,
             discount,
@@ -74,13 +96,13 @@ export class TransactionService {
      * Cria um recebível para um pagamento via cartão de crédito.
      *
      * @param createPaymentDto - Objeto DTO contendo os dados do pagamento.
-     * @returns Um objeto `CreateReceivableDto` representando o recebível criado.
+     * @returns Um objeto `CreatePayablesDto` representando o recebível criado.
      */
-    private createReceivableForCredit(createPaymentDto: CreatePaymentDto): CreateReceivableDto {
+    private createPayablesForCredit(createPaymentDto: CreatePaymentDto): CreatePayablesDto {
         const { discount, total } = this.calculateProcessingFee(createPaymentDto.total, this.FEE_CREDIT);
-        return new CreateReceivableDto({
+        return new CreatePayablesDto({
             merchantId: createPaymentDto.merchantId,
-            status: ReceivableStatus.WAITING_FUNDS,
+            status: PayablesStatus.WAITING_FUNDS,
             createDate: this.getDate(this.DPLUS_CREDIT),
             subtotal: createPaymentDto.total,
             discount,

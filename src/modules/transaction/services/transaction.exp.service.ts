@@ -5,8 +5,8 @@ import { PostgreSqlTransactionsExpService } from '@/modules/postgresql/services/
 import { PaymentEntity } from '@/modules/postgresql/entities/payment.entity';
 import { TransactionTransportDto } from '../dtos/transaction.transport.dto';
 import { CreatePaymentDto } from '../dtos/payment.create.dto';
-import { CreateReceivableDto } from '../dtos/receivable.create.dto';
-import { ReceivableEntity } from '@/modules/postgresql/entities/receivable.entity';
+import { CreatePayablesDto } from '../dtos/payables.create.dto';
+import { PayablesEntity } from '@/modules/postgresql/entities/payables.entity';
 
 @Injectable()
 export class TransactionExpService {
@@ -33,14 +33,10 @@ export class TransactionExpService {
         // Mapeia o DTO de pagamento para a entidade PaymentEntity
         const payment = this.mapper.map(transactionTransportDto.payment, PaymentEntity, CreatePaymentDto);
 
-        // Mapeia o DTO de recebível para a entidade ReceivableEntity
-        const receivable = this.mapper.map(
-            transactionTransportDto.receivable,
-            ReceivableEntity,
-            CreateReceivableDto,
-        );
+        // Mapeia o DTO de recebível para a entidade PayablesEntity
+        const payables = this.mapper.map(transactionTransportDto.payables, PayablesEntity, CreatePayablesDto);
 
         // Salva ambas as entidades em uma transação
-        await this.postgreSqlTransactionsExpService.save(payment, receivable);
+        await this.postgreSqlTransactionsExpService.save(payment, payables);
     }
 }
