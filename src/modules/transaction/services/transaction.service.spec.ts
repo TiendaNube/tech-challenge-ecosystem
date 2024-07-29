@@ -6,9 +6,9 @@ import { PaymentMethod } from '../enums/payment-method.enum';
 import { PayablesStatus } from '../enums/payables-status.enum';
 import { TransactionService } from './transaction.service';
 import { CreatePaymentDto } from '../dtos/payment.create.dto';
-import { CreatePayablesDto } from '../dtos/payables.create.dto';
+import { CreatePayablesDto } from '../dtos/payable.create.dto';
 import { PayablesTotalDto } from '../dtos/payables.total.dto';
-import { PayablesEntity } from '@modules/postgresql/entities/payables.entity';
+import { PayablesEntity } from '@modules/postgresql/entities/payable.entity';
 import { format, addDays } from 'date-fns';
 
 describe('TransactionService', () => {

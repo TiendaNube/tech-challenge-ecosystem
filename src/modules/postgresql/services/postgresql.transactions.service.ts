@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PaymentEntity } from '@/modules/postgresql/entities/payment.entity';
-import { PayablesEntity } from '@/modules/postgresql/entities/payables.entity';
+import { PayablesEntity } from '@/modules/postgresql/entities/payable.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, QueryRunner } from 'typeorm';
 

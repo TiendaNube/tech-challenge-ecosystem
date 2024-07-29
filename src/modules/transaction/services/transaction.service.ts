@@ -4,7 +4,7 @@ import { RabbitMQProducerService } from '@modules/rabbitmq/services/rabbitmq.pro
 import { RabbitMQHeaderType } from '@/modules/rabbitmq/enums/rabbitmq.header.type.enum';
 import { PostgreSqlTransactionsExpService } from '@/modules/postgresql/services/postgresql.transactions.service';
 import { CreatePaymentDto } from '../dtos/payment.create.dto';
-import { CreatePayablesDto } from '../dtos/payables.create.dto';
+import { CreatePayablesDto } from '../dtos/payable.create.dto';
 import { PaymentMethod } from '../enums/payment-method.enum';
 import { PayablesStatus } from '../enums/payables-status.enum';
 import { TransactionTransportDto } from '../dtos/transaction.transport.dto';

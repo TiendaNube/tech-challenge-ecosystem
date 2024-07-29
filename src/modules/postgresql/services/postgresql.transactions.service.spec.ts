@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { QueryRunner, Repository, Connection } from 'typeorm';
 import { PaymentEntity } from '@/modules/postgresql/entities/payment.entity';
-import { PayablesEntity } from '@/modules/postgresql/entities/payables.entity';
+import { PayablesEntity } from '@/modules/postgresql/entities/payable.entity';
 import { PostgreSqlTransactionsExpService } from './postgresql.transactions.service';
 
 describe('PostgreSqlTransactionsExpService', () => {

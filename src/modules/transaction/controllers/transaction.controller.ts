@@ -7,18 +7,21 @@ import {
     HttpStatus,
     Post,
     Query,
+    UseGuards,
 } from '@nestjs/common';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreatePaymentDto } from '../dtos/payment.create.dto';
 import { TransactionService } from '../services/transaction.service';
 import { isValid, parse } from 'date-fns';
 import { PayablesTotalDto } from '../dtos/payables.total.dto';
+import { ApiKeyGuard } from '../guards/apikey.guard';
 
 /**
  * Controlador responsável por lidar com as transações.
  */
 @ApiTags('Transactions')
 @Controller('transaction')
+@UseGuards(ApiKeyGuard)
 export class TransactionServiceController {
     constructor(private readonly transactionService: TransactionService) {}
 

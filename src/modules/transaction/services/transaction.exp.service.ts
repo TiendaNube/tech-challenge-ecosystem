@@ -5,8 +5,8 @@ import { PostgreSqlTransactionsExpService } from '@/modules/postgresql/services/
 import { PaymentEntity } from '@/modules/postgresql/entities/payment.entity';
 import { TransactionTransportDto } from '../dtos/transaction.transport.dto';
 import { CreatePaymentDto } from '../dtos/payment.create.dto';
-import { CreatePayablesDto } from '../dtos/payables.create.dto';
-import { PayablesEntity } from '@/modules/postgresql/entities/payables.entity';
+import { CreatePayablesDto } from '../dtos/payable.create.dto';
+import { PayablesEntity } from '@/modules/postgresql/entities/payable.entity';
 
 @Injectable()
 export class TransactionExpService {

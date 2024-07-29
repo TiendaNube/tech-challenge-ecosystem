@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmConfigService } from '../config/config-typorm-module';
 import { PaymentEntity } from './entities/payment.entity';
-import { PayablesEntity } from './entities/payables.entity';
+import { PayablesEntity } from './entities/payable.entity';
 import { PostgreSqlTransactionsExpService } from './services/postgresql.transactions.service';
 
 @Module({

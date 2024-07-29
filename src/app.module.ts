@@ -16,6 +16,7 @@ import { classes } from '@automapper/classes';
         AutomapperModule.forRoot({
             strategyInitializer: classes(),
         }),
+
         HomeModule,
         HealthModule,
         TransactionModule,

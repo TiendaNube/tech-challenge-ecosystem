@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
-import { PayablesEntity } from '../postgresql/entities/payables.entity';
+import { PayablesEntity } from '../postgresql/entities/payable.entity';
 import { PaymentEntity } from '../postgresql/entities/payment.entity';
 
 @Injectable()

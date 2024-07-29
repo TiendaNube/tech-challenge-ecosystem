@@ -1,6 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TransactionServiceController } from './transaction.controller';
 import { TransactionService } from '../services/transaction.service';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ApiKeyGuard } from '../guards/apikey.guard';
 import { PayablesTotalDto } from '../dtos/payables.total.dto';
 import { BadRequestException } from '@nestjs/common';
 import { parse } from 'date-fns';
@@ -12,6 +14,7 @@ describe('TransactionServiceController', () => {
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
+            imports: [ConfigModule.forRoot()],
             controllers: [TransactionServiceController],
             providers: [
                 {
@@ -21,6 +24,17 @@ describe('TransactionServiceController', () => {
                         calculatePayabless: jest.fn(),
                     },
                 },
+                {
+                    provide: ConfigService,
+                    useValue: {
+                        get: jest.fn((key: string) => {
+                            if (key === 'API_KEY') {
+                                return 'your_secure_api_key_here';
+                            }
+                        }),
+                    },
+                },
+                ApiKeyGuard,
             ],
         }).compile();
 

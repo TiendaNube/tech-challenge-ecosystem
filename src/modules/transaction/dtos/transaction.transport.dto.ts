@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { ValidateNested } from 'class-validator';
 import { CreatePaymentDto } from './payment.create.dto';
-import { CreatePayablesDto } from './payables.create.dto';
+import { CreatePayablesDto } from './payable.create.dto';
 
 /**
  * DTO para a criação de uma transação, combinando dados de pagamento e recebível.
