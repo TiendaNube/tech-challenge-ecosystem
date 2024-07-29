@@ -1,0 +1,25 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - db
+    environment:
+      - ConnectionStrings__DefaultConnection=mysql://root:password@Caralho!1/payment_processing
+
+  db:
+    image: mysql:8.0
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: Caralho!1
+      MYSQL_DATABASE: payment_processing
+    volumes:
+      - db-data:/var/lib/mysql
+      - ./:/docker-entrypoint-initdb.d
+volumes:
+  db-data:
