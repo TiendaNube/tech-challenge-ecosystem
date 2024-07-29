@@ -32,11 +32,11 @@ module.exports = {
         allowNull: false
       },
       card_number: {
-        type: DataTypes.CHAR(19),
+        type: DataTypes.CHAR(16),
         allowNull: false
       },
       card_holder:{
-        type: DataTypes.CHAR(255),
+        type: DataTypes.STRING,
         allowNull: false
       },
       card_expiration:{
