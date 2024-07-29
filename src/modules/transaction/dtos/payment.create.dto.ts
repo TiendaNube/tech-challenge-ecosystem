@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsNumber, IsPositive, IsString, Matches } from 'class-validator';
 import { PaymentMethod } from '../enums/payment-method.enum';
 import { IsValidExpirationDate } from '@/commons/utils/validation.utils';
+import { AutoMap } from '@automapper/classes';
 
 /**
  * DTO para a criação de um pagamento.
@@ -11,6 +12,7 @@ export class CreatePaymentDto {
      * O valor total do pagamento.
      * Deve ser um número positivo.
      */
+    @AutoMap()
     @IsPositive({ message: 'Total deve ser um número positivo' })
     @IsNumber({}, { message: 'Total deve ser um número' })
     total: number;
@@ -19,6 +21,7 @@ export class CreatePaymentDto {
      * O ID do comerciante.
      * Deve ser um número.
      */
+    @AutoMap()
     @ApiProperty({ example: 123 })
     @IsNumber()
     merchantId: number;
@@ -27,6 +30,7 @@ export class CreatePaymentDto {
      * A descrição da transação.
      * Deve ser uma string.
      */
+    @AutoMap()
     @ApiProperty({ example: 'Transaction description' })
     @IsString()
     description: string;
@@ -35,6 +39,7 @@ export class CreatePaymentDto {
      * O método de pagamento.
      * Deve ser um valor enumerado válido de PaymentMethod.
      */
+    @AutoMap()
     @ApiProperty({ example: 'debit_card', enum: PaymentMethod })
     @IsEnum(PaymentMethod)
     paymentMethod: PaymentMethod;
@@ -43,6 +48,7 @@ export class CreatePaymentDto {
      * O número do cartão.
      * Deve ser uma string composta exatamente por 4 dígitos.
      */
+    @AutoMap()
     @ApiProperty({ example: '1234' })
     @IsString({ message: 'Número do Cartão deve ser uma string' })
     @Matches(/^\d{4}$/, { message: 'Número do Cartão deve ter exatamente 4 dígitos' })
@@ -52,6 +58,7 @@ export class CreatePaymentDto {
      * O nome do titular do cartão.
      * Deve ser uma string.
      */
+    @AutoMap()
     @ApiProperty({ example: 'John Doe' })
     @IsString()
     cardHolder: string;
@@ -60,6 +67,7 @@ export class CreatePaymentDto {
      * A data de expiração do cartão.
      * Deve ser uma string no formato MM/YYYY e representar uma data válida.
      */
+    @AutoMap()
     @ApiProperty({ example: '12/2023' })
     @IsString()
     @Matches(/^(0[1-9]|1[0-2])\/\d{4}$/, {
@@ -72,6 +80,7 @@ export class CreatePaymentDto {
      * O código CVV do cartão.
      * Deve ser uma string composta exatamente por 3 dígitos.
      */
+    @AutoMap()
     @ApiProperty({ example: '123' })
     @IsString({ message: 'CVV do Cartão deve ser uma string' })
     @Matches(/^\d{3}$/, { message: 'CVV do Cartão deve ter exatamente 3 dígitos' })

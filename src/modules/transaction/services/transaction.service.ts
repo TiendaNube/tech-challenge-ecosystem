@@ -6,7 +6,7 @@ import { CreateReceivableDto } from '../dtos/receivable.create.dto';
 import { PaymentMethod } from '../enums/payment-method.enum';
 import { ReceivableStatus } from '../enums/receivable-status.enum';
 import { addDays, format } from 'date-fns';
-import { TransactionTransportDto } from '../dtos/transaction.transport';
+import { TransactionTransportDto } from '../dtos/transaction.transport.dto';
 
 /**
  * Serviço responsável pelo processamento de transações e criação de recebíveis.
@@ -80,7 +80,7 @@ export class TransactionService {
         const { discount, total } = this.calculateProcessingFee(createPaymentDto.total, this.FEE_CREDIT);
         return new CreateReceivableDto({
             merchantId: createPaymentDto.merchantId,
-            status: ReceivableStatus.PAID,
+            status: ReceivableStatus.WAITING_FUNDS,
             createDate: this.getDate(this.DPLUS_CREDIT),
             subtotal: createPaymentDto.total,
             discount,
