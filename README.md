@@ -2,24 +2,47 @@
 
 # Tech Challenge
 
+Exemplos de requests
+
+```
+curl --location 'http://localhost:3002/api/transaction' \
+--header 'x-api-key: f1757965-d93f-44df-a73e-88205ced5eae' \
+--header 'Content-Type: application/json' \
+--data '{
+    "merchantId": 127,
+    "description": "string3",
+    "paymentMethod": "debit_card",
+    "cardNumber": "3452",
+    "cardHolder": "string",
+    "cardExpirationDate": "12/2024",
+    "cardCVV": "003",
+    "total": 100
+}'
+```
+
+```
+curl --location 'http://localhost:3002/api/transaction?merchantId=123&startDate=27%2F07%2F2024&endDate=29%2F08%2F2024' \
+--header 'x-api-key: f1757965-d93f-44df-a73e-88205ced5eae'
+```
+
 O desafio consiste em implementar novas **API's** para trabalhar com as transações de nossos merchants (vendedores).
 
 ## Nós precisamos que você implemente:
 
 1. Um endpoint para processar transações e pagamentos de um determinado merchant (vendedor)
 
-- Uma transação possui as informações a seguir:
+-   Uma transação possui as informações a seguir:
 
-  - O valor total da transação
-  - Descrição da transação, por exemplo "T-Shirt Black M"
-  - Método de pagamento: **debit_card** ou **credit_card**
-  - O número do cartão (devemos armazenar e retornar somente os últimos 4 dígitos do cartão, por ser uma informação sensível)
-  - O nome do dono do cartão
-  - Data de Expiração
-  - CVV do cartão
-  - O id do merchant (vendedor)
+    -   O valor total da transação
+    -   Descrição da transação, por exemplo "T-Shirt Black M"
+    -   Método de pagamento: **debit_card** ou **credit_card**
+    -   O número do cartão (devemos armazenar e retornar somente os últimos 4 dígitos do cartão, por ser uma informação sensível)
+    -   O nome do dono do cartão
+    -   Data de Expiração
+    -   CVV do cartão
+    -   O id do merchant (vendedor)
 
-  Exemplo de transação:
+    Exemplo de transação:
 
 | Campo                | Valor           |
 | -------------------- | --------------- |
@@ -31,22 +54,22 @@ O desafio consiste em implementar novas **API's** para trabalhar com as transaç
 | Card Expiration Date | 12/2028         |
 | Card CVV             | 123             |
 
-- Ao criar uma transação, também deve ser criado um recebível do merchant (payables), com as seguintes regras de negócio:
+-   Ao criar uma transação, também deve ser criado um recebível do merchant (payables), com as seguintes regras de negócio:
 
-  - Transação **Debit card**:
+    -   Transação **Debit card**:
 
-    - O payable deve ser criado com **status = paid**, indicando que o merchant irá receber o valor
-    - O payable deve ser criado com a data igual a data de criação (D + 0).
+        -   O payable deve ser criado com **status = paid**, indicando que o merchant irá receber o valor
+        -   O payable deve ser criado com a data igual a data de criação (D + 0).
 
-  - Transação **Credit card**:
+    -   Transação **Credit card**:
 
-    - O payable deve ser criado com **status = waiting_funds**, indicando que o merchant irá receber esse valor no futuro
-    - O Payable deve ser criado com a data igual a data de criação da transação + 30 dias (D + 30)
+        -   O payable deve ser criado com **status = waiting_funds**, indicando que o merchant irá receber esse valor no futuro
+        -   O Payable deve ser criado com a data igual a data de criação da transação + 30 dias (D + 30)
 
-  - Ao criar payables, devemos descontar uma taxa de processamento (chamada de `fee`). Considere **2%** para transações **debit_card**
-    e **4%** para transações **credit_card**. Exemplo: Quando um payable é criado no valor de R$ 100,00 a partir de uma transação **credit_card** ele receberá R$ 96,00.
+    -   Ao criar payables, devemos descontar uma taxa de processamento (chamada de `fee`). Considere **2%** para transações **debit_card**
+        e **4%** para transações **credit_card**. Exemplo: Quando um payable é criado no valor de R$ 100,00 a partir de uma transação **credit_card** ele receberá R$ 96,00.
 
-    Exemplo de payable:
+        Exemplo de payable:
 
 | Campo       | Valor      |
 | ----------- | ---------- |
@@ -59,9 +82,9 @@ O desafio consiste em implementar novas **API's** para trabalhar com as transaç
 
 2. Um endpoint que calcule o total de Recebíveis (payables) do merchant num período de datas informado, a resposta deve conter:
 
-- Valor total de recebíveis pagos
-- Total cobrado de taxa nos recebíveis pagos
-- Valor a receber para o futuro
+-   Valor total de recebíveis pagos
+-   Total cobrado de taxa nos recebíveis pagos
+-   Valor a receber para o futuro
 
 ## Pré-requisitos
 
@@ -79,16 +102,16 @@ docker compose up
 
 ## Critérios de avaliação
 
-- Assertividade: A aplicação está fazendo o que é esperado? Se algo estiver faltando, o README explica o motivo?
-- Legibilidade do código (incluindo comentários)
-- Segurança: Existem vulnerabilidades claras?
-- Cobertura de testes (Não esperamos cobertura completa)
-- Histórico de commits (estrutura e qualidade)
-- Escolhas técnicas: A escolha de bibliotecas, banco de dados, arquitetura, etc., é a melhor escolha para a aplicação?
-- Escalabilidade: A aplicação é capaz de lidar com um aumento significativo do tráfego?
-- Manutenibilidade: O código é fácil de manter e modificar?
-- Resiliência: A aplicação é resiliente a falhas e erros inesperados?
+-   Assertividade: A aplicação está fazendo o que é esperado? Se algo estiver faltando, o README explica o motivo?
+-   Legibilidade do código (incluindo comentários)
+-   Segurança: Existem vulnerabilidades claras?
+-   Cobertura de testes (Não esperamos cobertura completa)
+-   Histórico de commits (estrutura e qualidade)
+-   Escolhas técnicas: A escolha de bibliotecas, banco de dados, arquitetura, etc., é a melhor escolha para a aplicação?
+-   Escalabilidade: A aplicação é capaz de lidar com um aumento significativo do tráfego?
+-   Manutenibilidade: O código é fácil de manter e modificar?
+-   Resiliência: A aplicação é resiliente a falhas e erros inesperados?
 
 ## Como entregar
 
-- Fork esse desafio no seu repositório pessoal. Crie uma branch para desenvolver sua implementação e, assim que finalizar, submeta um pull request na branch main desse repo, marcando @ewma18, @AndreAffonso e @rafaelito91 como reviewers
+-   Fork esse desafio no seu repositório pessoal. Crie uma branch para desenvolver sua implementação e, assim que finalizar, submeta um pull request na branch main desse repo, marcando @ewma18, @AndreAffonso e @rafaelito91 como reviewers
