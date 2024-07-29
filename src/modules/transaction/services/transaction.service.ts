@@ -1,15 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { CreatePaymentDto } from '../dtos/payment.create.dto';
+import { addDays, format } from 'date-fns';
 import { RabbitMQProducerService } from '@modules/rabbitmq/services/rabbitmq.producer.services';
 import { RabbitMQHeaderType } from '@/modules/rabbitmq/enums/rabbitmq.header.type.enum';
+import { PostgreSqlTransactionsExpService } from '@/modules/postgresql/services/postgresql.transactions.service';
+import { CreatePaymentDto } from '../dtos/payment.create.dto';
 import { CreatePayablesDto } from '../dtos/payables.create.dto';
 import { PaymentMethod } from '../enums/payment-method.enum';
 import { PayablesStatus } from '../enums/payables-status.enum';
-import { addDays, format } from 'date-fns';
 import { TransactionTransportDto } from '../dtos/transaction.transport.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { PayablesEntity } from '@/modules/postgresql/entities/payables.entity';
-import { Repository } from 'typeorm';
+import { PayablesTotalDto } from '../dtos/payables.total.dto';
 
 /**
  * Serviço responsável pelo processamento de transações e criação de recebíveis.
@@ -21,7 +20,10 @@ export class TransactionService {
     private readonly DPLUS_DEBIT: number = 0;
     private readonly DPLUS_CREDIT: number = 30;
 
-    constructor(private readonly rabbitMQProducerService: RabbitMQProducerService) {}
+    constructor(
+        private readonly rabbitMQProducerService: RabbitMQProducerService,
+        private readonly postgreSqlTransactionsExpService: PostgreSqlTransactionsExpService,
+    ) {}
 
     /**
      * Processa uma transação de pagamento.
@@ -39,27 +41,38 @@ export class TransactionService {
         );
     }
 
-    async calculatePayabless(merchantId: number, startDate: Date, endDate: Date) {
-        // const paidPayabless = await this.payablesRepository
-        //     .createQueryBuilder('payables')
-        //     .where('payables.merchantId = :merchantId', { merchantId })
-        //     .andWhere('payables.status = :status', { status: 'paid' })
-        //     .andWhere('payables.createDate BETWEEN :startDate AND :endDate', { startDate, endDate })
-        //     .getMany();
-        // const waitingFundsPayabless = await this.payablesRepository
-        //     .createQueryBuilder('payables')
-        //     .where('payables.merchantId = :merchantId', { merchantId })
-        //     .andWhere('payables.status = :status', { status: 'waiting_funds' })
-        //     .andWhere('payables.createDate BETWEEN :startDate AND :endDate', { startDate, endDate })
-        //     .getMany();
-        // const totalPaid = paidPayabless.reduce((sum, payables) => sum + payables.total, 0);
-        // const totalDiscounts = paidPayabless.reduce((sum, payables) => sum + payables.discount, 0);
-        // const totalWaitingFunds = waitingFundsPayabless.reduce((sum, payables) => sum + payables.total, 0);
-        // return {
-        //     totalPaid,
-        //     totalDiscounts,
-        //     totalWaitingFunds,
-        // };
+    /**
+     * Calcula o total de recebíveis (payables) de um comerciante em um período de datas informado.
+     *
+     * @param merchantId - ID do comerciante.
+     * @param startDate - Data de início do período.
+     * @param endDate - Data de término do período.
+     * @returns Um objeto `PayablesTotalDto` contendo os totais calculados de recebíveis pagos, descontos e valores futuros.
+     */
+    async calculatePayabless(merchantId: number, startDate: Date, endDate: Date): Promise<PayablesTotalDto> {
+        const [paidPayabless, waitingFundsPayabless] = await Promise.all([
+            this.postgreSqlTransactionsExpService.getPayabless(
+                merchantId,
+                startDate,
+                endDate,
+                PayablesStatus.PAID,
+            ),
+            this.postgreSqlTransactionsExpService.getPayabless(
+                merchantId,
+                startDate,
+                endDate,
+                PayablesStatus.WAITING_FUNDS,
+            ),
+        ]);
+
+        const totalPaid = paidPayabless.reduce((sum, payables) => sum + payables.total, 0);
+        const totalDiscounts = paidPayabless.reduce((sum, payables) => sum + payables.discount, 0);
+        const totalWaitingFunds = waitingFundsPayabless.reduce((sum, payables) => sum + payables.total, 0);
+        return new PayablesTotalDto({
+            totalPaid,
+            totalDiscounts,
+            totalWaitingFunds,
+        });
     }
 
     /**

@@ -44,4 +44,32 @@ export class PostgreSqlTransactionsExpService {
             await queryRunner.release();
         }
     }
+
+    async getPayabless(
+        merchantId: number,
+        startDate: Date,
+        endDate: Date,
+        status: string,
+    ): Promise<PayablesEntity[]> {
+        return this.payablesRepository
+            .createQueryBuilder('payables')
+            .where('payables.merchantId = :merchantId', { merchantId })
+            .andWhere('payables.status = :status', { status })
+            .andWhere('payables.createDate BETWEEN :startDate AND :endDate', { startDate, endDate })
+            .getMany();
+    }
+
+    async getWaitingFundsPayabless(
+        merchantId: number,
+        startDate: Date,
+        endDate: Date,
+        status: string,
+    ): Promise<PayablesEntity[]> {
+        return this.payablesRepository
+            .createQueryBuilder('payables')
+            .where('payables.merchantId = :merchantId', { merchantId })
+            .andWhere('payables.status = :status', { status })
+            .andWhere('payables.createDate BETWEEN :startDate AND :endDate', { startDate, endDate })
+            .getMany();
+    }
 }

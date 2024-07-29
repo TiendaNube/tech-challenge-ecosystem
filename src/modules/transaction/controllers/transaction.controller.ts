@@ -1,11 +1,23 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, Query } from '@nestjs/common';
-import { ApiBody, ApiTags } from '@nestjs/swagger';
+import {
+    BadRequestException,
+    Body,
+    Controller,
+    Get,
+    HttpCode,
+    HttpStatus,
+    Post,
+    Query,
+} from '@nestjs/common';
+import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreatePaymentDto } from '../dtos/payment.create.dto';
 import { TransactionService } from '../services/transaction.service';
+import { isValid, parse } from 'date-fns';
+import { PayablesTotalDto } from '../dtos/payables.total.dto';
 
 /**
  * Controlador responsável por lidar com as transações.
  */
+@ApiTags('Transactions')
 @Controller('transaction')
 export class TransactionServiceController {
     constructor(private readonly transactionService: TransactionService) {}
@@ -15,7 +27,6 @@ export class TransactionServiceController {
      *
      * @param createPaymentDto - Objeto DTO contendo os dados da transação a ser criada.
      */
-    @ApiTags('Transactions')
     @Post()
     @HttpCode(HttpStatus.ACCEPTED)
     @ApiBody({ type: CreatePaymentDto })
@@ -23,18 +34,36 @@ export class TransactionServiceController {
         await this.transactionService.process(createPaymentDto);
     }
 
-    @ApiTags('Transactions')
-    @Get('Transactions')
+    /**
+     * Endpoint para calcular o total de recebíveis (payables) de um comerciante
+     * em um período de datas informado.
+     *
+     * @param merchantId - ID do comerciante.
+     * @param startDate - Data de início no formato dd/MM/yyyy.
+     * @param endDate - Data de término no formato dd/MM/yyyy.
+     * @returns Um objeto contendo os totais calculados de recebíveis pagos, descontos e valores futuros.
+     */
+    @Get()
     @HttpCode(HttpStatus.OK)
+    @ApiResponse({
+        status: 200,
+        description: 'The calculated payables total',
+        type: PayablesTotalDto,
+    })
     async calculatePayabless(
         @Query('merchantId') merchantId: number,
         @Query('startDate') startDate: string,
         @Query('endDate') endDate: string,
-    ) {
-        const start = new Date(startDate);
-        const end = new Date(endDate);
+    ): Promise<PayablesTotalDto> {
+        const start = parse(startDate, 'dd/MM/yyyy', new Date());
+        const end = parse(endDate, 'dd/MM/yyyy', new Date());
 
-        const result = await this.transactionService.calculatePayabless(merchantId, start, end);
-        return result;
+        // Verifica se as datas são válidas
+        if (!isValid(start) || !isValid(end)) {
+            throw new BadRequestException('Invalid date format. Please use dd/MM/yyyy.');
+        }
+
+        // Chama o serviço para calcular os recebíveis
+        return this.transactionService.calculatePayabless(merchantId, start, end);
     }
 }
