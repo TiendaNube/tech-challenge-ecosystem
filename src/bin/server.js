@@ -13,7 +13,7 @@ const start = async () => {
     await database.connect(logger)
 
     app.listen(PORT, () => {
-        logger.debug(`Server is running on port ${PORT}`)
+        console.log(`Server is running on port ${PORT}`)
     })
 }
 

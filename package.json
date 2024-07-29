@@ -4,6 +4,7 @@
   "description": "O desafio consiste em implementar novas **API's** para trabalhar com as transações de nossos merchants (vendedores).",
   "main": "index.js",
   "scripts": {
+    "start": "node src/bin/server.js",
     "start-dev": "nodemon src/bin/server.js",
     "test-unit": "jest --config tests/unit/jest.config.js",
     "test-e2e": "jest --config tests/e2e/jest.config.js",

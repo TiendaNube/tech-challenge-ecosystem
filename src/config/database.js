@@ -1,25 +1,35 @@
+require('dotenv').config()
+
+const {
+  DATABASE_HOST,
+  DATABASE_USERNAME,
+  DATABASE_PASSWORD,
+  DATABASE_DIALECT,
+  DATABASE_DATABASE,
+} = process.env
 module.exports = {
     development: {
+      username: DATABASE_USERNAME,
+      password: DATABASE_PASSWORD,
+      database: DATABASE_DATABASE,
+      host: 'localhost',
+      port: 5432,
+      dialect: DATABASE_DIALECT,
+    },
+    test: {
       username: 'postgres',
       password: 'postgres',
       database: 'financial',
-      host: '127.0.0.1',
-      dialect: 'postgres',
-      logging: false, // Set to true if you want to see the SQL queries being executed
-    },
-    test: {
-      username: 'your_username',
-      password: 'your_password',
-      database: 'your_test_database_name',
-      host: '127.0.0.1',
+      host: DATABASE_HOST,
+      port: 5432,
       dialect: 'postgres',
       logging: false,
     },
     production: {
-      username: process.env.DB_USERNAME,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
-      host: process.env.DB_HOST,
+      username: DATABASE_USERNAME,
+      password: DATABASE_PASSWORD,
+      database: DATABASE_DATABASE,
+      host: DATABASE_HOST,
       dialect: 'postgres',
       logging: false,
       dialectOptions: {
