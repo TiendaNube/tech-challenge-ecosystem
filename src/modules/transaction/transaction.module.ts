@@ -4,21 +4,11 @@ import { TransactionServiceController } from './controllers/transaction.controll
 import { TransactionService } from './services/transaction.service';
 import { TransactionExpService } from './services/transaction.exp.service';
 import { TransactionProfile } from './profiles/transaction.profile';
-import { ApiKeyGuard } from './guards/apikey.guard';
-import { APP_GUARD } from '@nestjs/core';
 
 @Module({
     imports: [PostgreSqlModule],
     controllers: [TransactionServiceController],
-    providers: [
-        TransactionProfile,
-        TransactionService,
-        TransactionExpService,
-        {
-            provide: APP_GUARD,
-            useClass: ApiKeyGuard,
-        },
-    ],
+    providers: [TransactionProfile, TransactionService, TransactionExpService],
     exports: [TransactionExpService],
 })
 export class TransactionModule {}

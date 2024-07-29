@@ -147,6 +147,9 @@ export class TransactionService {
         const discount = Math.round(result * 100) / 100;
         const total = value - discount;
 
-        return { discount, total };
+        return {
+            discount: parseFloat(discount.toFixed(2)),
+            total: parseFloat(total.toFixed(2)),
+        };
     }
 }

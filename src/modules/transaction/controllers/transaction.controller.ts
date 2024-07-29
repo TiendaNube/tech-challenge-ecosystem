@@ -14,14 +14,13 @@ import { CreatePaymentDto } from '../dtos/payment.create.dto';
 import { TransactionService } from '../services/transaction.service';
 import { isValid, parse } from 'date-fns';
 import { PayablesTotalDto } from '../dtos/payables.total.dto';
-import { ApiKeyGuard } from '../guards/apikey.guard';
+import { ApiKeyGuard } from '@/commons/guards/apikey.guard';
 
 /**
  * Controlador responsável por lidar com as transações.
  */
 @ApiTags('Transactions')
 @Controller('transaction')
-@UseGuards(ApiKeyGuard)
 export class TransactionServiceController {
     constructor(private readonly transactionService: TransactionService) {}
 
@@ -33,6 +32,7 @@ export class TransactionServiceController {
     @Post()
     @HttpCode(HttpStatus.ACCEPTED)
     @ApiBody({ type: CreatePaymentDto })
+    @UseGuards(ApiKeyGuard)
     async postTransaction(@Body() createPaymentDto: CreatePaymentDto): Promise<void> {
         await this.transactionService.process(createPaymentDto);
     }
@@ -53,6 +53,7 @@ export class TransactionServiceController {
         description: 'The calculated payables total',
         type: PayablesTotalDto,
     })
+    @UseGuards(ApiKeyGuard)
     async calculatePayabless(
         @Query('merchantId') merchantId: number,
         @Query('startDate') startDate: string,

@@ -2,7 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { TransactionServiceController } from './transaction.controller';
 import { TransactionService } from '../services/transaction.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { ApiKeyGuard } from '../guards/apikey.guard';
 import { PayablesTotalDto } from '../dtos/payables.total.dto';
 import { BadRequestException } from '@nestjs/common';
 import { parse } from 'date-fns';
@@ -34,7 +33,6 @@ describe('TransactionServiceController', () => {
                         }),
                     },
                 },
-                ApiKeyGuard,
             ],
         }).compile();
 

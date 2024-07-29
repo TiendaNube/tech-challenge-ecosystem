@@ -50,3 +50,27 @@ services:
             - '8080:80'
         depends_on:
             - postgres
+
+    app:
+        build: ../
+        container_name: app
+        ports:
+            - '3002:3002'
+        depends_on:
+            - rabbitmq
+            - postgres
+            - setup
+        restart: on-failure
+        environment:
+            NODE_ENV: production
+            NODE_DOCKER_PORT: 3002
+            NODE_DOCKER_HOST: localhost
+            RABBITMQ_URL: amqp://userRabbitmq:oq3TdgCyDb7qyKB@rabbitmq:5672
+            RABBITMQ_QUEUE: tech-challenge-ecosystem
+            RABBITMQ_DEAD_LETTER_ROUTING_KEY: tech-challenge-ecosystem-dlq
+            DB_HOST: postgres
+            DB_PORT: 5432
+            DB_USERNAME: userPostgres
+            DB_PASSWORD: 5G5SSnyXI0Q
+            DB_DATABASE: teachChallange
+            API_KEY: f1757965-d93f-44df-a73e-88205ced5eae
