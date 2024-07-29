@@ -40,7 +40,6 @@ export class RabbitMQConsumerService {
         },
     })
     public async handleMessage(message: any, properties: any) {
-        console.log('asas');
         try {
             const headerType = properties.properties.headers['x-header-type'];
             if (headerType === RabbitMQHeaderType.TRANSACTION) {
