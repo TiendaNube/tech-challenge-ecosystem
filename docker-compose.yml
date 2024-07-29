@@ -1,0 +1,22 @@
+services:
+  postgres:
+    container_name: postgres
+    image: postgres
+    volumes:
+      - ./db/scripts/01-database.sql:/docker-entrypoint-initdb.d/01-database.sql
+      - ./db/scripts/02-load.sql:/docker-entrypoint-initdb.d/02-load.sql
+    environment:
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5433:5432"
+  redis:
+    container_name: redis
+    image: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - cache:/data
+
+volumes:
+  cache:
+    driver: local
