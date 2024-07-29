@@ -1,12 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
-import {
-    AmqpConnection,
-    MessageHandlerErrorBehavior,
-    Nack,
-    RabbitSubscribe,
-} from '@golevelup/nestjs-rabbitmq';
+import { MessageHandlerErrorBehavior, Nack, RabbitSubscribe } from '@golevelup/nestjs-rabbitmq';
 import { ConfigService } from '@nestjs/config';
 import { RabbitMQHeaderType } from '../enums/rabbitmq.header.type.enum';
+import { TransactionExpService } from '@/modules/transaction/services/transaction.exp.service';
 
 /**
  * Serviço responsável por consumir mensagens da fila RabbitMQ.
@@ -19,9 +15,8 @@ export class RabbitMQConsumerService {
 
     constructor(
         private readonly configService: ConfigService,
-        private readonly amqpConnection: AmqpConnection,
+        private readonly transactionExpService: TransactionExpService,
     ) {
-        // Inicializa as filas com os valores das configurações
         this.queue = this.configService.get<string>('TECH_CHALLENGE_ECOSYSTEM_QUEUE');
         this.dlq = this.configService.get<string>('TECH_CHALLENGE_ECOSYSTEM_DLQ');
     }
@@ -48,7 +43,7 @@ export class RabbitMQConsumerService {
         try {
             const headerType = properties.properties.headers['x-header-type'];
             if (headerType === RabbitMQHeaderType.TRANSACTION) {
-                console.log(`Processando mensagem: ${JSON.stringify(message)}`);
+                await this.transactionExpService.process(message);
             } else {
                 throw new Error(`Mensagem com tipo de cabeçalho ${headerType} enviada para DLQ.`);
             }

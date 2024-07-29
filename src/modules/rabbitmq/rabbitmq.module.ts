@@ -3,6 +3,7 @@ import { Global, Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { RabbitMQProducerService } from './services/rabbitmq.producer.services';
 import { RabbitMQConsumerService } from './services/rabbitmq.consumer.service';
+import { TransactionModule } from '../transaction/transaction.module';
 
 @Global()
 @Module({
@@ -14,6 +15,7 @@ import { RabbitMQConsumerService } from './services/rabbitmq.consumer.service';
             }),
             inject: [ConfigService],
         }),
+        TransactionModule,
     ],
     controllers: [],
     providers: [RabbitRpcParamsFactory, RabbitMQProducerService, RabbitMQConsumerService],

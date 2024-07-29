@@ -6,6 +6,7 @@ import { CreateReceivableDto } from '../dtos/receivable.create.dto';
 import { PaymentMethod } from '../enums/payment-method.enum';
 import { ReceivableStatus } from '../enums/receivable-status.enum';
 import { addDays, format } from 'date-fns';
+import { TransactionTransportDto } from '../dtos/transaction.transport';
 
 /**
  * Serviço responsável pelo processamento de transações e criação de recebíveis.
@@ -26,12 +27,17 @@ export class TransactionService {
      * @returns Uma promessa que resolve para `true` se a mensagem foi enviada com sucesso para o RabbitMQ, caso contrário `false`.
      */
     async process(createPaymentDto: CreatePaymentDto): Promise<boolean> {
-        console.log(this.createReceivable(createPaymentDto));
-
-        return this.rabbitMQProducerService.sendMessage<CreatePaymentDto>(
-            createPaymentDto,
+        return this.rabbitMQProducerService.sendMessage<TransactionTransportDto>(
+            {
+                payment: createPaymentDto,
+                receivable: this.createReceivable(createPaymentDto),
+            },
             RabbitMQHeaderType.TRANSACTION,
         );
+    }
+
+    async save(transactionTransportDto: TransactionTransportDto): Promise<void> {
+        console.log();
     }
 
     /**
