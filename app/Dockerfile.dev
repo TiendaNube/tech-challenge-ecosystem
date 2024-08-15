@@ -1,0 +1,16 @@
+FROM node:20-slim as dependencies
+
+WORKDIR /app
+COPY package*.json ./
+
+RUN npm install -g ts-node-dev@1.0.0-pre.63
+RUN npm install -g tsconfig-paths@3.9.0
+RUN npm install --silent --include=dev
+
+COPY . /app
+
+RUN npx prisma generate
+
+RUN chmod +x ./entrypoint-dev.sh
+
+ENTRYPOINT [ "/bin/sh", "./entrypoint-dev.sh" ]

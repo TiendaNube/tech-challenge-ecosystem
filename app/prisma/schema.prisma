@@ -1,0 +1,45 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model merchant {
+  id          Int           @id @default(autoincrement())
+  name        String        @db.VarChar
+  created_at  DateTime?     @default(now()) @db.Timestamp(6)
+  updated_at  DateTime?     @default(now()) @db.Timestamp(6)
+  payable     payable[]
+  transaction transaction[]
+}
+
+model payable {
+  id          Int       @id @default(autoincrement())
+  merchant_id Int
+  status      String    @db.VarChar
+  create_date DateTime  @db.Date
+  discount    Float
+  subtotal    Float
+  total       Float
+  created_at  DateTime? @default(now()) @db.Timestamp(6)
+  updated_at  DateTime? @default(now()) @db.Timestamp(6)
+  merchant    merchant  @relation(fields: [merchant_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_merchant_id_transaction")
+}
+
+model transaction {
+  id              Int       @id @default(autoincrement())
+  merchant_id     Int
+  description     String    @db.VarChar
+  payment_method  String    @db.VarChar
+  card_number     String    @db.VarChar(4)
+  card_holder     String    @db.VarChar
+  expiration_date DateTime  @db.Date
+  cvv             String    @db.VarChar(3)
+  created_at      DateTime? @default(now()) @db.Timestamp(6)
+  updated_at      DateTime? @default(now()) @db.Timestamp(6)
+  total           Float
+  merchant        merchant  @relation(fields: [merchant_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_merchant_id_transaction")
+}
