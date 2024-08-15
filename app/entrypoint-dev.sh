@@ -1,3 +1,3 @@
 #!/bin/bash
 
-npm run dev:server
+npx prisma migrate deploy && npx prisma db seed && npm run dev:server

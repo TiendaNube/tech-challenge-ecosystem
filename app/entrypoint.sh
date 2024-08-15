@@ -1,3 +1,4 @@
 #!/bin/bash
 
-pm2-runtime ecosystem.config.js
+
+npx prisma migrate deploy && npx prisma db seed && pm2-runtime ecosystem.config.js

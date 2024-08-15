@@ -9,6 +9,9 @@
     "dev:server": "ts-node-dev -r tsconfig-paths/register --respawn --transpile-only --exit-child --inspect --ignore-watch node_modules src/infra/http/server.ts",
     "test": "NODE_ENV=test; docker compose --profile test up -d && dotenv -e .env.test -- prisma migrate deploy && dotenv -e .env.test -- jest -i --forceExit"
   },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
+  },
   "dependencies": {
     "@prisma/client": "^4.16.0",
     "async-redis": "^2.0.0",
