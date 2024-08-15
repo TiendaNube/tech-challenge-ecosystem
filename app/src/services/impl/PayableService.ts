@@ -102,17 +102,17 @@ class PayableService implements IPayableService {
       item => item.status === PayableStatus.WAITING_FUNDS,
     );
 
-    if (fundsToReceive) {
-      totalFuture = fundsToReceive[0].total;
+    if (fundsToReceive.length > 0) {
+      totalFuture = Number(fundsToReceive[0].total.toFixed(2));
     }
 
     const fundsPaid = totalInPeriodByMerchantId.filter(
       item => item.status === PayableStatus.PAID,
     );
 
-    if (fundsPaid) {
-      totalPaid = fundsPaid[0].total;
-      totalPaidDiscounted = fundsPaid[0].total_discount;
+    if (fundsPaid.length > 0) {
+      totalPaid = Number(fundsPaid[0].total.toFixed(2));
+      totalPaidDiscounted = Number(fundsPaid[0].total_discount.toFixed(2));
     }
 
     return {
