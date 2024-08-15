@@ -36,7 +36,7 @@ class PayableRepository implements IPayableRepository {
     }
 
     const result: GroupedPayable[] = await this.database.$queryRaw(
-      Prisma.sql`SELECT status, sum(subtotal) as subtotal, sum(discount) as discount FROM payable p 
+      Prisma.sql`SELECT status, sum(total) as total, sum(discount) as total_discount FROM payable p 
         WHERE p.merchant_id = ${merchant_id} AND create_date >=  TO_TIMESTAMP(${from_date}, 'YYYY-MM-DD') 
         AND create_date <= TO_TIMESTAMP(${to_date}, 'YYYY-MM-DD') 
         GROUP BY p.status `,

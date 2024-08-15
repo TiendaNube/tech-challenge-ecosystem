@@ -1,6 +1,12 @@
 import Payable, { GroupedPayable } from '@domain/Payable';
 import AppError from '@errors/AppError';
 
+export interface GroupedResponse {
+  totalFuture: number;
+  totalPaidDiscounted: number;
+  totalPaid: number;
+}
+
 export interface CreatePayableDTO {
   merchant_id: number;
   total: number;
@@ -12,7 +18,7 @@ export default interface IPayableService {
     merchant_id: number,
     from_date: string,
     to_date: string,
-  ): Promise<GroupedPayable[] | AppError | Error>;
+  ): Promise<GroupedResponse | AppError | Error>;
 
   create(createPayableDTO: CreatePayableDTO): Promise<Payable>;
 }

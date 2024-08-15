@@ -10,6 +10,6 @@ export default interface Payable {
 
 export interface GroupedPayable {
   status: string;
-  subtotal: number;
-  discount: number;
+  total: number;
+  total_discount: number;
 }

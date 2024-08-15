@@ -60,17 +60,10 @@ describe('GET /payable/total', () => {
     });
 
     expect(response.status).toBe(200);
-    expect(response.body).toBeInstanceOf(Array);
-    expect(response.body.length).toBeGreaterThan(0);
-
-    response.body.forEach((item: any) => {
-      expect(item).toHaveProperty('status');
-      expect(item).toHaveProperty('subtotal');
-      expect(item).toHaveProperty('discount');
-      expect(typeof item.status).toBe('string');
-      expect(typeof item.subtotal).toBe('number');
-      expect(typeof item.discount).toBe('number');
-    });
+    expect(response.body).toBeInstanceOf(Object);
+    expect(response.body.totalPaid).toBe(135);
+    expect(response.body.totalPaidDiscounted).toBe(15);
+    expect(response.body.totalFuture).toBe(180);
   });
 
   it('should return 400 if missing query parameters', async () => {

@@ -1,10 +1,13 @@
-import IPayableService, { CreatePayableDTO } from '@services/IPayableService';
+import IPayableService, {
+  CreatePayableDTO,
+  GroupedResponse,
+} from '@services/IPayableService';
 import { injectable, inject } from 'tsyringe';
 import * as _ from 'lodash';
 import AppError from '@errors/AppError';
 import IMerchantRepository from '@domain/IMerchantRepository';
 import IPayableRepository from '@domain/IPayableRepository';
-import Payable, { GroupedPayable } from '@domain/Payable';
+import Payable from '@domain/Payable';
 import { INTERNAL_SERVER_ERROR, NOT_FOUND } from 'http-status';
 import logger from '@infra/logger';
 import { PaymentMethod } from '@domain/Transaction';
@@ -61,6 +64,7 @@ class PayableService implements IPayableService {
 
     payable.create_date = date;
     payable.subtotal = createPayableDTO.total;
+    payable.discount = createPayableDTO.total * (payable.discount / 100);
     payable.total =
       createPayableDTO.total -
       createPayableDTO.total * (payable.discount / 100);
@@ -76,7 +80,7 @@ class PayableService implements IPayableService {
     merchant_id: number,
     from_date: string,
     to_date: string,
-  ): Promise<AppError | GroupedPayable[] | Error> {
+  ): Promise<AppError | GroupedResponse | Error> {
     const merchant = await this.merchantRepository.findById(merchant_id);
 
     if (!merchant) {
@@ -90,7 +94,32 @@ class PayableService implements IPayableService {
         to_date,
       );
 
-    return totalInPeriodByMerchantId;
+    let totalFuture = 0;
+    let totalPaid = 0;
+    let totalPaidDiscounted = 0;
+
+    const fundsToReceive = totalInPeriodByMerchantId.filter(
+      item => item.status === PayableStatus.WAITING_FUNDS,
+    );
+
+    if (fundsToReceive) {
+      totalFuture = fundsToReceive[0].total;
+    }
+
+    const fundsPaid = totalInPeriodByMerchantId.filter(
+      item => item.status === PayableStatus.PAID,
+    );
+
+    if (fundsPaid) {
+      totalPaid = fundsPaid[0].total;
+      totalPaidDiscounted = fundsPaid[0].total_discount;
+    }
+
+    return {
+      totalPaidDiscounted,
+      totalPaid,
+      totalFuture,
+    };
   }
 }
 
