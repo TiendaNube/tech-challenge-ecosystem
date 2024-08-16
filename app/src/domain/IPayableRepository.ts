@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import Payable, { GroupedPayable } from './Payable';
 
 export default interface IPayableRepository {
@@ -7,5 +8,8 @@ export default interface IPayableRepository {
     to_date: string,
   ): Promise<GroupedPayable[]>;
 
-  create(payable: Payable): Promise<Payable>;
+  create(
+    payable: Payable,
+    tx: Prisma.TransactionClient | null,
+  ): Promise<Payable>;
 }

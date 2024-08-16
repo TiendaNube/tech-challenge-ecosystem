@@ -1,6 +1,6 @@
 import ITransactionRepository from '@domain/ITransactionRepository';
 import Transaction from '@domain/Transaction';
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 import { inject, injectable } from 'tsyringe';
 
 @injectable()
@@ -10,8 +10,13 @@ class TransactionRepository implements ITransactionRepository {
     private database: PrismaClient,
   ) {}
 
-  async create(transaction: Transaction): Promise<Transaction> {
-    const insertedTransaction = await this.database.transaction.create({
+  async create(
+    transaction: Transaction,
+    tx: Prisma.TransactionClient | null = null,
+  ): Promise<Transaction> {
+    const connection = tx || this.database;
+
+    const insertedTransaction = await connection.transaction.create({
       data: {
         description: transaction.description,
         card_number: transaction.card_number,

@@ -8,9 +8,10 @@ import {
 export class EventBus implements EventPublisher {
   private listeners: EventListener[] = [];
 
-  publish(event: DomainEvent): void {
-    logger.info('Publishing event', { event });
-    this.listeners.forEach(listener => listener.handle(event));
+  async publish(event: DomainEvent): Promise<void> {
+    logger.info('Publishing event');
+
+    await Promise.all(this.listeners.map(listener => listener.handle(event)));
   }
 
   register(listener: EventListener): void {

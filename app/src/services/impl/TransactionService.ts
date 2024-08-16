@@ -7,6 +7,7 @@ import IMerchantRepository from '@domain/IMerchantRepository';
 import ITransactionRepository from '@domain/ITransactionRepository';
 import { CreatePayableEvent } from '@domain/events/CreatePayableEvent';
 import { EventPublisher } from '@domain/events/EventPublisher';
+import { PrismaClient } from '@prisma/client';
 
 @injectable()
 class TransactionService implements ITransactionService {
@@ -19,6 +20,9 @@ class TransactionService implements ITransactionService {
 
     @inject('EventPublisher')
     private eventPublisher: EventPublisher,
+
+    @inject('Database')
+    private database: PrismaClient,
   ) {}
 
   async create(transaction: Transaction): Promise<Transaction> {
@@ -35,14 +39,25 @@ class TransactionService implements ITransactionService {
       transaction.card_number.length - 4,
     );
 
-    const insertedTransaction = await this.transactionRepository.create(
-      transaction,
-    );
+    return this.database.$transaction(async tx => {
+      const insertedTransaction = await this.transactionRepository.create(
+        transaction,
+        tx,
+      );
 
-    const createPayableEvent = new CreatePayableEvent(insertedTransaction);
-    this.eventPublisher.publish(createPayableEvent);
+      const createPayableEvent = new CreatePayableEvent(
+        insertedTransaction,
+        tx,
+      );
 
-    return insertedTransaction;
+      await this.publishEvent(createPayableEvent);
+
+      return insertedTransaction;
+    });
+  }
+
+  async publishEvent(event: CreatePayableEvent): Promise<void> {
+    await this.eventPublisher.publish(event);
   }
 }
 

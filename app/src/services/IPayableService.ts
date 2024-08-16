@@ -1,5 +1,6 @@
-import Payable, { GroupedPayable } from '@domain/Payable';
+import Payable from '@domain/Payable';
 import AppError from '@errors/AppError';
+import { Prisma } from '@prisma/client';
 
 export interface GroupedResponse {
   totalFuture: number;
@@ -11,6 +12,7 @@ export interface CreatePayableDTO {
   merchant_id: number;
   total: number;
   payment_method: string;
+  tx: Prisma.TransactionClient;
 }
 
 export default interface IPayableService {

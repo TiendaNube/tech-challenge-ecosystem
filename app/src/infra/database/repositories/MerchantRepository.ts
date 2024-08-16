@@ -1,6 +1,6 @@
 import IMerchantRepository from '@domain/IMerchantRepository';
 import Merchant from '@domain/Merchant';
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 import { inject, injectable } from 'tsyringe';
 import ICacheProvider from '@providers/CacheProvider/ICacheProvider';
 
@@ -16,7 +16,12 @@ class MerchantRepository implements IMerchantRepository {
     private cache: ICacheProvider,
   ) {}
 
-  async findById(id: number): Promise<Merchant | null> {
+  async findById(
+    id: number,
+    tx: Prisma.TransactionClient | null = null,
+  ): Promise<Merchant | null> {
+    const connection = tx || this.database;
+
     const cacheKey = `merchant-${id}`;
     const inCache = await this.cache.get(cacheKey);
 
@@ -24,7 +29,7 @@ class MerchantRepository implements IMerchantRepository {
       return inCache as unknown as Merchant;
     }
 
-    const result = await this.database.merchant.findFirst({
+    const result = await connection.merchant.findFirst({
       where: { id },
       select: { id: true, name: true },
     });

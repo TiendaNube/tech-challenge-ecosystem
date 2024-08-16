@@ -1,5 +1,5 @@
 export interface EventListener {
-  handle(event: DomainEvent): void;
+  handle(event: DomainEvent): Promise<void>;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

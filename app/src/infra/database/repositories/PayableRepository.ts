@@ -17,8 +17,12 @@ class PayableRepository implements IPayableRepository {
     private cache: ICacheProvider,
   ) {}
 
-  async create(payable: Payable): Promise<Payable> {
-    return await this.database.payable.create({
+  async create(
+    payable: Payable,
+    tx: Prisma.TransactionClient | null,
+  ): Promise<Payable> {
+    const connection = tx || this.database;
+    return await connection.payable.create({
       data: payable,
     });
   }

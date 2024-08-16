@@ -13,16 +13,18 @@ export class CreatePayableEventListener implements EventListener {
 
   async handle(event: DomainEvent): Promise<void> {
     if (event instanceof CreatePayableEvent) {
-      logger.info('CreatePayableEvent being handled', event);
+      logger.info('CreatePayableEvent being handled');
 
       try {
         await this.payableService.create({
           merchant_id: event.transaction.merchant_id,
           total: event.transaction.total,
           payment_method: event.transaction.payment_method,
+          tx: event.tx,
         } as CreatePayableDTO);
       } catch (e) {
         logger.error('Failed to create payable', e);
+        throw e;
       }
     }
   }
