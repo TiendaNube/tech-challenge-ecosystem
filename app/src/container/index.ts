@@ -18,6 +18,8 @@ import TransactionService from '@services/impl/TransactionService';
 import { EventPublisher } from '@domain/events/EventPublisher';
 import { EventBus } from '@infra/events/EventBus';
 import { CreatePayableEventListener } from '@infra/events/CreatePayableEventListener';
+import { PayableFactory } from '@services/factories/PayableFactory';
+import { PayableCalculator } from '@services/strategy/PayableCalculator';
 
 container.registerSingleton<IMerchantRepository>(
   'MerchantRepository',
@@ -42,6 +44,13 @@ container.registerSingleton<ITransactionService>(
 container.registerSingleton<IPayableService>('PayableService', PayableService);
 
 container.registerSingleton<IWorkerService>('WorkerService', WorkerService);
+
+container.registerSingleton<PayableFactory>('PayableFactory', PayableFactory);
+
+container.registerSingleton<PayableCalculator>(
+  'PayableCalculator',
+  PayableCalculator,
+);
 
 container.register<PrismaClient>('Database', {
   useFactory: instanceCachingFactory<PrismaClient>(() => new PrismaClient()),
