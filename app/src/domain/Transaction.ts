@@ -13,7 +13,7 @@ export default interface Transaction {
   card_holder: string;
   cvv: string;
   expiration_date: Date;
-  created_at: Date;
+  created_at: Date | null;
   merchant_id: number;
   total: number;
   merchant: Merchant;

@@ -1,4 +1,4 @@
-import Transaction from '@domain/Transaction';
+import Transaction, { PaymentMethod } from '@domain/Transaction';
 import ITransactionService from '@services/ITransactionService';
 import { Request, Response } from 'express';
 import { container } from 'tsyringe';
@@ -7,11 +7,20 @@ import * as yup from 'yup';
 
 const DATE_FORMAT = /[0-9]{2}\/[0-9]{2}/;
 const WRONG_DATE_MESSAGE = 'Wrong date format YYYY-MM-DD';
+const PAYMENT_METHOD_ALLOWED = [
+  PaymentMethod.CREDIT_CARD as string,
+  PaymentMethod.DEBIT_CARD as string,
+];
 
 const requestValidator = yup.object().shape({
   merchant_id: yup.number().min(1).required(),
   description: yup.string().required(),
-  payment_method: yup.string().required(),
+  payment_method: yup
+    .string()
+    .required()
+    .test('is-in-array', 'Payment method not allowed', value =>
+      PAYMENT_METHOD_ALLOWED.includes(value || ''),
+    ),
   card_number: yup.string().required(),
   card_holder: yup.string().required(),
   expiration_date: yup.string().matches(DATE_FORMAT, WRONG_DATE_MESSAGE),
