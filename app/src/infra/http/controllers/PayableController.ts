@@ -8,7 +8,7 @@ const DATE_FORMAT = /[0-9]{4}-[0-9]{2}-[0-9]{2}/;
 const WRONG_DATE_MESSAGE = 'Wrong date format YYYY-MM-DD';
 
 const requestValidator = yup.object().shape({
-  merchant_id: yup.number().min(1),
+  merchant_id: yup.number().min(1).required(),
   from_date: yup.string().matches(DATE_FORMAT, WRONG_DATE_MESSAGE).required(),
   to_date: yup.string().matches(DATE_FORMAT, WRONG_DATE_MESSAGE).required(),
 });

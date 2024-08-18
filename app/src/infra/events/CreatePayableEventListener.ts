@@ -20,6 +20,7 @@ export class CreatePayableEventListener implements EventListener {
           merchant_id: event.transaction.merchant_id,
           total: event.transaction.total,
           payment_method: event.transaction.payment_method,
+          transaction_date: event.transaction.created_at,
           tx: event.tx,
         } as CreatePayableDTO);
       } catch (e) {

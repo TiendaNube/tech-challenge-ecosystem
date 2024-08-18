@@ -11,6 +11,7 @@ export interface GroupedResponse {
 export interface CreatePayableDTO {
   merchant_id: number;
   total: number;
+  transaction_date: Date;
   payment_method: string;
   tx: Prisma.TransactionClient;
 }

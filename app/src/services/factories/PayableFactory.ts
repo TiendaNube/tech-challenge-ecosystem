@@ -22,7 +22,7 @@ export class PayableFactory {
   createPayableFromDTO(createPayableDTO: CreatePayableDTO): Payable {
     const payable: Partial<Payable> = {
       merchant_id: createPayableDTO.merchant_id,
-      create_date: new Date(),
+      create_date: createPayableDTO.transaction_date,
       subtotal: createPayableDTO.total,
     };
 
