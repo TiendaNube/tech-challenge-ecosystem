@@ -109,7 +109,7 @@ Entre na pasta `app` e execute `docker compose --profile dev up` isso irá inici
     - domain (definições de negócio)
     - errors (errors handlers)
     - infra (toda a parte de implementação que lida com requisições, banco de dados e requisições externas)
-    - providers (interfaces dos provedores terceiros)
+    - providers
     - services (serviços)
 - tests (testes unitários)
 
@@ -124,3 +124,30 @@ Apenas testes de integração foram criados, para executá-los rode `npm run tes
 - Decidi usar uma arquitetura monolítica e não microservicos (para Merchant e Payables), pois como o escopo é curto não havia necessidade de criar vários projetos
 - Utilizei Domain Event para criar as Payables após a criação de uma Transaction
 - Adicionei um índice para os campos status e create_date na tabela `payable` pois a medida que a tabela crescer, a performance irá ser satisfatória, em tese
+
+![Descrição da imagem](arquitetura.png)
+
+## Endpoints
+
+Há dois endpoints na aplicação:
+
+`GET /payable/total`
+
+Exemplo de requisição:
+
+GET /payable/total?merchant_id=1&to_date=2024-08-18&from_date=2024-08-18
+
+`POST /transaction`
+
+Exemplo de requisição:
+
+{
+"merchant_id": 1,
+"payment_method": "credit_card",
+"card_number": "2000000000",
+"card_holder": "Dayvson C Sales",
+"expiration_date": "02/2028",
+"description": "Transação",
+"cvv": "222",
+"total": 1300.30
+}
