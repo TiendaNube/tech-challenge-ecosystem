@@ -40,6 +40,9 @@ CREATE TABLE "transaction" (
     CONSTRAINT "transaction_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateIndex
+CREATE INDEX "idx_payable_date" ON "payable"("merchant_id", "create_date");
+
 -- AddForeignKey
 ALTER TABLE "payable" ADD CONSTRAINT "fk_merchant_id_transaction" FOREIGN KEY ("merchant_id") REFERENCES "merchant"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
 

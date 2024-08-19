@@ -27,6 +27,8 @@ model payable {
   created_at  DateTime? @default(now()) @db.Timestamp(6)
   updated_at  DateTime? @default(now()) @db.Timestamp(6)
   merchant    merchant  @relation(fields: [merchant_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_merchant_id_transaction")
+
+  @@index([merchant_id, create_date], map: "idx_payable_date")
 }
 
 model transaction {
