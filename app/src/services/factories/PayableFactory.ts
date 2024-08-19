@@ -10,6 +10,7 @@ export enum PayableStatus {
   WAITING_FUNDS = 'waiting_funds',
 }
 
+// Discount in percentage
 enum Discount {
   CREDIT_CARD = 4,
   DEBIT_CARD = 2,
@@ -19,6 +20,22 @@ const ADD_DAYS_QUANTITY = 30;
 
 @injectable()
 export class PayableFactory {
+  /**
+   * Create a payable object following the business rules:
+   * Debit card transaction:
+   * The payable must be created with status = paid, indicating that the merchant will receive the amount
+   * The payable must be created with the date equal to the creation date (D + 0).
+   * Credit card transaction:
+   * The payable must be created with status = waiting_funds, indicating that the merchant will receive this amount
+   * in the future
+   * The payable must be created with the date equal to the transaction creation date + 30 days (D + 30)
+   * When creating payables, we must discount a processing fee (called a fee). Consider 2% for debit_card
+   * transactions and 4% for credit_card transactions. Example: When a payable is created in the amount of
+   * R$ 100.00 from a credit_card transaction, it will receive R$ 96.00.
+   *
+   * @param createPayableDTO
+   * @returns Payable
+   */
   createPayableFromDTO(createPayableDTO: CreatePayableDTO): Payable {
     const payable: Partial<Payable> = {
       merchant_id: createPayableDTO.merchant_id,
