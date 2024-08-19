@@ -92,3 +92,62 @@ docker compose up
 ## Como entregar
 
 - Fork esse desafio no seu repositório pessoal. Crie uma branch para desenvolver sua implementação e, assim que finalizar, submeta um pull request na branch main desse repo, marcando @ewma18 e @rafaelito91 como reviewers
+
+# Solução
+
+## Como rodar
+
+Entre na pasta `app` e execute `docker compose --profile dev up` isso irá iniciar a aplicação em modo de desenvolvimento. Para executar em modo de produção execute `docker compose --profile prod up`.
+
+## Estrutura de pastas
+
+```
+- src (código fonte da aplicação)
+    - @types (tipos para uso com o TypeScript)
+    - config (arquivos de configuração)
+    - container (aqui fica o responsável pela injeção de dependência)
+    - domain (definições de negócio)
+    - errors (errors handlers)
+    - infra (toda a parte de implementação que lida com requisições, banco de dados e requisições externas)
+    - providers
+    - services (serviços)
+- tests (testes unitários)
+
+```
+
+## Testes
+
+Apenas testes de integração foram criados, para executá-los rode `npm run test`
+
+## Decisões
+
+- Decidi usar uma arquitetura monolítica e não microservicos (para Merchant e Payables), pois como o escopo é curto não havia necessidade de criar vários projetos
+- Utilizei Domain Event para criar as Payables após a criação de uma Transaction
+- Adicionei um índice para os campos status e create_date na tabela `payable` pois a medida que a tabela crescer, a performance irá ser satisfatória, em tese
+
+![Descrição da imagem](arquitetura.png)
+
+## Endpoints
+
+Há dois endpoints na aplicação:
+
+`GET /payable/total`
+
+Exemplo de requisição:
+
+GET /payable/total?merchant_id=1&to_date=2024-08-18&from_date=2024-08-18
+
+`POST /transaction`
+
+Exemplo de requisição:
+
+{
+"merchant_id": 1,
+"payment_method": "credit_card",
+"card_number": "2000000000",
+"card_holder": "Dayvson C Sales",
+"expiration_date": "02/2028",
+"description": "Transação",
+"cvv": "222",
+"total": 1300.30
+}
