@@ -37,6 +37,7 @@ export class PayableFactory {
         payable.create_date?.setDate(
           payable.create_date.getDate() + ADD_DAYS_QUANTITY,
         );
+
         break;
       default:
         throw new AppError('Invalid payment method', INTERNAL_SERVER_ERROR);

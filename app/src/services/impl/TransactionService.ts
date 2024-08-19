@@ -8,6 +8,7 @@ import ITransactionRepository from '@domain/ITransactionRepository';
 import { CreatePayableEvent } from '@domain/events/CreatePayableEvent';
 import { EventPublisher } from '@domain/events/EventPublisher';
 import { PrismaClient } from '@prisma/client';
+import { NOT_FOUND } from 'http-status';
 
 @injectable()
 class TransactionService implements ITransactionService {
@@ -31,7 +32,7 @@ class TransactionService implements ITransactionService {
     );
 
     if (!merchant) {
-      throw new AppError('Merchant not found');
+      throw new AppError('Merchant not found', NOT_FOUND);
     }
 
     transaction.merchant = merchant;

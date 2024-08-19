@@ -19,6 +19,14 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+  redis:
+    container_name: tech-challenge-redis
+    image: redis:7.0.11
+    restart: always
+    ports:
+      - '6379:6379'
+    networks:
+      - cbh_thc_network
 
 networks:
   cbh_thc_network:

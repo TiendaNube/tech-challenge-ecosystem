@@ -19,7 +19,7 @@ class PayableRepository implements IPayableRepository {
 
   async create(
     payable: Payable,
-    tx: Prisma.TransactionClient | null,
+    tx: Prisma.TransactionClient | undefined,
   ): Promise<Payable> {
     const connection = tx || this.database;
     return await connection.payable.create({

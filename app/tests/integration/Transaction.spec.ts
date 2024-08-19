@@ -6,7 +6,6 @@ describe('Transaction API', () => {
   let merchantId: number;
 
   beforeAll(async () => {
-    // Cria um merchant para associar às transações
     const merchant = await prisma.merchant.create({
       data: {
         name: 'Test Merchant',
@@ -44,5 +43,22 @@ describe('Transaction API', () => {
         transactionData.card_number.length - 4,
       ),
     );
+  });
+
+  it('should create a new transaction', async () => {
+    const transactionData = {
+      description: 'Test transaction',
+      payment_method: 'credit_card',
+      card_number: '1234567812345678',
+      card_holder: 'John Doe',
+      cvv: '123',
+      expiration_date: '02/2024',
+      merchant_id: 2,
+      total: 100.0,
+    };
+
+    const res = await request(app).post('/transaction').send(transactionData);
+
+    expect(res.statusCode).toEqual(404);
   });
 });

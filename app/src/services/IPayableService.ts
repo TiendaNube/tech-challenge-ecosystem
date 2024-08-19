@@ -13,7 +13,7 @@ export interface CreatePayableDTO {
   total: number;
   transaction_date: Date;
   payment_method: string;
-  tx: Prisma.TransactionClient;
+  tx?: Prisma.TransactionClient;
 }
 
 export default interface IPayableService {

@@ -10,6 +10,6 @@ export default interface IPayableRepository {
 
   create(
     payable: Payable,
-    tx: Prisma.TransactionClient | null,
+    tx: Prisma.TransactionClient | undefined,
   ): Promise<Payable>;
 }

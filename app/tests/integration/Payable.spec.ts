@@ -3,7 +3,6 @@ import { app } from '../../src/infra/http/server';
 import prisma from '../setup';
 
 beforeAll(async () => {
-  // Criação de um merchant e payables para testes
   await prisma.merchant.create({
     data: {
       id: 1,
@@ -45,7 +44,6 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-  // Limpeza dos dados de teste
   await prisma.payable.deleteMany();
   await prisma.merchant.deleteMany();
   await prisma.$disconnect();
@@ -74,6 +72,20 @@ describe('GET /payable/total', () => {
     expect(response.status).toBe(400);
     expect(response.body).toEqual({
       message: 'to_date is a required field',
+      status: 'error',
+    });
+  });
+
+  it('should return 404 if merchant does not exists', async () => {
+    const response = await request(app).get('/payable/total').query({
+      merchant_id: 2,
+      to_date: '2024-01-01',
+      from_date: '2024-01-02',
+    });
+
+    expect(response.status).toBe(404);
+    expect(response.body).toEqual({
+      message: 'Merchant not found',
       status: 'error',
     });
   });

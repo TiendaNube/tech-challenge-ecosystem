@@ -18,7 +18,7 @@ class MerchantRepository implements IMerchantRepository {
 
   async findById(
     id: number,
-    tx: Prisma.TransactionClient | null = null,
+    tx: Prisma.TransactionClient | undefined = undefined,
   ): Promise<Merchant | null> {
     const connection = tx || this.database;
 

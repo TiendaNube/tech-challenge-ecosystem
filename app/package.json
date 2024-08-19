@@ -7,7 +7,7 @@
     "build": "babel src --extensions \".js,.ts\" --out-dir dist/src --copy-files",
     "start": "ts-node src/index.ts",
     "dev:server": "ts-node-dev -r tsconfig-paths/register --respawn --transpile-only --exit-child --inspect --ignore-watch node_modules src/infra/http/server.ts",
-    "test": "NODE_ENV=test; docker compose -f docker-compose-test.yml up -d && sleep 5 && dotenv -e .env.test -- prisma migrate deploy && dotenv -e .env.test -- jest -i --forceExit"
+    "test": "NODE_ENV=test; docker compose -f docker-compose-test.yml up -d --remove-orphans && sleep 5 && dotenv -e .env.test -- prisma migrate deploy && dotenv -e .env.test -- jest -i --forceExit --collectCoverage"
   },
   "prisma": {
     "seed": "ts-node prisma/seed.ts"

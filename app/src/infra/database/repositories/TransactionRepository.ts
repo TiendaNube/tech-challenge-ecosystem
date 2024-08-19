@@ -12,7 +12,7 @@ class TransactionRepository implements ITransactionRepository {
 
   async create(
     transaction: Transaction,
-    tx: Prisma.TransactionClient | null = null,
+    tx: Prisma.TransactionClient | undefined = undefined,
   ): Promise<Transaction> {
     const connection = tx || this.database;
 
