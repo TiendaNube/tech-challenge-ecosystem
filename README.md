@@ -89,6 +89,8 @@ docker compose up
 - Manutenibilidade: O código é fácil de manter e modificar?
 - Resiliência: A aplicação é resiliente a falhas e erros inesperados?
 
+
+
 ## Como entregar
 
 - Fork esse desafio no seu repositório pessoal. Crie uma branch para desenvolver sua implementação e, assim que finalizar, submeta um pull request na branch main desse repo, marcando @ewma18 e @rafaelito91 como reviewers
